@@ -1,15 +1,17 @@
-@extends('layouts.app')
+@extends('adminlte::page')
 
 {{-- Customize layout sections --}}
 
-@section('subtitle', 'Welcome')
-@section('content_header_title', 'Home')
-@section('content_header_subtitle', 'Welcome')
-
+@section('content_header')
+    <h1><b>Configuracion general del sistema</b></h1>
+    <hr>
+@stop
 {{-- Content body: main page content --}}
 
-@section('content_body')
-    <p>Welcome to this beautiful admin panel.</p>
+@section('content')
+    <div class="row">
+
+    </div>
 @stop
 
 {{-- Push extra CSS --}}

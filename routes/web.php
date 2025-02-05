@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,6 +20,18 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Auth::routes();
+Route :: get ('/new', function(){
+    return 'new page';
+});
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+//rutas para configuraciones
+Route::get('admin/configuraciones', [App\Http\Controllers\ConfiguracionController::class, 'index'])->name('admin.configuracion.index')->middleware('auth');
+
+// Route::get('/configuracion/create', [App\Http\Controllers\ConfiguracionController::class, 'create'])->name('configuracion.create');
+// Route::post('/configuracion', [App\Http\Controllers\ConfiguracionController::class, 'store'])->name('configuracion.store');
+// Route::get('/configuracion/{configuracion}', [App\Http\Controllers\ConfiguracionController::class, 'show'])->name('configuracion.show');
+// Route::get('/configuracion/{configuracion}/edit', [App\Http\Controllers\ConfiguracionController::class, 'edit'])->name('configuracion.edit');
+// Route::put('/configuracion/{configuracion}', [App\Http\Controllers\ConfiguracionController::class, 'update'])->name('configuracion.update');
+// Route::delete('/configuracion/{configuracion}', [App\Http\Controllers\ConfiguracionController::class, 'destroy'])->name('configuracion.destroy');

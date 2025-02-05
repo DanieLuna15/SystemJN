@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'Jehová Nissi',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -63,8 +63,8 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+    'logo' => '<b>Jehová Nissi</b>',
+    'logo_img' => 'vendor/adminlte/dist/img/logo.jpg',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
@@ -86,7 +86,7 @@ return [
     'auth_logo' => [
         'enabled' => false,
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+            'path' => 'vendor/adminlte/dist/img/logo.jpg',
             'alt' => 'Auth Logo',
             'class' => '',
             'width' => 50,
@@ -113,11 +113,11 @@ return [
         'enabled' => true,
         'mode' => 'fullscreen',
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+            'path' => 'vendor/adminlte/dist/img/logo.jpg',
             'alt' => 'AdminLTE Preloader Image',
             'effect' => 'animation__shake',
-            'width' => 60,
-            'height' => 60,
+            'width' => 150,
+            'height' => 150,
         ],
     ],
 
@@ -157,7 +157,7 @@ return [
     'layout_fixed_sidebar' => null,
     'layout_fixed_navbar' => null,
     'layout_fixed_footer' => null,
-    'layout_dark_mode' => null,
+    'layout_dark_mode' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -171,11 +171,11 @@ return [
     |
     */
 
-    'classes_auth_card' => 'card-outline card-primary',
-    'classes_auth_header' => '',
+    'classes_auth_card' => '',
+    'classes_auth_header' => 'bg-gradient-info',
     'classes_auth_body' => '',
-    'classes_auth_footer' => '',
-    'classes_auth_icon' => '',
+    'classes_auth_footer' => 'text-center',
+    'classes_auth_icon' => 'fa-lg text-info',
     'classes_auth_btn' => 'btn-flat btn-primary',
 
     /*
@@ -299,98 +299,149 @@ return [
     */
 
     'menu' => [
-        // Navbar items:
+        ['header' => 'ADMINISTRACIÓN'],
+
+        [
+            'text' => 'Dashboard',
+            'url'  => 'dashboard',
+            'icon' => 'fas fa-tachometer-alt',
+            'can'  => 'ver reportes', // Solo los que tienen este permiso lo verán
+        ],
+
+        [
+            'text' => 'Usuarios',
+            'url'  => 'admin/users',
+            'icon' => 'fas fa-users',
+            'can'  => 'ver usuarios', // Solo los que tienen este permiso lo verán
+        ],
+
+        [
+            'text' => 'Gestión de Congregación',
+            'url'  => 'admin/congregacion',
+            'icon' => 'fas fa-church',
+            'can'  => 'gestionar congregación', // Solo los que tienen este permiso lo verán
+        ],
+
+        [
+            'text' => 'Eventos',
+            'url'  => 'admin/eventos',
+            'icon' => 'fas fa-calendar-alt',
+            'can'  => 'gestionar eventos', // Solo los que tienen este permiso lo verán
+        ],
+
+        [
+            'text' => 'Reportes',
+            'url'  => 'admin/reportes',
+            'icon' => 'fas fa-chart-bar',
+            'can'  => 'ver reportes', // Solo los que tienen este permiso lo verán
+        ],
+
+        ['header' => 'AJUSTES'],
+
+        [
+            'text' => 'Configuración',
+            'url'  => 'admin/settings',
+            'icon' => 'fas fa-cogs',
+            'can'  => 'editar usuarios', // Solo los que tienen este permiso lo verán
+        ],
+
+        [
+            'text' => 'Perfil',
+            'url' => 'admin/profile',
+            'icon' => 'fas fa-fw fa-user',
+        ],
+
+        [
+            'text' => 'Cambiar Contraseña',
+            'url' => 'admin/settings',
+            'icon' => 'fas fa-fw fa-lock',
+        ],
+
+        ['header' => 'HERRAMIENTAS'],
+
         [
             'type' => 'navbar-search',
-            'text' => 'search',
+            'text' => 'Buscar',
             'topnav_right' => true,
         ],
+
         [
             'type' => 'fullscreen-widget',
             'topnav_right' => true,
         ],
 
-        // Sidebar items:
+        ['header' => 'OTRAS OPCIONES'],
+
         [
-            'type' => 'sidebar-menu-search',
-            'text' => 'search',
-        ],
-        [
-            'text' => 'blog',
-            'url' => 'admin/blog',
-            'can' => 'manage-blog',
-        ],
-        [
-            'text' => 'pages',
-            'url' => 'admin/pages',
-            'icon' => 'far fa-fw fa-file',
-            'label' => 4,
-            'label_color' => 'success',
-        ],
-        ['header' => 'account_settings'],
-        [
-            'text' => 'profile',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
-        ],
-        [
-            'text' => 'change_password',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
-        ],
-        [
-            'text' => 'multilevel',
+            'text' => 'Niveles de Menú',
             'icon' => 'fas fa-fw fa-share',
             'submenu' => [
                 [
-                    'text' => 'level_one',
+                    'text' => 'Nivel 1',
                     'url' => '#',
                 ],
                 [
-                    'text' => 'level_one',
+                    'text' => 'Nivel 1',
                     'url' => '#',
                     'submenu' => [
                         [
-                            'text' => 'level_two',
+                            'text' => 'Nivel 2',
                             'url' => '#',
                         ],
                         [
-                            'text' => 'level_two',
+                            'text' => 'Nivel 2',
                             'url' => '#',
                             'submenu' => [
                                 [
-                                    'text' => 'level_three',
-                                    'url' => '#',
-                                ],
-                                [
-                                    'text' => 'level_three',
+                                    'text' => 'Nivel 3',
                                     'url' => '#',
                                 ],
                             ],
                         ],
                     ],
                 ],
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                ],
             ],
         ],
-        ['header' => 'labels'],
+
+        ['header' => 'ETIQUETAS'],
+
         [
-            'text' => 'important',
+            'text' => 'Importante',
             'icon_color' => 'red',
             'url' => '#',
         ],
         [
-            'text' => 'warning',
+            'text' => 'Advertencia',
             'icon_color' => 'yellow',
             'url' => '#',
         ],
         [
-            'text' => 'information',
+            'text' => 'Información',
             'icon_color' => 'cyan',
             'url' => '#',
+        ],
+
+
+
+
+        [
+            'text' => 'Configuración',
+            'url' => 'admin/configuraciones',
+            'classes' => 'bg-blue text-white',
+            'icon' => 'fas fa-cogs',
+        ],
+        [
+            'text' => 'Roles',
+            'classes' => 'bg-blue text-white',
+            'icon' => 'fas fa-fw fa-user-check',
+            'submenu' => [
+                [
+                    'text' => 'Listado de roles',
+                    'url' => 'admin/roles',
+                    'classes' => 'bg-cyan text-white',
+                    'icon' => 'fas fa-cogs',
+                ]
+            ]
         ],
     ],
 
