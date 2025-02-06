@@ -9,8 +9,9 @@ class MinisterioController extends Controller
 {
     public function index()
     {
+        $pageTitle = 'Todos los Ministerios';
         $ministerios = Ministerio::all();
-        return view('admin.ministerios.index', compact('ministerios'));
+        return view('admin.ministerios.index', compact('ministerios','pageTitle'));
     }
 
     public function create()

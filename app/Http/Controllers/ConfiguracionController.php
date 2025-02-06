@@ -12,7 +12,8 @@ class ConfiguracionController extends Controller
      */
     public function index()
     {
-        return view('admin.configuraciones.index');
+        $pageTitle = 'Toda la Configuración';
+        return view('admin.configuraciones.index', compact('pageTitle'));
     }
 
     /**
