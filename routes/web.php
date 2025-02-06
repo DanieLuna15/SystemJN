@@ -35,3 +35,7 @@ Route::get('admin/configuraciones', [App\Http\Controllers\ConfiguracionControlle
 // Route::get('/configuracion/{configuracion}/edit', [App\Http\Controllers\ConfiguracionController::class, 'edit'])->name('configuracion.edit');
 // Route::put('/configuracion/{configuracion}', [App\Http\Controllers\ConfiguracionController::class, 'update'])->name('configuracion.update');
 // Route::delete('/configuracion/{configuracion}', [App\Http\Controllers\ConfiguracionController::class, 'destroy'])->name('configuracion.destroy');
+
+
+//rutas para ministerios
+Route::get('admin/ministerios', [App\Http\Controllers\MinisterioController::class, 'index'])->name('admin.ministerio.index')->middleware('auth');

@@ -422,7 +422,12 @@ return [
         ],
 
 
-
+        [
+            'text' => 'Ministerios',
+            'url' => 'admin/ministerios',
+            // 'classes' => 'bg-blue text-white',
+            'icon' => 'fas fa-fw fa-church',
+        ],
 
         [
             'text' => 'Configuración',

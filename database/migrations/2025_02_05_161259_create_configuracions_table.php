@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('configuracions', function (Blueprint $table) {
             $table->id();
+            $table->string('nombre');
+            $table->string('descripcion');
+            $table->text('direccion');
+            $table->string('telefono');
+            $table->string('email');
+            $table->string('url');
+            $table->text('logo')->nullable();
             $table->timestamps();
         });
     }
