@@ -17,19 +17,17 @@ class Ministerio extends Model
     protected $fillable = ['nombre', 'logo', 'multa_incremento', 'hora_tolerancia', 'status'];
 
     protected $table = 'ministerios';
-    protected $primaryKey='id';
-    public $timestamps=true;
-    
+    protected $primaryKey = 'id';
+    public $timestamps = true;
+
     public function statusBadge(): Attribute
     {
-        return new Attribute(function () {
-            $html = '';
-            if ($this->status == Status::ACTIVE) {
-                $html = '<span class="badge badge--success">' . trans("Active") . '</span>';
-            } elseif ($this->status == Status::INACTIVE) {
-                $html = '<span class="badge badge--danger">' . trans("Inactive") . '</span>';
+        return new Attribute(
+            get: function () {
+                return $this->estado == Status::ACTIVE
+                    ? '<span class="badge badge-success">Activo</span>'
+                    : '<span class="badge badge-danger">Inactivo</span>';
             }
-            return $html;
-        });
+        );
     }
 }

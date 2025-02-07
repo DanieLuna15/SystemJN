@@ -3,7 +3,7 @@
 @section('title', 'Ministerios')
 
 @section('content_header')
-    <h1>Gestión de Ministerios</h1>
+    <h1><b>Gestión de Ministerios</b></h1>
 @stop
 
 {{-- Push extra CSS --}}
@@ -29,17 +29,17 @@
                             class="table table-striped table-bordered table-hover table-sm datatable">
                             <thead>
                                 <tr>
-                                    <th style="text-align: center">Logo</th>
+                                    <th style="text-align: center">Imagen</th>
                                     <th style="text-align: center">Nombre</th>
-                                    <th style="text-align: center">Multa (Bs)</th>
-                                    <th style="text-align: center">Hora de Tolerancia</th>
+                                    <th style="text-align: center">Monto multa (Bs)</th>
+                                    <th style="text-align: center">Estado</th>
                                     <th style="text-align: center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($ministerios as $ministerio)
                                     <tr>
-                                        <td>
+                                        <td class="text-center">
                                             @if ($ministerio->logo)
                                                 <img src="{{ asset($ministerio->logo) }}" alt="Logo" width="50">
                                             @else
@@ -47,20 +47,23 @@
                                             @endif
                                         </td>
                                         <td>{{ $ministerio->nombre }}</td>
-                                        <td>{{ $ministerio->multa_incremento }} Bs.</td>
-                                        <td>{{ $ministerio->hora_tolerancia }}</td>
+                                        <td class="text-center">{{ $ministerio->multa_incremento }} Bs.</td>
+
+
+                                        <td class="text-center">
+                                            {!! $ministerio->statusBadge !!}
+                                        </td>
                                         <td class="text-center">
                                             <a href="{{ route('admin.ministerios.edit', $ministerio) }}"
                                                 class="btn btn-warning btn-sm" title="Editar">
                                                 <i class="fas fa-edit"></i>
                                             </a>
 
-                                            <form action="{{ route('admin.ministerios.destroy', $ministerio) }}"
-                                                method="POST" class="delete-form" style="display:inline-block;">
+                                            <form action="{{ route('admin.ministerios.status', $ministerio->id) }}" method="POST" class="status-form" style="display:inline-block;">
                                                 @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">
-                                                    <i class="fas fa-trash-alt"></i>
+                                                @method('PATCH')
+                                                <button type="submit" class="btn btn-sm {{ $ministerio->estado ? 'btn-danger' : 'btn-success' }}" title="{{ $ministerio->estado ? 'Desactivar' : 'Activar' }}">
+                                                    <i class="fas {{ $ministerio->estado ? 'fa-eye-slash' : 'fa-eye' }}"></i>
                                                 </button>
                                             </form>
                                         </td>
@@ -85,6 +88,5 @@
 {{-- Push extra scripts --}}
 
 @push('js')
-<script>    console.log($.fn.DataTable.isDataTable(".datatable"));</script>
-
+    <script></script>
 @endpush

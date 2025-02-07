@@ -37,16 +37,20 @@ Route::get('admin/configuraciones', [App\Http\Controllers\ConfiguracionControlle
 // Route::put('/configuracion/{configuracion}', [App\Http\Controllers\ConfiguracionController::class, 'update'])->name('configuracion.update');
 // Route::delete('/configuracion/{configuracion}', [App\Http\Controllers\ConfiguracionController::class, 'destroy'])->name('configuracion.destroy');
 
+
+
 // Rutas para ministerios con CRUD completo
 Route::middleware('auth')->group(function () {
-    Route::resource('admin/ministerios', MinisterioController::class)->names([
+
+    Route::get('admin/ministerios/active', [MinisterioController::class, 'active'])->name('admin.ministerios.active');
+    Route::get('admin/ministerios/inactive', [MinisterioController::class, 'inactive'])->name('admin.ministerios.inactive');
+    Route::resource('admin/ministerios', MinisterioController::class)->except(['store', 'update'])->names([
         'index' => 'admin.ministerios.index',
         'create' => 'admin.ministerios.create',
-        'store' => 'admin.ministerios.store',
         'edit' => 'admin.ministerios.edit',
-        'update' => 'admin.ministerios.update',
         'destroy' => 'admin.ministerios.destroy',
-
-        'status' => 'admin.ministerios.status',
     ]);
+
+    Route::post('admin/ministerios/save/{id?}', [MinisterioController::class, 'store'])->name('admin.ministerios.save');
+    Route::patch('admin/ministerios/status/{id}', [MinisterioController::class, 'status'])->name('admin.ministerios.status');
 });

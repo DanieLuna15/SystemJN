@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\Status;
 use App\Models\Ministerio;
 use Illuminate\Http\Request;
 
@@ -10,43 +11,35 @@ class MinisterioController extends Controller
     public function index()
     {
         $pageTitle = 'Todos los Ministerios';
-        $ministerios = Ministerio::all();
+        $ministerios = $this->commonQuery()->get();
         return view('admin.ministerios.index', compact('ministerios', 'pageTitle'));
     }
+
+    public function active()
+    {
+        $pageTitle = 'Ministerios Activos';
+        $ministerios = $this->commonQuery()->where('estado', Status::ACTIVE)->get();
+        return view('admin.ministerios.index', compact('ministerios', 'pageTitle'));
+    }
+
+    public function inactive()
+    {
+        $pageTitle = 'Ministerios Inactivos';
+        $ministerios = $this->commonQuery()->where('estado', Status::INACTIVE)->get();
+        return view('admin.ministerios.index', compact('ministerios', 'pageTitle'));
+    }
+
+
+    protected function commonQuery()
+    {
+        return Ministerio::query()->orderBy('id', 'DESC');
+    }
+
 
     public function create()
     {
         return view('admin.ministerios.create');
     }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'multa_incremento' => 'required|numeric|min:0',
-            'hora_tolerancia' => 'required',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-    
-        try {
-            $data = $request->all();
-    
-            if ($request->hasFile('logo')) {
-                $file = $request->file('logo');
-                $filename = time() . '.' . $file->getClientOriginalExtension();
-                $file->move(public_path('uploads/ministerios/'), $filename);
-                $data['logo'] = 'uploads/ministerios/' . $filename;
-            }
-    
-            Ministerio::create($data);
-    
-            return redirect()->route('admin.ministerios.index')->with('success', 'Ministerio creado correctamente.');
-        } catch (\Exception $e) {
-            return redirect()->route('admin.ministerios.index')->with('error', 'Hubo un error al crear el ministerio.');
-        }
-    }
-    
-
 
     public function edit(Ministerio $ministerio)
     {
@@ -54,39 +47,41 @@ class MinisterioController extends Controller
     }
 
 
-
-    public function update(Request $request, Ministerio $ministerio)
+    public function store(Request $request, $id = null)
     {
         $request->validate([
             'nombre' => 'required|string|max:255',
             'multa_incremento' => 'required|numeric|min:0',
-            'hora_tolerancia' => 'required',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-    
+
         try {
-            $data = $request->all();
-    
+            $data = $request->except(['_token']);
+
             if ($request->hasFile('logo')) {
                 $file = $request->file('logo');
                 $filename = time() . '.' . $file->getClientOriginalExtension();
                 $file->move(public_path('uploads/ministerios/'), $filename);
                 $data['logo'] = 'uploads/ministerios/' . $filename;
             }
-    
-            $ministerio->update($data);
-    
-            return redirect()->route('admin.ministerios.index')->with('success', 'Ministerio actualizado correctamente.');
+
+            if ($id) {
+                $ministerio = Ministerio::findOrFail($id);
+                $ministerio->update($data);
+                $message = 'Ministerio actualizado correctamente.';
+            } else {
+                Ministerio::create($data);
+                $message = 'Ministerio creado correctamente.';
+            }
+
+            return redirect()->route('admin.ministerios.index')->with('success', $message);
         } catch (\Exception $e) {
-            return redirect()->route('admin.ministerios.index')->with('error', 'Hubo un error al actualizar el ministerio.');
+            return redirect()->route('admin.ministerios.index')->with('error', 'Hubo un error en la operación.');
         }
     }
-    
 
-
-    public function destroy(Ministerio $ministerio)
+    public function status($id)
     {
-        $ministerio->delete();
-        return redirect()->route('admin.ministerios.index')->with('success', 'Ministerio eliminado correctamente.');
+        return Ministerio::changeStatus($id, 'estado'); // Usa el Trait para cambiar el estado
     }
 }

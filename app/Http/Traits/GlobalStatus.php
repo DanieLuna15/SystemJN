@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 trait GlobalStatus
 {
-    public static function changeStatus($id, $column = 'status')
+    public static function changeStatus($id, $column = 'estado')
     {
 
         $modelName = get_class();
@@ -43,11 +43,11 @@ trait GlobalStatus
 
     public function scopeActive($query)
     {
-        return $query->where('status', Status::ENABLE);
+        return $query->where('estado', Status::ENABLE);
     }
 
     public function scopeInactive($query)
     {
-        return $query->where('status', Status::DISABLE);
+        return $query->where('estado', Status::DISABLE);
     }
 }

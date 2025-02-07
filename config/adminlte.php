@@ -403,41 +403,41 @@ return [
             ],
         ],
 
-        ['header' => 'ETIQUETAS'],
+
 
         [
-            'text' => 'Importante',
-            'icon_color' => 'red',
-            'url' => '#',
-        ],
-        [
-            'text' => 'Advertencia',
-            'icon_color' => 'yellow',
-            'url' => '#',
-        ],
-        [
-            'text' => 'Información',
-            'icon_color' => 'cyan',
-            'url' => '#',
+            'text' => 'Configuración',
+            'url' => 'admin/configuraciones',
+            // 'classes' => 'bg-blue text-white',
+            'icon' => 'fas fa-cogs',
         ],
 
 
         [
             'text' => 'Ministerios',
-            'url' => 'admin/ministerios',
-            // 'classes' => 'bg-blue text-white',
-            'icon' => 'fas fa-fw fa-church',
+            'icon' => 'fas fa-users', // Icono general de ministerios
+            'submenu' => [
+                [
+                    'text' => 'Todos los ministerios',
+                    'url' => 'admin/ministerios',
+                    'icon' => 'fas fa-list', // Icono de lista
+                ],
+                [
+                    'text' => 'Ministerios Activos',
+                    'url' => 'admin/ministerios/active',
+                    'icon' => 'fas fa-check-circle', // Icono de verificación para activos
+                ],
+                [
+                    'text' => 'Ministerios Inactivos',
+                    'url' => 'admin/ministerios/inactive',
+                    'icon' => 'fas fa-times-circle', // Icono de "X" para inactivos
+                ],
+            ]
         ],
 
         [
-            'text' => 'Configuración',
-            'url' => 'admin/configuraciones',
-            'classes' => 'bg-blue text-white',
-            'icon' => 'fas fa-cogs',
-        ],
-        [
             'text' => 'Roles',
-            'classes' => 'bg-blue text-white',
+            // 'classes' => 'bg-blue text-white',
             'icon' => 'fas fa-fw fa-user-check',
             'submenu' => [
                 [
@@ -448,6 +448,7 @@ return [
                 ]
             ]
         ],
+
     ],
 
     /*
@@ -607,10 +608,10 @@ return [
     'assets' => [
         'js' => [
             'js/custom.js',
-            'js/datatables-config.js', 
+            'js/datatables-config.js',
         ],
-        'css' => [	
-            'css/mystyles.css', 
+        'css' => [
+            'css/mystyles.css',
         ]
     ],
 ];
