@@ -25,7 +25,8 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="ministerios-table" class="table table-striped table-bordered table-hover table-sm">
+                        <table id="ministerios-table"
+                            class="table table-striped table-bordered table-hover table-sm datatable">
                             <thead>
                                 <tr>
                                     <th style="text-align: center">Logo</th>
@@ -55,7 +56,7 @@
                                             </a>
 
                                             <form action="{{ route('admin.ministerios.destroy', $ministerio) }}"
-                                                method="POST" style="display:inline-block;" class="delete-form">
+                                                method="POST" class="delete-form" style="display:inline-block;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">
@@ -63,12 +64,11 @@
                                                 </button>
                                             </form>
                                         </td>
-
                                     </tr>
                                 @endforeach
                             </tbody>
-
                         </table>
+
                     </div>
                 </div>
             </div>
@@ -85,9 +85,6 @@
 {{-- Push extra scripts --}}
 
 @push('js')
-    <script>
-        $('#ministerios-table').DataTable([
+<script>    console.log($.fn.DataTable.isDataTable(".datatable"));</script>
 
-        ]);
-    </script>
 @endpush

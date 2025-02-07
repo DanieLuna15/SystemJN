@@ -23,7 +23,7 @@
     @yield('adminlte_css_pre')
 
     {{-- Base Stylesheets (depends on Laravel asset bundling tool) --}}
-    @if(config('adminlte.enabled_laravel_mix', false))
+    @if (config('adminlte.enabled_laravel_mix', false))
         <link rel="stylesheet" href="{{ mix(config('adminlte.laravel_mix_css_path', 'css/app.css')) }}">
     @else
         @switch(config('adminlte.laravel_asset_bundling', false))
@@ -45,8 +45,10 @@
                 <link rel="stylesheet" href="{{ asset('vendor/adminlte/dist/css/adminlte.min.css') }}">
 
                 <link rel="stylesheet" href="{{ asset('css/mystyles.css') }}">
-                @if(config('adminlte.google_fonts.allowed', true))
-                    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+                <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+                @if (config('adminlte.google_fonts.allowed', true))
+                    <link rel="stylesheet"
+                        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
                 @endif
         @endswitch
     @endif
@@ -55,8 +57,8 @@
     @include('adminlte::plugins', ['type' => 'css'])
 
     {{-- Livewire Styles --}}
-    @if(config('adminlte.livewire'))
-        @if(intval(app()->version()) >= 7)
+    @if (config('adminlte.livewire'))
+        @if (intval(app()->version()) >= 7)
             @livewireStyles
         @else
             <livewire:styles />
@@ -67,7 +69,7 @@
     @yield('adminlte_css')
 
     {{-- Favicon --}}
-    @if(config('adminlte.use_ico_only'))
+    @if (config('adminlte.use_ico_only'))
         <link rel="shortcut icon" href="{{ asset('favicons/favicon.ico') }}" />
     @elseif(config('adminlte.use_full_favicon'))
         <link rel="shortcut icon" href="{{ asset('favicons/favicon.ico') }}" />
@@ -90,6 +92,7 @@
     @endif
 
     <script src="{{ asset('js/custom.js') }}"></script>
+    <script src="{{ asset('js/datatables-config.js') }}"></script>
 </head>
 
 <body class="@yield('classes_body')" @yield('body_data')>
@@ -98,7 +101,7 @@
     @yield('body')
 
     {{-- Base Scripts (depends on Laravel asset bundling tool) --}}
-    @if(config('adminlte.enabled_laravel_mix', false))
+    @if (config('adminlte.enabled_laravel_mix', false))
         <script src="{{ mix(config('adminlte.laravel_mix_js_path', 'js/app.js')) }}"></script>
     @else
         @switch(config('adminlte.laravel_asset_bundling', false))
@@ -122,8 +125,8 @@
     @include('adminlte::plugins', ['type' => 'js'])
 
     {{-- Livewire Script --}}
-    @if(config('adminlte.livewire'))
-        @if(intval(app()->version()) >= 7)
+    @if (config('adminlte.livewire'))
+        @if (intval(app()->version()) >= 7)
             @livewireScripts
         @else
             <livewire:scripts />
@@ -134,26 +137,32 @@
     @yield('adminlte_js')
 
     <script>
-        @if(session('success'))
+        @if (session('success'))
             window.sweetAlertType = 'success';
             window.sweetAlertMessage = "{{ session('success') }}";
         @endif
-    
-        @if(session('error'))
+
+        @if (session('error'))
             window.sweetAlertType = 'error';
             window.sweetAlertMessage = "{{ session('error') }}";
         @endif
-    
-        @if(session('warning'))
+
+        @if (session('warning'))
             window.sweetAlertType = 'warning';
             window.sweetAlertMessage = "{{ session('warning') }}";
         @endif
-    
-        @if(session('info'))
+
+        @if (session('info'))
             window.sweetAlertType = 'info';
             window.sweetAlertMessage = "{{ session('info') }}";
         @endif
     </script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 </body>
 
 </html>

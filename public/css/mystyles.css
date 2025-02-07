@@ -1,8 +1,60 @@
+/* PARA SWEETALERT */
 .swal2-toast-custom {
     border-radius: 8px !important;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2) !important;
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.413) !important;
     font-size: 16px !important;
     padding: 10px 20px !important;
     text-align: center !important;
     font-weight: bold !important;
+}
+
+
+
+/* PARA DATATABLES */
+.dataTables_wrapper .dt-buttons {
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.dataTables_wrapper .btn {
+    color: #ffffff;
+    border-radius: 4px;
+    padding: 5px 15px;
+    font-size: 14px;
+}
+
+.dataTables_wrapper .dt-buttons .btn {
+    border-radius: 4px;
+    padding: 5px 15px;
+    font-size: 14px;
+    color: #fff;
+}
+
+.dataTables_wrapper .dt-buttons .btn-success {
+    background-color: #28a745;
+    border: none;
+}
+
+.dataTables_wrapper .dt-buttons .btn-danger {
+    background-color: #dc3545;
+    border: none;
+}
+
+.dataTables_wrapper .dt-buttons .btn-info {
+    background-color: #17a2b8;
+    border: none;
+}
+
+.dataTables_wrapper .dt-buttons .btn-warning {
+    background-color: #ffc107;
+    border: none;
+}
+
+.dataTables_length {
+    display: block !important;
 }
