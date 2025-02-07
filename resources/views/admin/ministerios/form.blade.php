@@ -28,8 +28,15 @@
 
             <div class="form-group">
                 <label>Multa por Retraso (Bs):</label>
-                <input type="number" name="multa_incremento" class="form-control" step="0.01"
-                    value="{{ old('multa_incremento', $ministerio->multa_incremento ?? '') }}">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <b>Bs.</b>
+                        </span>
+                    </div>
+                    <input type="number" name="multa_incremento" class="form-control" step="0.01"
+                        value="{{ old('multa_incremento', $ministerio->multa_incremento ?? '') }}">
+                </div>
                 @error('multa_incremento')
                     <span class="text-danger">{{ $message }}</span>
                 @enderror

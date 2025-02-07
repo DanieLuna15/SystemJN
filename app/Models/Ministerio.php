@@ -25,8 +25,8 @@ class Ministerio extends Model
         return new Attribute(
             get: function () {
                 return $this->estado == Status::ACTIVE
-                    ? '<span class="badge badge-success">Activo</span>'
-                    : '<span class="badge badge-danger">Inactivo</span>';
+                    ? '<span class="badge badge-success d-flex align-items-center justify-content-center w-100 h-100">Activo</span>'
+                    : '<span class="badge badge-danger d-flex align-items-center justify-content-center w-100 h-100">Inactivo</span>';
             }
         );
     }

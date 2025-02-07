@@ -415,22 +415,22 @@ return [
 
         [
             'text' => 'Ministerios',
-            'icon' => 'fas fa-users', // Icono general de ministerios
+            'icon' => 'fas fa-users', 
             'submenu' => [
                 [
                     'text' => 'Todos los ministerios',
                     'url' => 'admin/ministerios',
-                    'icon' => 'fas fa-list', // Icono de lista
+                    'icon' => 'fas fa-list', 
                 ],
                 [
                     'text' => 'Ministerios Activos',
                     'url' => 'admin/ministerios/active',
-                    'icon' => 'fas fa-check-circle', // Icono de verificación para activos
+                    'icon' => 'fas fa-check-circle', 
                 ],
                 [
                     'text' => 'Ministerios Inactivos',
                     'url' => 'admin/ministerios/inactive',
-                    'icon' => 'fas fa-times-circle', // Icono de "X" para inactivos
+                    'icon' => 'fas fa-times-circle', 
                 ],
             ]
         ],

@@ -98,7 +98,10 @@
 <body class="@yield('classes_body')" @yield('body_data')>
 
     {{-- Body Content --}}
+    @include('components.confirmation-modal')
     @yield('body')
+
+    
 
     {{-- Base Scripts (depends on Laravel asset bundling tool) --}}
     @if (config('adminlte.enabled_laravel_mix', false))
@@ -163,6 +166,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+    @stack('script') 
 </body>
 
 </html>

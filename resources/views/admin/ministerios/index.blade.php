@@ -50,8 +50,10 @@
                                         <td class="text-center">{{ $ministerio->multa_incremento }} Bs.</td>
 
 
-                                        <td class="text-center">
-                                            {!! $ministerio->statusBadge !!}
+                                        <td class="text-center align-middle">
+                                            <div class="d-flex justify-content-center">
+                                                {!! $ministerio->statusBadge !!}
+                                            </div>
                                         </td>
                                         <td class="text-center">
                                             <a href="{{ route('admin.ministerios.edit', $ministerio) }}"
@@ -59,13 +61,12 @@
                                                 <i class="fas fa-edit"></i>
                                             </a>
 
-                                            <form action="{{ route('admin.ministerios.status', $ministerio->id) }}" method="POST" class="status-form" style="display:inline-block;">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="btn btn-sm {{ $ministerio->estado ? 'btn-danger' : 'btn-success' }}" title="{{ $ministerio->estado ? 'Desactivar' : 'Activar' }}">
-                                                    <i class="fas {{ $ministerio->estado ? 'fa-eye-slash' : 'fa-eye' }}"></i>
-                                                </button>
-                                            </form>
+                                            <button type="button"
+                                                class="btn btn-sm {{ $ministerio->estado ? 'btn-danger' : 'btn-success' }} confirmationBtn"
+                                                data-action="{{ route('admin.ministerios.status', $ministerio->id) }}"
+                                                data-question="¿Seguro que deseas cambiar el estado de este ministerio?">
+                                                <i class="fas {{ $ministerio->estado ? 'fa-eye-slash' : 'fa-eye' }}"></i>
+                                            </button>
                                         </td>
                                     </tr>
                                 @endforeach
