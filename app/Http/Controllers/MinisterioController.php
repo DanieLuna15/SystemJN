@@ -82,6 +82,6 @@ class MinisterioController extends Controller
 
     public function status($id)
     {
-        return Ministerio::changeStatus($id, 'estado'); // Usa el Trait para cambiar el estado
+        return Ministerio::changeStatus($id, 'estado');
     }
 }
