@@ -31,7 +31,7 @@
             $(document).on('click', '.confirmationBtn', function() {
                 var modal = $('#trashModal');
                 let data = $(this).data();
-                modal.find('.question').text(data.question);
+                modal.find('.question').html(data.question);
                 modal.find('#confirmationForm').attr('action', data.action);
                 modal.modal('show');
             });

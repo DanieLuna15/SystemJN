@@ -60,13 +60,13 @@
                                                 class="btn btn-warning btn-sm" title="Editar">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-
                                             <button type="button"
                                                 class="btn btn-sm {{ $ministerio->estado ? 'btn-danger' : 'btn-success' }} confirmationBtn"
                                                 data-action="{{ route('admin.ministerios.status', $ministerio->id) }}"
-                                                data-question="¿Seguro que deseas cambiar el estado de este ministerio?">
+                                                data-question="{{ $ministerio->estado ? '¿Seguro que deseas inhabilitar el Ministerio <strong>' . $ministerio->nombre . '</strong>?' : '¿Seguro que deseas habilitar el Ministerio <strong>' . $ministerio->nombre . '</strong>?' }}">
                                                 <i class="fas {{ $ministerio->estado ? 'fa-eye-slash' : 'fa-eye' }}"></i>
                                             </button>
+
                                         </td>
                                     </tr>
                                 @endforeach
