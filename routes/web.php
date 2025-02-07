@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MinisterioController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,16 @@ Route::get('admin/configuraciones', [App\Http\Controllers\ConfiguracionControlle
 // Route::put('/configuracion/{configuracion}', [App\Http\Controllers\ConfiguracionController::class, 'update'])->name('configuracion.update');
 // Route::delete('/configuracion/{configuracion}', [App\Http\Controllers\ConfiguracionController::class, 'destroy'])->name('configuracion.destroy');
 
+// Rutas para ministerios con CRUD completo
+Route::middleware('auth')->group(function () {
+    Route::resource('admin/ministerios', MinisterioController::class)->names([
+        'index' => 'admin.ministerios.index',
+        'create' => 'admin.ministerios.create',
+        'store' => 'admin.ministerios.store',
+        'edit' => 'admin.ministerios.edit',
+        'update' => 'admin.ministerios.update',
+        'destroy' => 'admin.ministerios.destroy',
 
-//rutas para ministerios
-Route::get('admin/ministerios', [App\Http\Controllers\MinisterioController::class, 'index'])->name('admin.ministerio.index')->middleware('auth');
+        'status' => 'admin.ministerios.status',
+    ]);
+});

@@ -44,6 +44,7 @@
                 <link rel="stylesheet" href="{{ asset('vendor/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
                 <link rel="stylesheet" href="{{ asset('vendor/adminlte/dist/css/adminlte.min.css') }}">
 
+                <link rel="stylesheet" href="{{ asset('css/mystyles.css') }}">
                 @if(config('adminlte.google_fonts.allowed', true))
                     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
                 @endif
@@ -88,6 +89,7 @@
         <meta name="msapplication-TileImage" content="{{ asset('favicon/ms-icon-144x144.png') }}">
     @endif
 
+    <script src="{{ asset('js/custom.js') }}"></script>
 </head>
 
 <body class="@yield('classes_body')" @yield('body_data')>
@@ -131,6 +133,27 @@
     {{-- Custom Scripts --}}
     @yield('adminlte_js')
 
+    <script>
+        @if(session('success'))
+            window.sweetAlertType = 'success';
+            window.sweetAlertMessage = "{{ session('success') }}";
+        @endif
+    
+        @if(session('error'))
+            window.sweetAlertType = 'error';
+            window.sweetAlertMessage = "{{ session('error') }}";
+        @endif
+    
+        @if(session('warning'))
+            window.sweetAlertType = 'warning';
+            window.sweetAlertMessage = "{{ session('warning') }}";
+        @endif
+    
+        @if(session('info'))
+            window.sweetAlertType = 'info';
+            window.sweetAlertMessage = "{{ session('info') }}";
+        @endif
+    </script>
 </body>
 
 </html>
