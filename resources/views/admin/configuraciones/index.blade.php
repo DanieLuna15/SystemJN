@@ -3,7 +3,7 @@
 {{-- Customize layout sections --}}
 
 @section('content_header')
-    <h1><b>Configuracion general del sistema</b></h1>
+    <h1><b>Configuracion</b></h1>
     <hr>
 @stop
 {{-- Content body: main page content --}}
