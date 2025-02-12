@@ -45,8 +45,7 @@ class HorarioController extends Controller
     public function create()
     {
         $pageTitle = 'Nuevo Horario';
-        $ministerios = Ministerio::active()->get();
-        // $ministerios = Ministerio::active()->where('estado', Status::INACTIVE)->get();
+        $ministerios = Ministerio::get();
         return view('admin.horarios.create', compact('ministerios', 'pageTitle'));
     }
 
