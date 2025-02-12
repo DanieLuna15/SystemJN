@@ -8,20 +8,34 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-
-class Ministerio extends Model
+class Horario extends Model
 {
-    use HasFactory,  GlobalStatus;
+    use HasFactory, GlobalStatus;
 
-    protected $fillable = ['nombre', 'logo', 'multa_incremento', 'estado'];
-
-    protected $table = 'ministerios';
-    protected $primaryKey = 'id';
+    protected $table = 'horarios';
+    protected $fillable = ['ministerio_id', 'dia_semana', 'hora_registro', 'hora_multa', 'estado'];
     public $timestamps = true;
 
-    public function horarios()
+    // Relación con Ministerio
+    public function ministerio()
     {
-        return $this->hasMany(Horario::class, 'ministerio_id', 'id');
+        return $this->belongsTo(Ministerio::class, 'ministerio_id', 'id');
+    }
+
+    // Accesor para obtener el día de la semana en texto
+    public function getDiaSemanaTextoAttribute()
+    {
+        $dias = [
+            1 => 'Lunes',
+            2 => 'Martes',
+            3 => 'Miércoles',
+            4 => 'Jueves',
+            5 => 'Viernes',
+            6 => 'Sábado',
+            7 => 'Domingo',
+        ];
+
+        return $dias[$this->dia_semana] ?? 'Desconocido';
     }
 
     public function statusBadge(): Attribute
