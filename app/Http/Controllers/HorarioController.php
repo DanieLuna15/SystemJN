@@ -105,9 +105,6 @@ class HorarioController extends Controller
         }
     }
     
-
-
-
     /**
      * Display the specified resource.
      */
