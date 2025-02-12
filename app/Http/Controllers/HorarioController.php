@@ -119,9 +119,11 @@ class HorarioController extends Controller
      */
     public function edit(Horario $horario)
     {
+        $pageTitle = 'Edición de Horario';
         $ministerios = Ministerio::active()->get();
-        return view('admin.horarios.edit', compact('horario', 'ministerios'));
+        return view('admin.horarios.edit', compact('horario', 'ministerios','pageTitle'));
     }
+
 
     public function status($id)
     {
