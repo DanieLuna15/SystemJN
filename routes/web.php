@@ -3,15 +3,14 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MinisterioController;
+use App\Http\Controllers\HorarioController;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
+| Aquí registramos las rutas web del sistema.
 |
 */
 
@@ -21,36 +20,32 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route :: get ('/new', function(){
-    return 'new page';
-});
-
+// Página de inicio después de autenticación
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-//rutas para configuraciones
-Route::get('admin/configuraciones', [App\Http\Controllers\ConfiguracionController::class, 'index'])->name('admin.configuracion.index')->middleware('auth');
-
-// Route::get('/configuracion/create', [App\Http\Controllers\ConfiguracionController::class, 'create'])->name('configuracion.create');
-// Route::post('/configuracion', [App\Http\Controllers\ConfiguracionController::class, 'store'])->name('configuracion.store');
-// Route::get('/configuracion/{configuracion}', [App\Http\Controllers\ConfiguracionController::class, 'show'])->name('configuracion.show');
-// Route::get('/configuracion/{configuracion}/edit', [App\Http\Controllers\ConfiguracionController::class, 'edit'])->name('configuracion.edit');
-// Route::put('/configuracion/{configuracion}', [App\Http\Controllers\ConfiguracionController::class, 'update'])->name('configuracion.update');
-// Route::delete('/configuracion/{configuracion}', [App\Http\Controllers\ConfiguracionController::class, 'destroy'])->name('configuracion.destroy');
-
-
-
-// Rutas para ministerios con CRUD completo
+// Rutas protegidas por autenticación
 Route::middleware('auth')->group(function () {
 
-    Route::get('admin/ministerios/active', [MinisterioController::class, 'active'])->name('admin.ministerios.active');
-    Route::get('admin/ministerios/inactive', [MinisterioController::class, 'inactive'])->name('admin.ministerios.inactive');
-    Route::resource('admin/ministerios', MinisterioController::class)->except(['store', 'update'])->names([
-        'index' => 'admin.ministerios.index',
-        'create' => 'admin.ministerios.create',
-        'edit' => 'admin.ministerios.edit',
-        'destroy' => 'admin.ministerios.destroy',
-    ]);
+    // 📌 **Grupo de rutas para Configuraciones**
+    Route::prefix('admin/configuraciones')->name('admin.configuracion.')->controller(App\Http\Controllers\ConfiguracionController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+    });
 
-    Route::post('admin/ministerios/save/{id?}', [MinisterioController::class, 'store'])->name('admin.ministerios.save');
-    Route::patch('admin/ministerios/status/{id}', [MinisterioController::class, 'status'])->name('admin.ministerios.status');
+    // 📌 **Grupo de rutas para Ministerios**
+    Route::prefix('admin/ministerios')->name('admin.ministerios.')->controller(MinisterioController::class)->group(function () {
+        Route::get('/active', 'active')->name('active');
+        Route::get('/inactive', 'inactive')->name('inactive');
+        Route::post('/save/{id?}', 'store')->name('save');
+        Route::patch('/status/{id}', 'status')->name('status');
+        Route::resource('/', MinisterioController::class)->except(['store', 'update'])->parameters(['' => 'ministerio']);
+    });
+
+    // 📌 **Grupo de rutas para Horarios**
+    Route::prefix('admin/horarios')->name('admin.horarios.')->controller(HorarioController::class)->group(function () {
+        Route::get('/active', 'active')->name('active');
+        Route::get('/inactive', 'inactive')->name('inactive');
+        Route::post('/save/{id?}', 'store')->name('save');
+        Route::patch('/status/{id}', 'status')->name('status');
+        Route::resource('/', HorarioController::class)->except(['store', 'update'])->parameters(['' => 'horario']);
+    });
 });
