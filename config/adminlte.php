@@ -404,7 +404,6 @@ return [
         ],
 
 
-
         [
             'text' => 'Configuración',
             'url' => 'admin/configuraciones',
@@ -415,25 +414,48 @@ return [
 
         [
             'text' => 'Ministerios',
-            'icon' => 'fas fa-users', 
+            'icon' => 'fas fa-users',
             'submenu' => [
                 [
                     'text' => 'Todos los ministerios',
                     'url' => 'admin/ministerios',
-                    'icon' => 'fas fa-list', 
+                    'icon' => 'fas fa-list',
                 ],
                 [
                     'text' => 'Ministerios Activos',
                     'url' => 'admin/ministerios/active',
-                    'icon' => 'fas fa-check-circle', 
+                    'icon' => 'fas fa-check-circle',
                 ],
                 [
                     'text' => 'Ministerios Inactivos',
                     'url' => 'admin/ministerios/inactive',
-                    'icon' => 'fas fa-times-circle', 
+                    'icon' => 'fas fa-times-circle',
                 ],
             ]
         ],
+
+        [
+            'text' => 'Horarios',
+            'icon' => 'fas fa-clock',
+            'submenu' => [
+                [
+                    'text' => 'Todos los horarios',
+                    'url' => 'admin/horarios',
+                    'icon' => 'fas fa-list', 
+                ],
+                [
+                    'text' => 'Horarios Activos',
+                    'url' => 'admin/horarios/active',
+                    'icon' => 'fas fa-check-circle', 
+                ],
+                [
+                    'text' => 'Horarios Inactivos',
+                    'url' => 'admin/horarios/inactive',
+                    'icon' => 'fas fa-times-circle',
+                ],
+            ]
+        ],
+
 
         [
             'text' => 'Roles',

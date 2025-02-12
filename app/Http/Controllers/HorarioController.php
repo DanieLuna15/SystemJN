@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Constants\Status;
 use App\Models\Horario;
+use App\Constants\Status;
 use App\Models\Ministerio;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class HorarioController extends Controller
 {
@@ -50,33 +51,62 @@ class HorarioController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request, $id = null)
     {
+    
+        // 📌 Log para ver los datos originales recibidos
+        Log::debug('🔹 Datos recibidos en la solicitud:', $request->all());
+
+        // 📌 Asegurar que el formato sea correcto antes de validar
+        $request->merge([
+            'hora_registro' => !empty($request->hora_registro) ? date('H:i', strtotime($request->hora_registro)) : null,
+            'hora_multa' => !empty($request->hora_multa) ? date('H:i', strtotime($request->hora_multa)) : null
+        ]);
+    
+        // 📌 Log después del formateo
+        Log::debug('🔹 Datos después del formateo:', [
+            'hora_registro' => $request->hora_registro,
+            'hora_multa' => $request->hora_multa
+        ]);
+    
+        // 📌 Validación asegurando que los valores sean correctos
         $request->validate([
             'ministerio_id' => 'required|exists:ministerios,id',
             'dia_semana' => 'required|integer|min:1|max:7',
-            'hora_inicio' => 'required|date_format:H:i',
-            'hora_multas' => 'required|date_format:H:i|after:hora_inicio',
-            'estado' => 'required|boolean',
+            'hora_registro' => ['required', 'date_format:H:i'],
+            'hora_multa' => 'required|date_format:H:i|after:hora_registro',
         ]);
-
+    
+        Log::debug('✅ Validación pasada con éxito.');
+    
         try {
             $data = $request->except(['_token']);
-
+    
             if ($id) {
                 $horario = Horario::findOrFail($id);
+                Log::debug("🔄 Actualizando horario con ID: $id", $data);
                 $horario->update($data);
                 $message = 'Horario actualizado correctamente.';
             } else {
+                Log::debug('🆕 Creando nuevo horario', $data);
                 Horario::create($data);
                 $message = 'Horario creado correctamente.';
             }
-
+    
             return redirect()->route('admin.horarios.index')->with('success', $message);
         } catch (\Exception $e) {
+            // 📌 Log para capturar errores y la traza completa
+            Log::error('❌ Error en store(): ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+    
             return redirect()->route('admin.horarios.index')->with('error', 'Hubo un error en la operación.');
         }
     }
+    
+
+
 
     /**
      * Display the specified resource.

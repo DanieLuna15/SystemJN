@@ -16,6 +16,11 @@ class Horario extends Model
     protected $fillable = ['ministerio_id', 'dia_semana', 'hora_registro', 'hora_multa', 'estado'];
     public $timestamps = true;
 
+    protected $casts = [
+        'hora_registro' => 'string',
+        'hora_multa' => 'string',
+    ];
+
     // Relación con Ministerio
     public function ministerio()
     {
