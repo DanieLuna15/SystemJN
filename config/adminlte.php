@@ -415,6 +415,7 @@ return [
         [
             'text' => 'Ministerios',
             'icon' => 'fas fa-users',
+            'active' => ['admin/ministerios*'], // Activa todo lo que comience con "admin/ministerios"
             'submenu' => [
                 [
                     'text' => 'Todos los ministerios',
@@ -431,22 +432,25 @@ return [
                     'url' => 'admin/ministerios/inactive',
                     'icon' => 'fas fa-times-circle',
                 ],
-            ]
+            ],
         ],
+
+
 
         [
             'text' => 'Horarios',
             'icon' => 'fas fa-clock',
+            'active' => ['admin/horarios*'],
             'submenu' => [
                 [
                     'text' => 'Todos los horarios',
                     'url' => 'admin/horarios',
-                    'icon' => 'fas fa-list', 
+                    'icon' => 'fas fa-list',
                 ],
                 [
                     'text' => 'Horarios Activos',
                     'url' => 'admin/horarios/active',
-                    'icon' => 'fas fa-check-circle', 
+                    'icon' => 'fas fa-check-circle',
                 ],
                 [
                     'text' => 'Horarios Inactivos',
