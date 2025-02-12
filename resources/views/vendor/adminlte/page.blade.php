@@ -16,25 +16,45 @@
     <div class="wrapper">
 
         {{-- Preloader Animation (fullscreen mode) --}}
-        @if($preloaderHelper->isPreloaderEnabled())
+        @if ($preloaderHelper->isPreloaderEnabled())
             @include('adminlte::partials.common.preloader')
         @endif
 
         {{-- Top Navbar --}}
-        @if($layoutHelper->isLayoutTopnavEnabled())
+        @if ($layoutHelper->isLayoutTopnavEnabled())
             @include('adminlte::partials.navbar.navbar-layout-topnav')
         @else
             @include('adminlte::partials.navbar.navbar')
         @endif
 
         {{-- Left Main Sidebar --}}
-        @if(!$layoutHelper->isLayoutTopnavEnabled())
+        @if (!$layoutHelper->isLayoutTopnavEnabled())
             @include('adminlte::partials.sidebar.left-sidebar')
         @endif
 
         {{-- Content Wrapper --}}
         @empty($iFrameEnabled)
-            @include('adminlte::partials.cwrapper.cwrapper-default')
+            <div class="content-wrapper">
+
+                {{-- Header dinámico para todas las vistas --}}
+                @section('content_header')
+                    <div class="content-header">
+                        <div class="container-fluid">
+                            <div class="row mb-2">
+                                <div class="col-sm-6">
+                                    <h1 class="m-0">{{ $pageTitle ?? 'Dashboard' }}</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @show
+
+                {{-- Contenido de la vista --}}
+                <div class="content">
+                    @yield('content')
+                </div>
+
+            </div>
         @else
             @include('adminlte::partials.cwrapper.cwrapper-iframe')
         @endempty
@@ -45,7 +65,7 @@
         @endif
 
         {{-- Right Control Sidebar --}}
-        @if($layoutHelper->isRightSidebarEnabled())
+        @if ($layoutHelper->isRightSidebarEnabled())
             @include('adminlte::partials.sidebar.right-sidebar')
         @endif
 

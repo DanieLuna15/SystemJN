@@ -1,10 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Horarios')
-
-@section('content_header')
-    <h1><b>Gestión de Horarios</b></h1>
-@stop
+@section('title', $pageTitle)
 
 {{-- Contenido --}}
 @section('content')

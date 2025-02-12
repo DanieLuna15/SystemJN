@@ -38,12 +38,14 @@ class MinisterioController extends Controller
 
     public function create()
     {
-        return view('admin.ministerios.create');
+        $pageTitle = 'Nuevo Ministerio';
+        return view('admin.ministerios.create', compact('pageTitle'));
     }
 
     public function edit(Ministerio $ministerio)
     {
-        return view('admin.ministerios.edit', compact('ministerio'));
+        $pageTitle = 'Edición de Ministerio: '. $ministerio->nombre;
+        return view('admin.ministerios.edit', compact('ministerio', 'pageTitle'));
     }
 
 

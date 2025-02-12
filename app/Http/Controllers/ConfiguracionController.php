@@ -12,7 +12,7 @@ class ConfiguracionController extends Controller
      */
     public function index()
     {
-        $pageTitle = 'Toda la Configuración';
+        $pageTitle = 'Toda la Configuración del sistema';
         return view('admin.configuraciones.index', compact('pageTitle'));
     }
 

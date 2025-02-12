@@ -1,10 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Ministerios')
-
-@section('content_header')
-    <h1><b>Gestión de Ministerios</b></h1>
-@stop
+@section('title', $pageTitle)
 
 {{-- Push extra CSS --}}
 
