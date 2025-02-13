@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('errores')->nullable(); // Para almacenar errores en la importación
             $table->timestamps();
     
-            $table->foreign('usuario_id')->references('id')->on('users')->onDelete('cascade');
+            // $table->foreign('usuario_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

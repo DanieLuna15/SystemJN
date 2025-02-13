@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('multa', 8, 2)->default(0);
             $table->timestamps();
     
-            $table->foreign('miembro_id')->references('id')->on('miembros')->onDelete('cascade');
+            // $table->foreign('miembro_id')->references('id')->on('miembros')->onDelete('cascade');
         });
     }
 
