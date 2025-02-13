@@ -1,49 +1,45 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     if (window.sweetAlertMessage) {
-        let bgColor = "#fff";
-        let textColor = "#fff";
-        let iconHtml = "";
+        let bgColor = '#333';  // Color de fondo por defecto para el toast
+        let textColor = '#fff'; // Texto blanco por defecto
+        let iconColor = '#fff'; // Icono blanco por defecto
 
+        // Lógica para asignar colores según el tipo de mensaje
         switch (window.sweetAlertType) {
             case "success":
-                bgColor = "#28a745"; 
-                textColor = "#FFFFFF";
-                iconHtml = '<i class="fas fa-check-circle"></i>';
+                bgColor = "#28a745";  // Verde para éxito
+                iconColor = "#fff";   // Icono blanco
                 break;
             case "error":
-                bgColor = "#dc3545"; 
-                textColor = "#FFFFFF";
-                iconHtml = '<i class="fas fa-times-circle"></i>';
+                bgColor = "#dc3545";  // Rojo para error
+                iconColor = "#fff";   // Icono blanco
                 break;
             case "warning":
-                bgColor = "#ffc107"; 
-                textColor = "#FFFFFF";
-                iconHtml = '<i class="fas fa-exclamation-triangle"></i>';
+                bgColor = "#ffc107";  // Amarillo para advertencias
+                iconColor = "#000";   // Icono negro
                 break;
             case "info":
-                bgColor = "#17a2b8";
-                textColor = "#FFFFFF";
-                iconHtml = '<i class="fas fa-info-circle"></i>';
+                bgColor = "#17a2b8";  // Azul para información
+                iconColor = "#fff";   // Icono blanco
                 break;
+            default:
+                bgColor = '#333';     // Fondo oscuro predeterminado
+                iconColor = '#fff';   // Icono blanco por defecto
         }
 
+        // Mostrar el toast con los colores correspondientes y el tiempo de 3 segundos
         Swal.fire({
             toast: true,
             position: 'top-end',
             icon: window.sweetAlertType,
-            html: `<span style="display: flex; align-items: center;">
-                        ${iconHtml}
-                        <span style="margin-left: 8px;"><strong>${window.sweetAlertMessage}</strong></span>
-                   </span>`,
+            title: window.sweetAlertMessage,
             showConfirmButton: false,
-            timer: 3000,
+            timer: 3000,             // Mantener el toast durante 3 segundos
             timerProgressBar: true,
-            background: bgColor,
-            color: textColor,
-            iconColor: textColor,
-            customClass: {
-                popup: 'swal2-toast-custom'
-            }
+            background: bgColor,    // Fondo dinámico según tipo
+            color: textColor,        // Texto blanco
+            iconColor: iconColor,    // Icono con color dinámico
+            stopOnHover: true,      // Evitar que el toast se cierre al hacer hover
         });
     }
 });
