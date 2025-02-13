@@ -26,6 +26,7 @@
                                     <th style="text-align: center">Día de la Semana</th>
                                     <th style="text-align: center">Hora de Inicio</th>
                                     <th style="text-align: center">Hora Multa</th>
+                                    <th style="text-align: center">Tipo</th>
                                     <th style="text-align: center">Estado</th>
                                     <th style="text-align: center">Acciones</th>
                                 </tr>
@@ -37,6 +38,13 @@
                                         <td class="text-center">{{ $horario->dia_semana_texto }}</td>
                                         <td class="text-center">{{ $horario->hora_registro }}</td>
                                         <td class="text-center">{{ $horario->hora_multa }}</td>
+                                        <td class="text-center">
+                                            @if ($horario->tipo == 1)
+                                                <span class="badge badge-info">Fijo</span>
+                                            @else
+                                                <span class="badge badge-danger">Eventual</span>
+                                            @endif
+                                        </td>
 
                                         <td class="text-center align-middle">
                                             <div class="d-flex justify-content-center">

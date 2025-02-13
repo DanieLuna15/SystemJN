@@ -77,6 +77,7 @@ class HorarioController extends Controller
             'dia_semana' => 'required|integer|min:1|max:7',
             'hora_registro' => ['required', 'date_format:H:i'],
             'hora_multa' => 'required|date_format:H:i|after:hora_registro',
+            'tipo' => 'required|integer|min:0|max:1',
         ]);
 
         Log::debug('✅ Validación pasada con éxito.');

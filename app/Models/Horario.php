@@ -13,7 +13,7 @@ class Horario extends Model
     use HasFactory, GlobalStatus;
 
     protected $table = 'horarios';
-    protected $fillable = ['ministerio_id', 'dia_semana', 'hora_registro', 'hora_multa', 'estado'];
+    protected $fillable = ['ministerio_id', 'dia_semana', 'hora_registro', 'hora_multa', 'estado', 'tipo'];
     public $timestamps = true;
 
     protected $casts = [

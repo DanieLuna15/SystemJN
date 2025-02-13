@@ -3,6 +3,19 @@
         <form action="{{ route('admin.horarios.save', $horario->id ?? null) }}" method="POST">
             @csrf
             <input type="hidden" name="id" value="{{ $horario->id ?? '' }}">
+            
+            <div class="form-group">
+                <label>Tipo:</label>
+                <x-adminlte-select2 name="tipo" class="form-control">
+                    <option value="" selected disabled>Seleccione el tipo de horario</option>
+                    @foreach ([1 => 'Fijo', 0 => 'Eventual'] as $key => $type)
+                        <option value="{{ $key }}"
+                            {{ old('tipo', $horario->tipo ?? '') == $key ? 'selected' : '' }}>
+                            {{ $type }}
+                        </option>
+                    @endforeach
+                </x-adminlte-select2>
+            </div>
 
             <div class="form-group">
                 <label>Ministerio:</label>
@@ -39,13 +52,8 @@
                
             </div>
 
-            <div class="form-group">
-                <label>Hora de Multa:</label>
-                <x-adminlte-input type="time" name="hora_multa" class="form-control"
-                    value="{{ old('hora_multa', $horario->hora_multa ?? '') }}">
-                </x-adminlte-input>
-                
-            </div>
+            <!-- Campo Hora Multa -->
+            <x-adminlte-input type="time" name="hora_multa" label="Hora de Multa:" value="{{ old('hora_multa', $horario->hora_multa ?? '') }}" />
 
 
             <button type="submit" class="btn btn-success">
