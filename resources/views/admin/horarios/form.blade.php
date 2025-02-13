@@ -22,7 +22,7 @@
 
             <div class="form-group">
                 <label>Día de la Semana:</label>
-                <select name="dia_semana" class="form-control">
+                <x-adminlte-select2 name="dia_semana" class="form-control">
                     <option value="" selected disabled>Seleccione un día</option>
                     @foreach ([1 => 'Lunes', 2 => 'Martes', 3 => 'Miércoles', 4 => 'Jueves', 5 => 'Viernes', 6 => 'Sábado', 7 => 'Domingo'] as $key => $day)
                         <option value="{{ $key }}"
@@ -30,10 +30,7 @@
                             {{ $day }}
                         </option>
                     @endforeach
-                </select>
-                @error('dia_semana')
-                    <span class="text-danger">{{ $message }}</span>
-                @enderror
+                </x-adminlte-select2>
             </div>
 
             <div class="form-group">
