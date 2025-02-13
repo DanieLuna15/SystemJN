@@ -38,20 +38,20 @@
                                         <td class="text-center">{{ $horario->dia_semana_texto }}</td>
                                         <td class="text-center">{{ $horario->hora_registro }}</td>
                                         <td class="text-center">{{ $horario->hora_multa }}</td>
-                                        <td class="text-center">
+                                        <td class="text-center align-middle">
                                             @if ($horario->tipo == 1)
-                                                <x-adminlte-button label="Fijo" theme="btn-xs bg-gradient-primary w-100 h-100"
-                                                    icon="fas fa-lock" />
+                                                <small class="badge bg-gradient-primary w-100 h-100"><i
+                                                        class="fas fa-lock"></i> Fijo</small>
                                             @else
-                                                <x-adminlte-button label="Eventual" theme="btn-xs bg-gradient-info w-100 h-100"
-                                                    icon="fas fa-clock" />
+                                                <small class="badge bg-gradient-info w-100 h-100"><i
+                                                        class="far fa-clock"></i> Eventual</small>
                                             @endif
                                         </td>
 
+                                
+
                                         <td class="text-center align-middle">
-                                            <div class="d-flex justify-content-center">
-                                                {!! $horario->statusBadge !!}
-                                            </div>
+                                            {!! $horario->statusBadge !!}
                                         </td>
 
                                         <td class="text-center">
