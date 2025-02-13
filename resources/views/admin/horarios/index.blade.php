@@ -40,9 +40,11 @@
                                         <td class="text-center">{{ $horario->hora_multa }}</td>
                                         <td class="text-center">
                                             @if ($horario->tipo == 1)
-                                                <span class="badge badge-info">Fijo</span>
+                                                <x-adminlte-button label="Fijo" theme="btn-xs bg-gradient-primary w-100 h-100"
+                                                    icon="fas fa-lock" />
                                             @else
-                                                <span class="badge badge-danger">Eventual</span>
+                                                <x-adminlte-button label="Eventual" theme="btn-xs bg-gradient-info w-100 h-100"
+                                                    icon="fas fa-clock" />
                                             @endif
                                         </td>
 
