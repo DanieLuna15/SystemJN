@@ -6,7 +6,7 @@
 
             <div class="form-group">
                 <label>Ministerio:</label>
-                <select name="ministerio_id" class="form-control">
+                <x-adminlte-select2 name="ministerio_id" class="form-control">
                     <option value="" selected disabled>Seleccione un ministerio</option>
                     @foreach ($ministerios as $ministerio)
                         <option value="{{ $ministerio->id }}"
@@ -14,10 +14,8 @@
                             {{ $ministerio->nombre }}
                         </option>
                     @endforeach
-                </select>
-                @error('ministerio_id')
-                    <span class="text-danger">{{ $message }}</span>
-                @enderror
+                </x-adminlte-select2>
+                
             </div>
 
             <div class="form-group">
@@ -35,20 +33,18 @@
 
             <div class="form-group">
                 <label>Hora de Registro:</label>
-                <input type="time" name="hora_registro" class="form-control"
+                <x-adminlte-input type="time" name="hora_registro" class="form-control"
                     value="{{ old('hora_registro', $horario->hora_registro ?? '') }}">
-                @error('hora_registro')
-                    <span class="text-danger">{{ $message }}</span>
-                @enderror
+                </x-adminlte-input>
+               
             </div>
 
             <div class="form-group">
                 <label>Hora de Multa:</label>
-                <input type="time" name="hora_multa" class="form-control"
+                <x-adminlte-input type="time" name="hora_multa" class="form-control"
                     value="{{ old('hora_multa', $horario->hora_multa ?? '') }}">
-                @error('hora_multa')
-                    <span class="text-danger">{{ $message }}</span>
-                @enderror
+                </x-adminlte-input>
+                
             </div>
 
 

@@ -22,17 +22,17 @@
                                 style="background-size: contain !important; background-position: center !important; 
                                                background-image: url({{ isset($ministerio->logo) ? asset($ministerio->logo) : '' }}); 
                                                border-radius: 8px; width: 100%; height: 200px; position: relative; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                                <button type="button" class="remove-image" id="removeImage"
+                                <x-adminlte-button type="button" class="remove-image" id="removeImage"
                                     style="display: {{ isset($ministerio->logo) ? 'block' : 'none' }}; 
                                             position: absolute; top: 10px; right: 10px; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; 
                                             border-radius: 50%; padding: 5px 10px;">
                                     <i class="fa fa-times"></i>
-                                </button>
+                                </x-adminlte-button>
                             </div>
                         </div>
                         <div class="avatar-edit mt-2">
-                            <input type="file" class="profilePicUpload" name="logo" id="profilePicUpload1"
-                                accept=".png, .jpg, .jpeg" onchange="previewImage(event)" style="display: none;">
+                            <x-adminlte-input type="file" class="profilePicUpload" name="logo" id="profilePicUpload1"
+                                accept=".png, .jpg, .jpeg" onchange="previewImage(event)" style="display: none;"/>
                             <label for="profilePicUpload1" class="btn btn-success btn-block btn-lg"
                                 style="border-radius: 8px; font-size: 16px; padding: 12px 20px;">
                                 @lang('Subir Imagen')
