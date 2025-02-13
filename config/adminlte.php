@@ -411,31 +411,37 @@ return [
             'icon' => 'fas fa-cogs',
         ],
 
-
         [
             'text' => 'Ministerios',
             'icon' => 'fas fa-users',
-            'active' => ['admin/ministerios*'], // Activa todo lo que comience con "admin/ministerios"
+            'active' => ['admin/ministerios*'],
             'submenu' => [
                 [
                     'text' => 'Todos los ministerios',
                     'url' => 'admin/ministerios',
                     'icon' => 'fas fa-list',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
                 ],
                 [
                     'text' => 'Ministerios Activos',
                     'url' => 'admin/ministerios/active',
                     'icon' => 'fas fa-check-circle',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
                 ],
                 [
                     'text' => 'Ministerios Inactivos',
                     'url' => 'admin/ministerios/inactive',
                     'icon' => 'fas fa-times-circle',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
+                ],
+                [
+                    'text' => 'Crear Nuevo Ministerio',
+                    'url' => 'admin/ministerios/create',
+                    'icon' => 'fas fa-plus-circle',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
                 ],
             ],
         ],
-
-
 
         [
             'text' => 'Horarios',
@@ -446,20 +452,28 @@ return [
                     'text' => 'Todos los horarios',
                     'url' => 'admin/horarios',
                     'icon' => 'fas fa-list',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
                 ],
                 [
                     'text' => 'Horarios Activos',
                     'url' => 'admin/horarios/active',
                     'icon' => 'fas fa-check-circle',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
                 ],
                 [
                     'text' => 'Horarios Inactivos',
                     'url' => 'admin/horarios/inactive',
                     'icon' => 'fas fa-times-circle',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
                 ],
-            ]
+                [
+                    'text' => 'Crear Nuevo Horario',
+                    'url' => 'admin/horarios/create',
+                    'icon' => 'fas fa-plus-circle',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
+                ],
+            ],
         ],
-
 
         [
             'text' => 'Roles',
