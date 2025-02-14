@@ -18,8 +18,8 @@ trait GlobalStatus
 
         $nombreModelo = class_basename($modelName);
         $mensaje = $query->$column == Status::ENABLE
-            ? "El {$nombreModelo} {$query->nombre} ha sido habilitado correctamente."
-            : "El {$nombreModelo} {$query->nombre} ha sido inhabilitado correctamente.";
+            ? "El/La {$nombreModelo} {$query->nombre} ha sido habilitado correctamente."
+            : "El/La {$nombreModelo} {$query->nombre} ha sido inhabilitado correctamente.";
 
         return redirect()->back()->with('success', $mensaje);
     }

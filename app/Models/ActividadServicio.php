@@ -8,20 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-
-class Ministerio extends Model
+class ActividadServicio extends Model
 {
-    use HasFactory,  GlobalStatus;
+    use HasFactory, GlobalStatus;
 
-    protected $fillable = ['nombre', 'logo', 'multa_incremento', 'estado'];
-    protected $table = 'ministerios';
+    protected $fillable = ['nombre', 'imagen', 'estado'];
+    protected $table = 'actividad_servicios';
     protected $primaryKey = 'id';
     public $timestamps = true;
-
-    public function horarios()
-    {
-        return $this->hasMany(Horario::class, 'ministerio_id', 'id');
-    }
 
     public function statusBadge(): Attribute
     {

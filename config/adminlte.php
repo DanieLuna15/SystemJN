@@ -419,7 +419,7 @@ return [
                 [
                     'text' => 'Todos los ministerios',
                     'url' => 'admin/ministerios',
-                    'icon' => 'fas fa-list',
+                    'icon' => 'fas fa-list-ul',
                     'classes' => 'btn btn-outline-success btn-sm text-left',
                 ],
                 [
@@ -431,17 +431,50 @@ return [
                 [
                     'text' => 'Ministerios Inactivos',
                     'url' => 'admin/ministerios/inactive',
-                    'icon' => 'fas fa-times-circle',
+                    'icon' => 'fas fa-ban',
                     'classes' => 'btn btn-outline-success btn-sm text-left',
                 ],
                 [
                     'text' => 'Crear Nuevo Ministerio',
                     'url' => 'admin/ministerios/create',
-                    'icon' => 'fas fa-plus-circle',
+                    'icon' => 'fas fa-plus-square',
                     'classes' => 'btn btn-outline-success btn-sm text-left',
                 ],
             ],
         ],
+
+        [
+            'text' => 'Act. y Servicios',
+            'icon' => 'fas fa-calendar',
+            'active' => ['admin/actividad_servicios*'],
+            'submenu' => [
+                [
+                    'text' => 'Todas las Act. y Servicios',
+                    'url' => 'admin/actividad_servicios',
+                    'icon' => 'fas fa-list-ul',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
+                ],
+                [
+                    'text' => 'Act. y Servicios Activos',
+                    'url' => 'admin/actividad_servicios/active',
+                    'icon' => 'fas fa-check-circle',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
+                ],
+                [
+                    'text' => 'Act. y Servicios Inactivos',
+                    'url' => 'admin/actividad_servicios/inactive',
+                    'icon' => 'fas fa-ban',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
+                ],
+                [
+                    'text' => 'Crear Nueva Act. o Servicio',
+                    'url' => 'admin/actividad_servicios/create',
+                    'icon' => 'fas fa-plus-square',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
+                ],
+            ],
+        ],
+
 
         [
             'text' => 'Horarios',
@@ -451,7 +484,7 @@ return [
                 [
                     'text' => 'Todos los horarios',
                     'url' => 'admin/horarios',
-                    'icon' => 'fas fa-list',
+                    'icon' => 'fas fa-list-ul',
                     'classes' => 'btn btn-outline-success btn-sm text-left',
                 ],
                 [
@@ -463,13 +496,13 @@ return [
                 [
                     'text' => 'Horarios Inactivos',
                     'url' => 'admin/horarios/inactive',
-                    'icon' => 'fas fa-times-circle',
+                    'icon' => 'fas fa-ban',
                     'classes' => 'btn btn-outline-success btn-sm text-left',
                 ],
                 [
                     'text' => 'Crear Nuevo Horario',
                     'url' => 'admin/horarios/create',
-                    'icon' => 'fas fa-plus-circle',
+                    'icon' => 'fas fa-plus-square',
                     'classes' => 'btn btn-outline-success btn-sm text-left',
                 ],
             ],

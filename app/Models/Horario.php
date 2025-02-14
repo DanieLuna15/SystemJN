@@ -14,6 +14,7 @@ class Horario extends Model
 
     protected $table = 'horarios';
     protected $fillable = ['ministerio_id', 'dia_semana', 'hora_registro', 'hora_multa', 'estado', 'tipo'];
+    protected $primaryKey = 'id';
     public $timestamps = true;
 
     protected $casts = [

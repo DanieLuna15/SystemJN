@@ -47,19 +47,14 @@
                                                         class="far fa-clock"></i> Eventual</small>
                                             @endif
                                         </td>
-
-                                
-
                                         <td class="text-center align-middle">
                                             {!! $horario->statusBadge !!}
                                         </td>
-
                                         <td class="text-center">
                                             <a href="{{ route('admin.horarios.edit', $horario) }}"
                                                 class="btn btn-warning btn-sm" title="Editar">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-
                                             <button type="button"
                                                 class="btn btn-sm {{ $horario->estado ? 'btn-danger' : 'btn-success' }} confirmationBtn"
                                                 data-action="{{ route('admin.horarios.status', $horario->id) }}"
@@ -71,14 +66,13 @@
                                 @endforeach
                             </tbody>
                         </table>
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
 @stop
-
+{{-- Push extra styles --}}
 @push('css')
 @endpush
 

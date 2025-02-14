@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActividadServicioController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MinisterioController;
@@ -38,6 +39,15 @@ Route::middleware('auth')->group(function () {
         Route::post('/save/{id?}', 'store')->name('save');
         Route::patch('/status/{id}', 'status')->name('status');
         Route::resource('/', MinisterioController::class)->except(['store', 'update'])->parameters(['' => 'ministerio']);
+    });
+
+    // 📌 **Grupo de rutas para Actividades y servicios**
+    Route::prefix('admin/actividad_servicios')->name('admin.actividad_servicios.')->controller(ActividadServicioController::class)->group(function () {
+        Route::get('/active', 'active')->name('active');
+        Route::get('/inactive', 'inactive')->name('inactive');
+        Route::post('/save/{id?}', 'store')->name('save');
+        Route::patch('/status/{id}', 'status')->name('status');
+        Route::resource('/', ActividadServicioController::class)->except(['store', 'update'])->parameters(['' => 'actividad_servicio']);
     });
 
     // 📌 **Grupo de rutas para Horarios**
