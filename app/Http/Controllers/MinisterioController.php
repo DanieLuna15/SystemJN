@@ -51,6 +51,7 @@ class MinisterioController extends Controller
 
     public function store(Request $request, $id = null)
     {
+        //dd($request->all());
         $request->validate([
             'nombre' => 'required|string|max:255',
             'multa_incremento' => 'required|numeric|min:0',

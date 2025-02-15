@@ -29,6 +29,7 @@
                                     <th style="text-align: center">Nombre</th>
                                     <th style="text-align: center">Monto multa (Bs)</th>
                                     <th style="text-align: center">Estado</th>
+                                    <th style="text-align: center">Tipo</th>
                                     <th style="text-align: center">Acciones</th>
                                 </tr>
                             </thead>
@@ -45,12 +46,21 @@
                                         <td>{{ $ministerio->nombre }}</td>
                                         <td class="text-center">{{ $ministerio->multa_incremento }} Bs.</td>
 
-
                                         <td class="text-center align-middle">
                                             <div class="d-flex justify-content-center">
                                                 {!! $ministerio->statusBadge !!}
                                             </div>
                                         </td>
+                                        <td class="text-center align-middle">
+                                            @if ($ministerio->tipo == 1)
+                                                <small class="badge bg-gradient-primary w-100 h-100"><i
+                                                        class="fas fa-solid fa-crown"></i> Alto</small>
+                                            @else
+                                                <small class="badge bg-gradient-info w-100 h-100"><i
+                                                        class="fas fa-start"></i> Estandar</small>
+                                            @endif
+                                        </td>
+
                                         <td class="text-center">
                                             <a href="{{ route('admin.ministerios.edit', $ministerio) }}"
                                                 class="btn btn-warning btn-sm" title="Editar">

@@ -13,7 +13,7 @@ class Ministerio extends Model
 {
     use HasFactory,  GlobalStatus;
 
-    protected $fillable = ['nombre', 'logo', 'multa_incremento', 'estado'];
+    protected $fillable = ['nombre', 'logo', 'multa_incremento', 'tipo','estado'];
     protected $table = 'ministerios';
     protected $primaryKey = 'id';
     public $timestamps = true;

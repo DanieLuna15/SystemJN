@@ -8,23 +8,35 @@
             enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="id" value="{{ $ministerio->id ?? '' }}">
-
+            <div class="form-group">
+                <label>Tipo de Ministerio:</label>
+                <x-adminlte-select2 name="tipo" class="form-control">
+                    <option value="" selected disabled>Seleccione Tipo</option>
+                    @foreach ([1 => 'Alto', 0 => 'Estandar'] as $key => $type)
+                        <option value="{{ $key }}"
+                            {{ old('tipo', $ministerio->tipo?? '') == $key ? 'selected' : '' }}>
+                            {{ $type }}
+                        </option>
+                    @endforeach
+                </x-adminlte-select2>
+            </div>
             <!-- Campo Nombre -->
             <x-adminlte-input name="nombre" label="Nombre:" value="{{ old('nombre', $ministerio->nombre ?? '') }}" />
-                
+
             <!-- Campo Imagen -->
+
             <div class="form-group">
                 <label>@lang('Imagen')</label>
                 <div class="image-upload">
                     <div class="thumb">
                         <div class="avatar-preview">
                             <div class="profilePicPreview" id="imagePreview"
-                                style="background-size: contain !important; background-position: center !important; 
-                                               background-image: url({{ isset($ministerio->logo) ? asset($ministerio->logo) : '' }}); 
+                                style="background-size: contain !important; background-position: center !important;
+                                               background-image: url({{ isset($ministerio->logo) ? asset($ministerio->logo) : '' }});
                                                border-radius: 8px; width: 100%; height: 200px; position: relative; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
                                 <x-adminlte-button type="button" class="remove-image" id="removeImage"
-                                    style="display: {{ isset($ministerio->logo) ? 'block' : 'none' }}; 
-                                            position: absolute; top: 10px; right: 10px; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; 
+                                    style="display: {{ isset($ministerio->logo) ? 'block' : 'none' }};
+                                            position: absolute; top: 10px; right: 10px; background-color: rgba(0, 0, 0, 0.5); color: white; border: none;
                                             border-radius: 50%; padding: 5px 10px;">
                                     <i class="fa fa-times"></i>
                                 </x-adminlte-button>
