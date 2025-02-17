@@ -53,7 +53,7 @@
                                                 class="btn btn-warning btn-sm" title="Editar">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <button type="button"
+                                            <button type="button" title="Cambiar estado"
                                                 class="btn btn-sm {{ $actividad_servicio->estado ? 'btn-danger' : 'btn-success' }} confirmationBtn"
                                                 data-action="{{ route('admin.actividad_servicios.status', $actividad_servicio->id) }}"
                                                 data-question="{{ $actividad_servicio->estado ? '¿Seguro que deseas inhabilitar la Actividad o Servicio <strong>' . $actividad_servicio->nombre . '</strong>?' : '¿Seguro que deseas habilitar la Actividad o Servicio <strong>' . $actividad_servicio->nombre . '</strong>?' }}">
