@@ -57,7 +57,7 @@
                                                         class="fas fa-solid fa-crown"></i> Alto</small>
                                             @else
                                                 <small class="badge bg-gradient-info w-100 h-100"><i
-                                                        class="fas fa-start"></i> Estandar</small>
+                                                        class="fas fa-star"></i> Estandar</small>
                                             @endif
                                         </td>
 
