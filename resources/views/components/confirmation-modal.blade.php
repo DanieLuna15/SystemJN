@@ -2,7 +2,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">@lang('Confirmación')</h5>
+                <h5 class="modal-title">Confirmación</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <i class="las la-times"></i>
                 </button>
@@ -15,9 +15,9 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        @lang('No')
+                        No
                     </button>
-                    <button type="submit" class="btn btn-primary">@lang('Sí, confirmar')</button>
+                    <button type="submit" class="btn btn-primary">Sí, confirmar'</button>
                 </div>
             </form>
         </div>

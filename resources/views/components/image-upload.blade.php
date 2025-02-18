@@ -8,7 +8,7 @@
                 <div class="profilePicPreview" id="imagePreview{{ $id }}"
                     style="background-size: contain !important; background-position: center !important;
                         background-repeat: no-repeat !important;
-                        background-image: url({{ isset($image) && $image ? asset($image) : asset('images/default.png') }});
+                        background-image: url({{ isset($image) && $image ? asset($image) : asset('images/default-dark.png') }});
                         border-radius: 8px; width: 100%; height: 200px; position: relative; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
 
                     <button type="button" class="remove-image" id="removeImage{{ $id }}"
@@ -26,10 +26,10 @@
                     onchange="previewImage(event, '{{ $id }}')" style="display: none;" />
                 <label for="profilePicUpload{{ $id }}" class="btn btn-success btn-block btn-lg"
                     style="border-radius: 8px; font-size: 16px; padding: 12px 20px;">
-                    @lang('Subir Imagen')
+                    Subir Imagen
                 </label>
-                <small class="d-block text-center text-muted mt-2">@lang('Soporta imágenes')
-                    <b>@lang('jpeg'), @lang('jpg'), @lang('png')</b></small>
+                <small class="d-block text-center text-muted mt-2">Soporta imágenes
+                    jpeg, jpg, png</b></small>
             </div>
         </div>
     </div>
@@ -53,7 +53,7 @@
     document.getElementById('removeImage{{ $id }}').addEventListener('click', function() {
         const output = document.getElementById('imagePreview{{ $id }}');
         const removeBtn = document.getElementById('removeImage{{ $id }}');
-        output.style.backgroundImage = 'url({{ asset('images/default.png') }})';
+        output.style.backgroundImage = 'url({{ asset('images/default-dark.png') }})';
         output.style.backgroundSize = 'contain';
         output.style.backgroundPosition = 'center';
         output.style.backgroundRepeat = 'no-repeat';

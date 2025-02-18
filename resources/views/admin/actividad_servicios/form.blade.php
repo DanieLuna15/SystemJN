@@ -8,13 +8,24 @@
             enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="id" value="{{ $actividad_servicio->id ?? '' }}">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="col-sm-12">
+                        <!-- Campo Imagen -->
+                        <x-image-upload label="Imagen" name="imagen" :image="$actividad_servicio->imagen ?? null" :id="'actividad_servicio'" />
+                    </div>
 
-            <!-- Campo Nombre -->
-            <x-adminlte-input name="nombre" label="Nombre:"
-                value="{{ old('nombre', $actividad_servicio->nombre ?? '') }}" />
-
-            <!-- Campo Imagen -->
-            <x-image-upload label="Imagen" name="imagen" :image="$actividad_servicio->imagen ?? null" :id="'actividad_servicio'" />
+                </div>
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <!-- Campo Nombre -->
+                            <x-adminlte-input name="nombre" label="Nombre:"
+                                value="{{ old('nombre', $actividad_servicio->nombre ?? '') }}" />
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Botones de Acción -->
             <div class="d-flex justify-content-between">
