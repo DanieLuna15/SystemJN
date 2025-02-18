@@ -8,17 +8,6 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card card-outline card-primary">
-                <div class="card-header">
-                    <div class="card-title">Listado de Actividades y Servicios</div>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-minus"></i>
-                        </button>
-
-                        <a href="{{ route('admin.actividad_servicios.create') }}" class="btn btn-success"> + Agregar
-                            Actividad o Servicio</a>
-                    </div>
-                </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id="actividad_servicios-table"
@@ -82,5 +71,10 @@
 {{-- Push extra scripts --}}
 
 @push('js')
-    <script></script>
+@endpush
+
+@push('breadcrumb-plugins')
+    <a href="{{ route('admin.actividad_servicios.create') }}" class="btn btn-success rounded">
+        <i class="fas fa-plus-square"></i> Nuevo
+    </a>
 @endpush

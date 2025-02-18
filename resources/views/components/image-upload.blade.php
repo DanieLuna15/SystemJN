@@ -24,7 +24,7 @@
                 <x-adminlte-input type="file" class="profilePicUpload" name="{{ $name }}"
                     id="profilePicUpload{{ $id }}" accept=".png, .jpg, .jpeg"
                     onchange="previewImage(event, '{{ $id }}')" style="display: none;" />
-                <label for="profilePicUpload{{ $id }}" class="btn btn-success btn-block btn-lg"
+                <label for="profilePicUpload{{ $id }}" class="btn btn-info btn-block btn-lg"
                     style="border-radius: 8px; font-size: 16px; padding: 12px 20px;">
                     Subir Imagen
                 </label>
