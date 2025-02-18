@@ -58,25 +58,25 @@ class ActividadServicioController extends Controller
         ]);
 
         try {
-            $data = $request->except(['_token']);
+            $data = $request->except('_token');
+            $ministerio = $id ? ActividadServicio::findOrFail($id) : new ActividadServicio();
 
+            // 🔹 Si NO se sube un nueva imagen y ya existía, eliminar el anterior
+            if ($id && !$request->hasFile('imagen')) {
+                deleteFile($ministerio->imagen);
+                $data['imagen'] = null;
+            }
+
+            // 🔹 Si se sube un nueva imagen, procesarlo
             if ($request->hasFile('imagen')) {
-                $file = $request->file('imagen');
-                $filename = time() . '.' . $file->getClientOriginalExtension();
-                $file->move(public_path('uploads/actividad_servicios/'), $filename);
-                $data['imagen'] = 'uploads/actividad_servicios/' . $filename;
+                deleteFile($ministerio->imagen); // Eliminar el anterior antes de guardar el nuevo
+                $data['imagen'] = uploadFile($request->file('imagen'), 'uploads/actividad_servicios');
             }
 
-            if ($id) {
-                $actividad_servicio = ActividadServicio::findOrFail($id);
-                $actividad_servicio->update($data);
-                $message = 'Act. o Servicio actualizado correctamente.';
-            } else {
-                ActividadServicio::create($data);
-                $message = 'Act. o Servicio creado correctamente.';
-            }
 
-            return redirect()->route('admin.actividad_servicios.index')->with('success', $message);
+            $ministerio->fill($data)->save();
+
+            return redirect()->route('admin.actividad_servicios.index')->with('success', $id ? 'Act. o Servicio actualizado correctamente.' : 'Act. o Servicio creado correctamente.');
         } catch (\Exception $e) {
             return redirect()->route('admin.actividad_servicios.index')->with('error', 'Hubo un error en la operación.');
         }

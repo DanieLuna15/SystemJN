@@ -44,44 +44,43 @@ class MinisterioController extends Controller
 
     public function edit(Ministerio $ministerio)
     {
-        $pageTitle = 'Edición de Ministerio: '. $ministerio->nombre;
+        $pageTitle = 'Edición de Ministerio: ' . $ministerio->nombre;
         return view('admin.ministerios.edit', compact('ministerio', 'pageTitle'));
     }
 
-
     public function store(Request $request, $id = null)
     {
-        //dd($request->all());
         $request->validate([
             'nombre' => 'required|string|max:255',
             'multa_incremento' => 'required|numeric|min:0',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'tipo' => 'required|integer|min:0|max:1',
         ]);
 
         try {
-            $data = $request->except(['_token']);
+            $data = $request->except('_token');
+            $ministerio = $id ? Ministerio::findOrFail($id) : new Ministerio();
 
+            // 🔹 Si NO se sube un nuevo logo y ya existía, eliminar el anterior
+            if ($id && !$request->hasFile('logo')) {
+                deleteFile($ministerio->logo);
+                $data['logo'] = null;
+            }
+
+            // 🔹 Si se sube un nuevo logo, procesarlo
             if ($request->hasFile('logo')) {
-                $file = $request->file('logo');
-                $filename = time() . '.' . $file->getClientOriginalExtension();
-                $file->move(public_path('uploads/ministerios/'), $filename);
-                $data['logo'] = 'uploads/ministerios/' . $filename;
+                deleteFile($ministerio->logo); // Eliminar el anterior antes de guardar el nuevo
+                $data['logo'] = uploadFile($request->file('logo'), 'uploads/ministerios');
             }
 
-            if ($id) {
-                $ministerio = Ministerio::findOrFail($id);
-                $ministerio->update($data);
-                $message = 'Ministerio actualizado correctamente.';
-            } else {
-                Ministerio::create($data);
-                $message = 'Ministerio creado correctamente.';
-            }
+            $ministerio->fill($data)->save();
 
-            return redirect()->route('admin.ministerios.index')->with('success', $message);
+            return redirect()->route('admin.ministerios.index')->with('success', $id ? 'Ministerio actualizado correctamente.' : 'Ministerio creado correctamente.');
         } catch (\Exception $e) {
             return redirect()->route('admin.ministerios.index')->with('error', 'Hubo un error en la operación.');
         }
     }
+
 
     public function status($id)
     {

@@ -3,6 +3,8 @@
 
 use Illuminate\Support\Str;
 use App\Http\Lib\ClientInfo;
+use Illuminate\Support\Facades\File;
+
 
 function strLimit($title = null, $length = 10)
 {
@@ -59,4 +61,46 @@ function getPaginate($paginate = 20)
 function keyToTitle($text)
 {
     return ucfirst(preg_replace("/[^A-Za-z0-9 ]/", ' ', $text));
+}
+
+
+/**
+ * Elimina un archivo si existe.
+ *
+ * @param string $filePath
+ * @return void
+ */
+function deleteFile($filePath)
+{
+    if ($filePath && file_exists(public_path($filePath))) {
+        File::delete(public_path($filePath));
+    }
+}
+
+
+/**
+ * Sube un archivo a un directorio específico y devuelve su ruta.
+ *
+ * @param \Illuminate\Http\UploadedFile $file
+ * @param string $directory
+ * @return string
+ */
+function uploadFile($file, $directory = 'uploads')
+{
+    // Comprobamos que la ruta del directorio sea correcta y que sea un directorio absoluto
+    $directoryPath = public_path($directory);
+
+    // Si el directorio no existe, lo creamos
+    if (!File::exists($directoryPath)) {
+        File::makeDirectory($directoryPath, 0777, true); // 0777: permisos completos
+    }
+
+    // Generamos el nombre del archivo con timestamp
+    $filename = time() . '.' . $file->getClientOriginalExtension();
+
+    // Movemos el archivo al directorio correspondiente
+    $file->move($directoryPath, $filename);
+
+    // Devolvemos la ruta relativa al archivo 
+    return $directory . '/' . $filename;
 }
