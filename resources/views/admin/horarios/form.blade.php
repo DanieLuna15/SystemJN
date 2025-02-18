@@ -7,10 +7,10 @@
             <div class="form-group">
                 <label>Tipo:</label>
                 <x-adminlte-select2 name="tipo" class="form-control">
-                    <option value="" selected disabled>Seleccione el tipo de horario</option>
+                    <option value="" disabled>Seleccione el tipo de horario</option>
                     @foreach ([1 => 'Fijo', 0 => 'Eventual'] as $key => $type)
                         <option value="{{ $key }}"
-                            {{ old('tipo', $horario->tipo ?? '') == $key ? 'selected' : '' }}>
+                            {{ old('tipo', $horario->tipo ?? 1) == $key ? 'selected' : '' }}>
                             {{ $type }}
                         </option>
                     @endforeach
@@ -18,7 +18,7 @@
             </div>
 
             <div class="form-group">
-                <label>Activiad o Servicios:</label>
+                <label>Actividad o Servicios:</label>
                 <x-adminlte-select2 name="actividad_servicio_id" class="form-control">
                     <option value="" selected disabled>Seleccione una actividad o Servicio</option>
                     @foreach ($actividadServicios as $actividadServicio)
