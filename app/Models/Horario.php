@@ -13,7 +13,7 @@ class Horario extends Model
     use HasFactory, GlobalStatus;
 
     protected $table = 'horarios';
-    protected $fillable = ['ministerio_id', 'dia_semana', 'hora_registro', 'hora_multa', 'estado', 'tipo'];
+    protected $fillable = ['ministerio_id','actividad_servicio_id', 'dia_semana', 'hora_registro', 'hora_multa', 'estado', 'tipo'];
     protected $primaryKey = 'id';
     public $timestamps = true;
 
@@ -26,6 +26,12 @@ class Horario extends Model
     public function ministerio()
     {
         return $this->belongsTo(Ministerio::class, 'ministerio_id', 'id');
+    }
+
+    // Relación con actividad servicio
+    public function actividadServicio()
+    {
+        return $this->belongsTo(ActividadServicio::class, 'actividad_servicio_id', 'id');
     }
 
     // Accesor para obtener el día de la semana en texto

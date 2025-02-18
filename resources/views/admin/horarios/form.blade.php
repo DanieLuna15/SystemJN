@@ -18,6 +18,20 @@
             </div>
 
             <div class="form-group">
+                <label>Activiad o Servicios:</label>
+                <x-adminlte-select2 name="actividad_servicio_id" class="form-control">
+                    <option value="" selected disabled>Seleccione una actividad o Servicio</option>
+                    @foreach ($actividadServicios as $actividadServicio)
+                        <option value="{{ $actividadServicio->id }}"
+                            {{ old('actividad_servicio_id', $horario->actividad_servicio_id ?? '') == $actividadServicio->id ? 'selected' : '' }}>
+                            {{ $actividadServicio->nombre }}
+                        </option>
+                    @endforeach
+                </x-adminlte-select2>
+                
+            </div>
+
+            <div class="form-group">
                 <label>Ministerio:</label>
                 <x-adminlte-select2 name="ministerio_id" class="form-control">
                     <option value="" selected disabled>Seleccione un ministerio</option>

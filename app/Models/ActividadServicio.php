@@ -17,6 +17,11 @@ class ActividadServicio extends Model
     protected $primaryKey = 'id';
     public $timestamps = true;
 
+    public function horarios()
+    {
+        return $this->hasMany(Horario::class, 'actividad_servicio_id', 'id');
+    }
+
     public function statusBadge(): Attribute
     {
         return new Attribute(

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Horario;
 use App\Constants\Status;
 use App\Models\Ministerio;
+use App\Models\ActividadServicio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -46,7 +47,8 @@ class HorarioController extends Controller
     {
         $pageTitle = 'Nuevo Horario';
         $ministerios = Ministerio::where('estado', Status::ACTIVE)->get();
-        return view('admin.horarios.create', compact('ministerios', 'pageTitle'));
+        $actividadServicios = ActividadServicio::where('estado', Status::ACTIVE)->get();
+        return view('admin.horarios.create', compact('actividadServicios','ministerios', 'pageTitle'));
     }
 
     /**
@@ -74,6 +76,7 @@ class HorarioController extends Controller
         // 📌 Validación asegurando que los valores sean correctos
         $request->validate([
             'ministerio_id' => 'required|exists:ministerios,id',
+            'actividad_servicio_id' => 'required|exists:actividad_servicios,id',
             'dia_semana' => 'required|integer|min:1|max:7',
             'hora_registro' => ['required', 'date_format:H:i'],
             'hora_multa' => 'required|date_format:H:i|after:hora_registro',
@@ -122,9 +125,9 @@ class HorarioController extends Controller
     {
         $pageTitle = 'Edición de Horario';
         $ministerios = Ministerio::where('estado', Status::ACTIVE)->get();
-        return view('admin.horarios.edit', compact('horario', 'ministerios','pageTitle'));
+        $actividadServicios = ActividadServicio::where('estado', Status::ACTIVE)->get();
+        return view('admin.horarios.edit', compact('horario', 'ministerios','actividadServicios','pageTitle'));
     }
-
 
     public function status($id)
     {

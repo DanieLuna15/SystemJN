@@ -24,6 +24,7 @@
                                 <tr>
                                     <th style="text-align: center">Ministerio</th>
                                     <th style="text-align: center">Día de la Semana</th>
+                                    <th style="text-align: center">Actividad o Servicio</th>
                                     <th style="text-align: center">Hora de Inicio</th>
                                     <th style="text-align: center">Hora Multa</th>
                                     <th style="text-align: center">Tipo</th>
@@ -36,6 +37,7 @@
                                     <tr>
                                         <td class="text-center">{{ $horario->ministerio->nombre }}</td>
                                         <td class="text-center">{{ $horario->dia_semana_texto }}</td>
+                                        <td class="text-center">{{ $horario->actividadServicio->nombre }}</td>
                                         <td class="text-center">{{ $horario->hora_registro }}</td>
                                         <td class="text-center">{{ $horario->hora_multa }}</td>
                                         <td class="text-center align-middle">
