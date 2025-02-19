@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Constants\Status;
 use App\Models\Ministerio;
+use App\Models\Horario;
 use Illuminate\Http\Request;
 
 class MinisterioController extends Controller
@@ -85,5 +86,16 @@ class MinisterioController extends Controller
     public function status($id)
     {
         return Ministerio::changeStatus($id, 'estado');
+    }
+    public function horarios(Ministerio $ministerio)
+    {
+        $pageTitle = 'Horarios de Ministerios'. $ministerio->nombre;
+        //$horarios = $ministerio->horarios()
+        $horarios = Horario::where('ministerio_id', $ministerio->id)
+        ->where ('estado', Status::ACTIVE)
+        ->orderByDesc('id')
+        ->get();
+        //dd($horarios);
+        return view('admin.ministerios.horarios', compact('horarios', 'pageTitle'));
     }
 }

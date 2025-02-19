@@ -7,9 +7,9 @@
 
                 <div class="col-md-6 col-lg-6">
                     <div class="form-group">
-                        <label>Tipo:</label>
+                        <label>Clase:</label>
                         <x-adminlte-select2 name="tipo" class="form-control">
-                            <option value="" disabled>Seleccione el tipo de horario</option>
+                            <option value="" disabled>Seleccione la clase de horario</option>
                             @foreach ([1 => 'Fijo', 0 => 'Eventual'] as $key => $type)
                                 <option value="{{ $key }}"
                                     {{ old('tipo', $horario->tipo ?? 1) == $key ? 'selected' : '' }}>

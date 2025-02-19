@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card card-outline card-primary">
-                
+
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id="ministerios-table"
@@ -17,9 +17,9 @@
                                 <tr>
                                     <th style="text-align: center">Imagen</th>
                                     <th style="text-align: center">Nombre</th>
-                                    <th style="text-align: center">Monto multa (Bs)</th>
+                                    <th style="text-align: center">Monto Sancion (Bs)</th>
                                     <th style="text-align: center">Estado</th>
-                                    <th style="text-align: center">Tipo</th>
+                                    <th style="text-align: center">Categoria</th>
                                     <th style="text-align: center">Acciones</th>
                                 </tr>
                             </thead>
@@ -63,6 +63,10 @@
                                                 <i class="fas {{ $ministerio->estado ? 'fa-eye-slash' : 'fa-eye' }}"></i>
                                             </button>
 
+                                            <a href="{{ route('admin.ministerios.horarios', $ministerio) }}"
+                                                class="btn btn-secondary btn-sm" title="Verificar Horarios">
+                                                <i class="fas fa-list-ul" style="color: #63E6BE;"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach

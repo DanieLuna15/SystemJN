@@ -25,9 +25,9 @@
 
                         <div class="col-md-12 col-lg-12">
                             <div class="form-group">
-                                <label>Tipo de Ministerio:</label>
+                                <label>Categoria:</label>
                                 <x-adminlte-select2 name="tipo" class="form-control">
-                                    <option value="" disabled>Seleccione Tipo</option>
+                                    <option value="" disabled>Seleccione Categoria</option>
                                     @foreach ([1 => 'Alto', 0 => 'Estandar'] as $key => $type)
                                         <option value="{{ $key }}"
                                             {{ old('tipo', $ministerio->tipo ?? 0) == $key ? 'selected' : '' }}>
@@ -40,7 +40,7 @@
 
                         <div class="col-md-12 col-lg-12">
                             <!-- Campo Multa por Retraso -->
-                            <x-adminlte-input name="multa_incremento" label="Multa por Retraso (Bs):" type="number"
+                            <x-adminlte-input name="multa_incremento" label="Sancion por Retraso (Bs):" type="number"
                                 step="0.01"
                                 value="{{ old('multa_incremento', $ministerio->multa_incremento ?? '') }}">
                                 <x-slot name="prependSlot">
@@ -74,7 +74,7 @@
     <a href="{{ route('admin.ministerios.index') }}" class="btn btn-secondary rounded">
         <i class="fas fa-undo"></i> Regresar
     </a>
-@endpush 
+@endpush
 
 
 
