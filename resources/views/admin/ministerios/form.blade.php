@@ -70,12 +70,11 @@
     </div>
 </x-adminlte-card>
 
-{{-- //NO BORRAR ESTO --}}
 @push('breadcrumb-plugins')
     <a href="{{ route('admin.ministerios.index') }}" class="btn btn-secondary rounded">
         <i class="fas fa-undo"></i> Regresar
     </a>
 @endpush 
-{{-- //NO BORRAR ESTO --}}
+
 
 

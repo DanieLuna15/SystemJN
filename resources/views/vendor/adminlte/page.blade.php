@@ -40,11 +40,6 @@
                 @section('content_header')
                     <div class="content-header">
                         <div class="container-fluid">
-                            {{-- <div class="row mb-2">
-                                <div class="col-sm-6">
-                                    <h1 class="m-0">{{ $pageTitle ?? 'Dashboard' }}</h1>
-                                </div>
-                            </div> --}}
                             <div class="d-flex mb-30 flex-wrap gap-3 justify-content-between align-items-center">
                                 <h5 class="page-title">{{ __($pageTitle ?? 'Dashboard') }}</h5>
                                 <div class="d-flex flex-wrap justify-content-end gap-2 align-items-center breadcrumb-plugins">

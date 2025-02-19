@@ -5,3 +5,6 @@
 @section('content')
     @include('admin.horarios.form', ['horario' => $horario])
 @stop
+
+@push('js')
+@endpush

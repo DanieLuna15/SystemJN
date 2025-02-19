@@ -5,3 +5,6 @@
 @section('content')
     @include('admin.horarios.form', ['horario' => new \App\Models\Horario()])
 @stop
+
+@push('js')
+@endpush
