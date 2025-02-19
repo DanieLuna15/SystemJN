@@ -44,21 +44,31 @@
 
         {{-- Password field --}}
         <div class="input-group mb-3">
-            <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
+            <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror"
                    placeholder="{{ __('adminlte::adminlte.password') }}">
 
-            <div class="input-group-append">
-                <div class="input-group-text">
-                    <span class="fas fa-lock {{ config('adminlte.classes_auth_icon', '') }}"></span>
-                </div>
-            </div>
-
-            @error('password')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-            @enderror
+              <div class="input-group-append">
+              <div class="input-group-text" id="toggle-password" style="cursor: pointer;">
+            <span class="fas fa-eye {{ config('adminlte.classes_auth_icon', '') }}"></span>
         </div>
+    </div>
+
+    @error('password')
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $message }}</strong>
+        </span>
+    @enderror
+</div>
+
+{{-- Add the following JavaScript at the bottom of your view --}}
+<script>
+    document.getElementById('toggle-password').addEventListener('click', function () {
+        const passwordField = document.getElementById('password');
+        const passwordFieldType = passwordField.getAttribute('type');
+        passwordField.setAttribute('type', passwordFieldType === 'password' ? 'text' : 'password');
+        this.querySelector('span').classList.toggle('fa-eye-slash');
+    });
+</script>
 
         {{-- Login field --}}
         <div class="row">
