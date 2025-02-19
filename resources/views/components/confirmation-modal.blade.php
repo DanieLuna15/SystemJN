@@ -17,7 +17,7 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         No
                     </button>
-                    <button type="submit" class="btn btn-primary">Sí, confirmar'</button>
+                    <button type="submit" class="btn btn-primary">Sí, confirmar</button>
                 </div>
             </form>
         </div>
