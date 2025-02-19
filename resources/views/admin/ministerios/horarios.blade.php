@@ -10,48 +10,65 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id="horarios-table"
-                            class="table table-striped table-bordered table-hover table-sm datatable">
-                            <thead>
+                            class="table table-striped table-bordered table-hover table-sm datatable text-center">
+                            <thead class="text-center">
                                 <tr>
-                                    <th style="text-align: center">Día de la Semana</th>
-                                    <th style="text-align: center">Actividad o Servicio</th>
-                                    <th style="text-align: center">Hora de Inicio</th>
-                                    <th style="text-align: center">Hora Multa</th>
-                                    <th style="text-align: center">Categoría</th>
-                                    <th style="text-align: center">Estado</th>
-                                    <th style="text-align: center">Acciones</th>
+                                    <th>Día de la Semana</th>
+                                    <th>Actividad o Servicio</th>
+                                    <th>Hora de Inicio</th>
+                                    <th>Hora Multa</th>
+                                    <th>Categoría</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($horarios as $horario)
                                     <tr>
-                                        <td class="text-center">{{ $horario->dia_semana_texto }}</td>
-                                        <td class="text-center">{{ $horario->actividadServicio->nombre }}</td>
-                                        <td class="text-center">{{ $horario->hora_registro }}</td>
-                                        <td class="text-center">{{ $horario->hora_multa }}</td>
-                                        <td class="text-center align-middle">
+                                        <!-- Día de la Semana centrado -->
+                                        <td >{{ $horario->dia_semana_texto }}</td>
+
+                                        <!-- Actividad o Servicio centrado -->
+                                        <td class="align-middle text-truncate">{{ __(strLimit($horario->actividadServicio->nombre, 20)) }}</td>
+
+                                        <!-- Hora de Inicio centrada -->
+                                        <td class="align-middle">{{ $horario->hora_registro }}</td>
+
+                                        <!-- Hora Multa centrada -->
+                                        <td class="align-middle">{{ $horario->hora_multa }}</td>
+
+                                        <!-- Categoría centrada -->
+                                        <td class="align-middle">
                                             @if ($horario->tipo == 1)
-                                                <small class="badge bg-gradient-primary w-100 h-100"><i
-                                                        class="fas fa-lock"></i> Fijo</small>
+                                                <small class="badge bg-gradient-primary w-100 h-100">
+                                                    <i class="fas fa-lock"></i> Fijo
+                                                </small>
                                             @else
-                                                <small class="badge bg-gradient-info w-100 h-100"><i
-                                                        class="far fa-clock"></i> Eventual</small>
+                                                <small class="badge bg-gradient-info w-100 h-100">
+                                                    <i class="far fa-clock"></i> Eventual
+                                                </small>
                                             @endif
                                         </td>
-                                        <td class="text-center align-middle">
+
+                                        <!-- Estado centrado -->
+                                        <td class="align-middle">
                                             {!! $horario->statusBadge !!}
                                         </td>
-                                        <td class="text-center">
-                                            <a href="{{ route('admin.horarios.edit', $horario) }}"
-                                                class="btn btn-warning btn-sm" title="Editar">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <button type="button" title="Cambiar estado"
-                                                class="btn btn-sm {{ $horario->estado ? 'btn-danger' : 'btn-success' }} confirmationBtn"
-                                                data-action="{{ route('admin.horarios.status', $horario->id) }}"
-                                                data-question="{{ $horario->estado ? '¿Seguro que deseas inhabilitar el Horario del <strong>' . $horario->dia_semana_texto . '</strong>?' : '¿Seguro que deseas habilitar el Horario del <strong>' . $horario->dia_semana_texto . '</strong>?' }}">
-                                                <i class="fas {{ $horario->estado ? 'fa-eye-slash' : 'fa-eye' }}"></i>
-                                            </button>
+
+                                        <!-- Acciones centradas -->
+                                        <td class="align-middle">
+                                            <div class="d-flex justify-content-center">
+                                                <a href="{{ route('admin.horarios.edit', $horario) }}"
+                                                    class="btn btn-warning btn-sm mx-1" title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <button type="button" title="Cambiar estado"
+                                                    class="btn btn-sm {{ $horario->estado ? 'btn-danger' : 'btn-success' }} confirmationBtn mx-1"
+                                                    data-action="{{ route('admin.horarios.status', $horario->id) }}"
+                                                    data-question="{{ $horario->estado ? '¿Seguro que deseas inhabilitar el Horario del <strong>' . $horario->dia_semana_texto . '</strong>?' : '¿Seguro que deseas habilitar el Horario del <strong>' . $horario->dia_semana_texto . '</strong>?' }}">
+                                                    <i class="fas {{ $horario->estado ? 'fa-eye-slash' : 'fa-eye' }}"></i>
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach

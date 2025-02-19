@@ -46,3 +46,24 @@
 .dataTables_length {
     display: block !important;
 }
+
+
+/* Para estilizar imágenes en tablas listado */
+.img-rounded {
+    width: 60px; /* Ancho fijo */
+    height: 40px; /* Alto fijo */
+    border-radius: 20%; /* Bordes redondeados (más suaves) */
+    object-fit: contain; /* Asegura que la imagen cubra completamente el contenedor */
+    object-position: center; /* Centra la imagen si no cubre completamente el contenedor */
+    border: 2px solid #65696b; /* Borde más grueso de 2px y color gris oscuro */
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);  /* Sombra sutil para darle profundidad */
+    transition: all 0.3s ease; /* Suaviza la transición al pasar el mouse */
+}
+
+/* Efecto al pasar el mouse (hover) */
+.img-rounded:hover {
+    transform: scale(3);                 /* Le da un efecto de zoom en el lado derecho */
+    transform-origin: left;             /* Establece el punto de escalado en el lado derecho */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);  /* Sombra más pronunciada al pasar el mouse */
+    border-color: #4e5b62;               /* Cambia el color del borde cuando se pasa el mouse */
+}

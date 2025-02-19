@@ -48,7 +48,7 @@ class HorarioController extends Controller
         $pageTitle = 'Nuevo Horario';
         $ministerios = Ministerio::where('estado', Status::ACTIVE)->get();
         $actividadServicios = ActividadServicio::where('estado', Status::ACTIVE)->get();
-        return view('admin.horarios.create', compact('actividadServicios','ministerios', 'pageTitle'));
+        return view('admin.horarios.create', compact('actividadServicios', 'ministerios', 'pageTitle'));
     }
 
     /**
@@ -99,14 +99,14 @@ class HorarioController extends Controller
                 $message = 'Horario creado correctamente.';
             }
 
-            return redirect()->to(url()->previous())->with('success', $message);
+            return redirect()->route('admin.horarios.index')->with('success', $message);
         } catch (\Exception $e) {
             // 📌 Log para capturar errores y la traza completa
             Log::error('❌ Error en store(): ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString()
             ]);
 
-            return redirect()->to(url()->previous())->with('error', 'Hubo un error en la operación.');
+            return redirect()->route('admin.horarios.index')->with('error', 'Hubo un error en la operación.');
         }
     }
 
@@ -126,7 +126,7 @@ class HorarioController extends Controller
         $pageTitle = 'Edición de Horario';
         $ministerios = Ministerio::where('estado', Status::ACTIVE)->get();
         $actividadServicios = ActividadServicio::where('estado', Status::ACTIVE)->get();
-        return view('admin.horarios.edit', compact('horario', 'ministerios','actividadServicios','pageTitle'));
+        return view('admin.horarios.edit', compact('horario', 'ministerios', 'actividadServicios', 'pageTitle'));
     }
 
     public function status($id)
