@@ -25,9 +25,9 @@
 
                         <div class="col-md-12 col-lg-12">
                             <div class="form-group">
-                                <label>Categoria:</label>
+                                <label>Categoría:</label>
                                 <x-adminlte-select2 name="tipo" class="form-control">
-                                    <option value="" disabled>Seleccione Categoria</option>
+                                    <option value="" disabled>Seleccione Categoría</option>
                                     @foreach ([1 => 'Alto', 0 => 'Estandar'] as $key => $type)
                                         <option value="{{ $key }}"
                                             {{ old('tipo', $ministerio->tipo ?? 0) == $key ? 'selected' : '' }}>

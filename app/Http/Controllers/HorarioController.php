@@ -99,14 +99,14 @@ class HorarioController extends Controller
                 $message = 'Horario creado correctamente.';
             }
 
-            return redirect()->route('admin.horarios.index')->with('success', $message);
+            return redirect()->to(url()->previous())->with('success', $message);
         } catch (\Exception $e) {
             // 📌 Log para capturar errores y la traza completa
             Log::error('❌ Error en store(): ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString()
             ]);
 
-            return redirect()->route('admin.horarios.index')->with('error', 'Hubo un error en la operación.');
+            return redirect()->to(url()->previous())->with('error', 'Hubo un error en la operación.');
         }
     }
 

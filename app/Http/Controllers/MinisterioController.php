@@ -62,12 +62,6 @@ class MinisterioController extends Controller
             $data = $request->except('_token');
             $ministerio = $id ? Ministerio::findOrFail($id) : new Ministerio();
 
-            // 🔹 Si NO se sube un nuevo logo y ya existía, eliminar el anterior
-            if ($id && !$request->hasFile('logo')) {
-                deleteFile($ministerio->logo);
-                $data['logo'] = null;
-            }
-
             // 🔹 Si se sube un nuevo logo, procesarlo
             if ($request->hasFile('logo')) {
                 deleteFile($ministerio->logo); // Eliminar el anterior antes de guardar el nuevo
@@ -87,15 +81,14 @@ class MinisterioController extends Controller
     {
         return Ministerio::changeStatus($id, 'estado');
     }
+
     public function horarios(Ministerio $ministerio)
     {
-        $pageTitle = 'Horarios de Ministerios'. $ministerio->nombre;
-        //$horarios = $ministerio->horarios()
+        $pageTitle = 'Todos los horarios del ministerio: ' . $ministerio->nombre;
         $horarios = Horario::where('ministerio_id', $ministerio->id)
-        ->where ('estado', Status::ACTIVE)
-        ->orderByDesc('id')
-        ->get();
-        //dd($horarios);
+            ->where ('estado', Status::ACTIVE)
+            ->orderByDesc('id')
+            ->get();
         return view('admin.ministerios.horarios', compact('horarios', 'pageTitle'));
     }
 }

@@ -7,15 +7,6 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card card-outline card-primary">
-                <div class="card-header">
-                    <div class="card-title">Listado de Horarios</div>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-minus"></i>
-                        </button>
-                        <a href="{{ route('admin.horarios.create') }}" class="btn btn-success"> + Agregar Horario</a>
-                    </div>
-                </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id="horarios-table"
@@ -26,7 +17,7 @@
                                     <th style="text-align: center">Actividad o Servicio</th>
                                     <th style="text-align: center">Hora de Inicio</th>
                                     <th style="text-align: center">Hora Multa</th>
-                                    <th style="text-align: center">Clase</th>
+                                    <th style="text-align: center">Categoría</th>
                                     <th style="text-align: center">Estado</th>
                                     <th style="text-align: center">Acciones</th>
                                 </tr>
@@ -79,4 +70,10 @@
 {{-- Push extra scripts --}}
 @push('js')
     <script></script>
+@endpush
+
+@push('breadcrumb-plugins')
+    <a href="{{ route('admin.horarios.create') }}" class="btn btn-success rounded">
+        <i class="fas fa-plus-square"></i> Nuevo
+    </a>
 @endpush
