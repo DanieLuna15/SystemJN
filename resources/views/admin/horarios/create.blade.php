@@ -7,4 +7,5 @@
 @stop
 
 @push('js')
+
 @endpush

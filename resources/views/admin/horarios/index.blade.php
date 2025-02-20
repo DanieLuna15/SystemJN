@@ -15,6 +15,7 @@
                                 <tr>
                                     <th style="text-align: center">Ministerio</th>
                                     <th style="text-align: center">Día de la Semana</th>
+                                    <th style="text-align: center">Fecha</th>
                                     <th style="text-align: center">Actividad o Servicio</th>
                                     <th style="text-align: center">Hora de Inicio</th>
                                     <th style="text-align: center">Hora Multa</th>
@@ -30,14 +31,35 @@
                                         <td class="align-middle text-truncate">{{ __(strLimit($horario->ministerio->nombre, 20)) }}</td>
 
                                         <!-- Día de la Semana centrado -->
-                                        <td class="text-center">{{ $horario->dia_semana_texto }} </td>
+
+                                        <td class="text-center align-middle">
+                                            @if ($horario->dia_semana == null)
+                                                <small class="badge bg-gradient-warning w-100 h-100">
+                                                    Sin datos
+                                                </small>
+                                            @else
+                                            {{ $horario->dia_semana_texto }}
+                                            @endif
+                                        </td>
+
+                                         <!-- fecha centrado -->
+                                         
+                                         <td class="text-center align-middle">
+                                            @if ($horario->fecha == null)
+                                                <small class="badge bg-gradient-warning w-100 h-100">
+                                                    Sin datos
+                                                </small>
+                                            @else
+                                            {{ $horario->fecha }}
+                                            @endif
+                                        </td>
 
                                         <!-- Actividad o Servicio centrado -->
                                         <td class="align-middle text-truncate">{{ __(strLimit($horario->actividadServicio->nombre, 20)) }}</td>
 
                                         <!-- Hora de Inicio centrada -->
                                         <td class="text-center">{{ $horario->hora_registro }}</td>
-
+                                        
                                         <!-- Hora Multa centrada -->
                                         <td class="text-center">{{ $horario->hora_multa }}</td>
 

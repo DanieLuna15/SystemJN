@@ -38,6 +38,7 @@ class HorarioController extends Controller
     protected function commonQuery()
     {
         return Horario::query()->orderBy('id', 'DESC');
+        
     }
 
     /**
@@ -74,19 +75,30 @@ class HorarioController extends Controller
         ]);
 
         // 📌 Validación asegurando que los valores sean correctos
-        $request->validate([
+        $rules = [
             'ministerio_id' => 'required|exists:ministerios,id',
             'actividad_servicio_id' => 'required|exists:actividad_servicios,id',
-            'dia_semana' => 'required|integer|min:1|max:7',
             'hora_registro' => ['required', 'date_format:H:i'],
             'hora_multa' => 'required|date_format:H:i|after:hora_registro',
             'tipo' => 'required|integer|min:0|max:1',
-        ]);
+        ];
+
+        // 📌 Validar condicionalmente según el tipo
+        if ($request->tipo == 1) { // Fijo
+            $rules['dia_semana'] = 'required|integer|min:1|max:7';
+            $rules['fecha'] = 'nullable|date|after:today';
+        } else { // Eventual
+            $rules['dia_semana'] = 'nullable';
+            $rules['fecha'] = 'nullable|date|after:today';
+        }
+
+        $request->validate($rules);
 
         Log::debug('✅ Validación pasada con éxito.');
 
         try {
             $data = $request->except(['_token']);
+           
 
             if ($id) {
                 $horario = Horario::findOrFail($id);
