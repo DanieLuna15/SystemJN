@@ -68,7 +68,7 @@
                 <!-- Campo Fecha (Oculto por defecto) -->
                 <div class="col-md-12 col-lg-12" id="fechaContainer" style="display: none;">
                     <x-adminlte-input type="date" name="fecha" label="Fecha:" id="fechaInput"
-                        value="{{ old('fecha', $horario->fecha ?? '') }}">
+                    min="{{ date('Y-m-d') }}" value="{{ old('fecha', $horario->fecha ?? '') }}">
                         <x-slot name="prependSlot">
                             <div class="input-group-text">
                                 <i class="far fa-calendar-alt"></i>
@@ -142,6 +142,13 @@
         $('#tipoHorario').on('change', function () {
             toggleFields();
         });
+
+        const fechaInput = document.getElementById("fechaInput");
+        if (fechaInput) {
+            fechaInput.addEventListener("focus", function () {
+                this.showPicker(); // Abre el selector de fechas al hacer clic en el input
+            });
+        }
     });
 </script>
 @push('breadcrumb-plugins')
