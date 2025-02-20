@@ -38,7 +38,6 @@ class HorarioController extends Controller
     protected function commonQuery()
     {
         return Horario::query()->orderBy('id', 'DESC');
-        
     }
 
     /**
@@ -74,23 +73,23 @@ class HorarioController extends Controller
             'hora_multa' => $request->hora_multa
         ]);
 
-        // 📌 Validación asegurando que los valores sean correctos
+
+        if ($request->tipo == 1) { // Si es tipo fijo
+            $request->merge(['fecha' => null]);
+        } elseif ($request->tipo == 0) { // Si es tipo eventual
+            $request->merge(['dia_semana' => null]);
+        }
+
+
         $rules = [
             'ministerio_id' => 'required|exists:ministerios,id',
             'actividad_servicio_id' => 'required|exists:actividad_servicios,id',
             'hora_registro' => ['required', 'date_format:H:i'],
             'hora_multa' => 'required|date_format:H:i|after:hora_registro',
             'tipo' => 'required|integer|min:0|max:1',
+            'dia_semana' => $request->tipo == 1 ? 'required|integer|min:1|max:7' : 'nullable',
+            'fecha' => $request->tipo == 0 ? 'required|date|after:today' : 'nullable',
         ];
-
-        // 📌 Validar condicionalmente según el tipo
-        if ($request->tipo == 1) { // Fijo
-            $rules['dia_semana'] = 'required|integer|min:1|max:7';
-            $rules['fecha'] = 'nullable|date|after:today';
-        } else { // Eventual
-            $rules['dia_semana'] = 'nullable';
-            $rules['fecha'] = 'nullable|date|after:today';
-        }
 
         $request->validate($rules);
 
@@ -98,7 +97,7 @@ class HorarioController extends Controller
 
         try {
             $data = $request->except(['_token']);
-           
+
 
             if ($id) {
                 $horario = Horario::findOrFail($id);

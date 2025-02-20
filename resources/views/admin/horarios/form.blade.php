@@ -1,4 +1,4 @@
-<div class="card">
+<x-adminlte-card>
     <div class="card-body">
         <form action="{{ route('admin.horarios.save', $horario->id ?? null) }}" method="POST">
             @csrf
@@ -120,7 +120,7 @@
             </div>
         </form>
     </div>
-</div>
+</x-adminlte-card>
 <!-- Script para mostrar/ocultar campos dinámicamente -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -144,7 +144,11 @@
         });
     });
 </script>
-
+@push('breadcrumb-plugins')
+    <a href="{{ route('admin.horarios.index') }}" class="btn btn-secondary rounded">
+        <i class="fas fa-undo"></i> Regresar
+    </a>
+@endpush
 
 
 
