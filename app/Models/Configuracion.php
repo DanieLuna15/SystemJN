@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Configuracion extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['nombre', 'logo', 'favicon', 'direccion', 'telefono', 'email', 'url', 'descripcion'];
+    protected $table = 'configuracions';
+    protected $primaryKey = 'id';
+    public $timestamps = true;
 }

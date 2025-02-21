@@ -10,11 +10,19 @@ class ConfiguracionController extends Controller
     /**
      * Display a listing of the resource.
      */
+    // public function index()
+    // {
+    //     $pageTitle = 'Toda la Configuración del sistema';
+    //     return view('admin.configuraciones.index', compact('pageTitle'));
+    // }
+
     public function index()
     {
         $pageTitle = 'Toda la Configuración del sistema';
-        return view('admin.configuraciones.index', compact('pageTitle'));
+        $configuracion = Configuracion::first(); // Obtiene la primera configuración de la base de datos
+        return view('admin.configuraciones.index', compact('pageTitle', 'configuracion'));
     }
+
 
     /**
      * Show the form for creating a new resource.
