@@ -24,7 +24,7 @@
     <form action="{{ $login_url }}" method="post">
         @csrf
 
-        {{-- Email field --}}
+        {{-- Campo de correo electrónico --}}
         <div class="input-group mb-3">
             <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
                 value="{{ old('email') }}" placeholder="{{ __('adminlte::adminlte.email') }}" autofocus>
@@ -42,7 +42,7 @@
             @enderror
         </div>
 
-        {{-- Password field --}}
+        {{-- Campo de contraseña --}}
         <div class="input-group mb-3">
             <input type="password" name="password" id="password"
                 class="form-control @error('password') is-invalid @enderror"
@@ -50,7 +50,7 @@
 
             <div class="input-group-append">
                 <div class="input-group-text" id="togglePassword" style="cursor: pointer;">
-                    <span class="fas fa-eye {{ config('adminlte.classes_auth_icon', '') }}"></span> <!-- Icon for showing password -->
+                    <span class="fas fa-eye {{ config('adminlte.classes_auth_icon', '') }}"></span> <!-- Icono para mostrar contraseña -->
                 </div>
             </div>
 
@@ -61,7 +61,7 @@
             @enderror
         </div>
 
-        {{-- Login field --}}
+        {{-- Campo de recordar sesión --}}
         <div class="row">
             <div class="col-7">
                 <div class="icheck-primary" title="{{ __('adminlte::adminlte.remember_me_hint') }}">
@@ -77,7 +77,7 @@
                 <button type="submit"
                     class="btn btn-block {{ config('adminlte.classes_auth_btn', 'btn-flat btn-primary') }}">
                     <span class="fas fa-sign-in-alt"></span>
-                    {{ __('adminlte::adminlte.sign_in') }}
+                    Ingresar
                 </button>
             </div>
         </div>
@@ -86,7 +86,7 @@
 @stop
 
 @section('auth_footer')
-    {{-- Password reset link --}}
+    {{-- Enlace para restablecer contraseña --}}
     @if ($password_reset_url)
         <p class="my-0">
             <a href="{{ $password_reset_url }}">
@@ -95,7 +95,7 @@
         </p>
     @endif
 
-    {{-- Register link --}}
+    {{-- Enlace para registrarse --}}
     @if ($register_url)
         <p class="my-0">
             <a href="{{ $register_url }}">
@@ -120,6 +120,36 @@
                 passwordIcon.classList.remove('fa-eye-slash');
                 passwordIcon.classList.add('fa-eye');
             }
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const forms = document.querySelectorAll("form");
+
+            forms.forEach(form => {
+                form.addEventListener("submit", function() {
+                    const submitButton = form.querySelector("button[type='submit']");
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                        submitButton.innerHTML = `<span class="fas fa-spinner fa-spin"></span> Ingresando...`;
+                    }
+                });
+            });
+
+            document.getElementById('togglePassword').addEventListener('click', function() {
+                var passwordField = document.getElementById('password');
+                var passwordIcon = this.querySelector('span');
+
+                if (passwordField.type === "password") {
+                    passwordField.type = "text";
+                    passwordIcon.classList.remove('fa-eye');
+                    passwordIcon.classList.add('fa-eye-slash');
+                } else {
+                    passwordField.type = "password";
+                    passwordIcon.classList.remove('fa-eye-slash');
+                    passwordIcon.classList.add('fa-eye');
+                }
+            });
         });
     </script>
 @stop
