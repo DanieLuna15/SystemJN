@@ -685,7 +685,8 @@ return [
 
     'assets' => [
         'js' => [
-            'js/custom.js',
+            'js/sweetAlertcustom.js',
+            'js/myscripts.js',
             'js/datatables-config.js',
         ],
         'css' => [

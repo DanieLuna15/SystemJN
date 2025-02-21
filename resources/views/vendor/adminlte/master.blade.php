@@ -91,7 +91,8 @@
         <meta name="msapplication-TileImage" content="{{ asset('favicon/ms-icon-144x144.png') }}">
     @endif
 
-    <script src="{{ asset('js/custom.js') }}"></script>
+    <script src="{{ asset('js/sweetAlertcustom.js') }}"></script>
+    <script src="{{ asset('js/myscripts.js') }}"></script>
     <script src="{{ asset('js/datatables-config.js') }}"></script>
 </head>
 
