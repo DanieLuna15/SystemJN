@@ -52,7 +52,7 @@ class MinisterioController extends Controller
     public function store(Request $request, $id = null)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255|unique:ministerios,nombre,' . ($id ? $id : 'NULL'),
+            'nombre' => 'required|string|min:3|max:255|unique:ministerios,nombre,' . ($id ? $id : 'NULL') . '|regex:/^[a-zA-Z\s]+$/',
             'multa_incremento' => 'required|numeric|min:0',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'tipo' => 'required|integer|min:0|max:1',

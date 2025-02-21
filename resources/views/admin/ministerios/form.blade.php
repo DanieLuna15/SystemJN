@@ -69,6 +69,8 @@
         </form>
     </div>
 </x-adminlte-card>
+<!-- Inclusión del archivo JavaScript global -->
+<script src="{{ asset('js/disableSubmitButton.js') }}"></script>
 
 @push('breadcrumb-plugins')
     <a href="{{ route('admin.ministerios.index') }}" class="btn btn-secondary rounded">

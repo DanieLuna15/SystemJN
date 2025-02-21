@@ -121,6 +121,9 @@
         </form>
     </div>
 </x-adminlte-card>
+<!-- Inclusión del archivo JavaScript global -->
+<script src="{{ asset('js/disableSubmitButton.js') }}"></script>
+
 <!-- Script para mostrar/ocultar campos dinámicamente -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {

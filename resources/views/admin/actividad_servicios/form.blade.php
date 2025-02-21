@@ -28,15 +28,21 @@
             </div>
 
             <!-- Botones de Acción -->
+
             <div class="d-flex justify-content-between">
-                <x-adminlte-button class="btn" type="submit"
+                <x-adminlte-button class="btn btn-success" type="submit"
                     label="{{ isset($actividad_servicio->id) ? 'Actualizar' : 'Guardar' }}" theme="success"
                     icon="fas fa-lg fa-save" />
                 <a href="{{ route('admin.actividad_servicios.index') }}" class="btn btn-secondary">Cancelar</a>
             </div>
+
         </form>
     </div>
 </x-adminlte-card>
+
+<!-- Inclusión del archivo JavaScript global -->
+<script src="{{ asset('js/disableSubmitButton.js') }}"></script>
+
 @push('breadcrumb-plugins')
     <a href="{{ route('admin.actividad_servicios.index') }}" class="btn btn-secondary rounded">
         <i class="fas fa-undo"></i> Regresar
