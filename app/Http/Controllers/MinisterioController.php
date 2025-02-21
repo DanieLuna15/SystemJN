@@ -52,7 +52,7 @@ class MinisterioController extends Controller
     public function store(Request $request, $id = null)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre' => 'required|string|max:255|unique:ministerios,nombre,' . ($id ? $id : 'NULL'),
             'multa_incremento' => 'required|numeric|min:0',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'tipo' => 'required|integer|min:0|max:1',
@@ -86,7 +86,7 @@ class MinisterioController extends Controller
     {
         $pageTitle = 'Todos los horarios del ministerio: ' . $ministerio->nombre;
         $horarios = Horario::where('ministerio_id', $ministerio->id)
-            ->where ('estado', Status::ACTIVE)
+            ->where('estado', Status::ACTIVE)
             ->orderByDesc('id')
             ->get();
         return view('admin.ministerios.horarios', compact('horarios', 'pageTitle'));
