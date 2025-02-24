@@ -27,9 +27,11 @@
             <div class="card">
                 <div class="card-header p-2">
                     <ul class="nav nav-pills">
-                        <li class="nav-item"><a class="nav-link active" href="#general" data-toggle="tab">Configuración
-                                General</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#logotipos" data-toggle="tab">Logotipo y Favicon</a>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#general" data-toggle="tab">ConfiguraciónGeneral</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#logotipos" data-toggle="tab">Logotipo y Favicon</a>
                         </li>
                     </ul>
                 </div>
@@ -37,20 +39,9 @@
                     <div class="tab-content">
                         <!-- Configuración General -->
                         <div class="active tab-pane" id="general">
-                            <dl class="row">
-                                <dt class="col-sm-4">Dirección</dt>
-                                <dd class="col-sm-8">{{ $configuracion->direccion }}</dd>
 
-                                <dt class="col-sm-4">Teléfono</dt>
-                                <dd class="col-sm-8">{{ $configuracion->telefono }}</dd>
+                                @include('admin.configuraciones.form', ['configuracion' => $configuracion])
 
-                                <dt class="col-sm-4">Email</dt>
-                                <dd class="col-sm-8">{{ $configuracion->email }}</dd>
-
-                                <dt class="col-sm-4">URL del sistema</dt>
-                                <dd class="col-sm-8"><a href="{{ $configuracion->url }}"
-                                        target="_blank">{{ $configuracion->url }}</a></dd>
-                            </dl>
                         </div>
 
                         <!-- Logotipo y Favicon -->
