@@ -8,6 +8,7 @@
             enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="id" value="{{ $actividad_servicio->id ?? '' }}">
+            <input type="hidden" name="remove_logo" id="removeLogoInput" value="0">
             <div class="row">
                 <div class="col-lg-4">
                     <div class="col-sm-12">

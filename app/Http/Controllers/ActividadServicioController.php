@@ -58,17 +58,23 @@ class ActividadServicioController extends Controller
         ]);
 
         try {
-            $data = $request->except('_token');
-            $ministerio = $id ? ActividadServicio::findOrFail($id) : new ActividadServicio();
+            $data = $request->except('_token', 'remove_logo');
+            $actividadServicio = $id ? ActividadServicio::findOrFail($id) : new ActividadServicio();
 
+            // 🔹 Eliminar la imagen solo si el usuario la quitó manualmente
+            if ($request->input('remove_logo') == '1') {
+                deleteFile($actividadServicio->imagen);
+                $data['imagen'] = null;
+            }
+            
             // 🔹 Si se sube un nueva imagen, procesarlo
             if ($request->hasFile('imagen')) {
-                deleteFile($ministerio->imagen); // Eliminar el anterior antes de guardar el nuevo
+                deleteFile($actividadServicio->imagen); // Eliminar el anterior antes de guardar el nuevo
                 $data['imagen'] = uploadFile($request->file('imagen'), 'uploads/actividad_servicios');
             }
 
 
-            $ministerio->fill($data)->save();
+            $actividadServicio->fill($data)->save();
 
             return redirect()->route('admin.actividad_servicios.index')->with('success', $id ? 'Act. o Servicio actualizado correctamente.' : 'Act. o Servicio creado correctamente.');
         } catch (\Exception $e) {
@@ -89,8 +95,8 @@ class ActividadServicioController extends Controller
      */
     public function edit(ActividadServicio $actividadServicio)
     {
-        $pageTitle = 'Edición de Actividad o Servicio: '. $actividadServicio->nombre;
-        return view('admin.actividad_servicios.edit', compact('actividadServicio','pageTitle'));
+        $pageTitle = 'Edición de Actividad o Servicio: ' . $actividadServicio->nombre;
+        return view('admin.actividad_servicios.edit', compact('actividadServicio', 'pageTitle'));
     }
 
     /**

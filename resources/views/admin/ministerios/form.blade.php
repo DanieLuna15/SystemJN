@@ -7,6 +7,7 @@
         <form action="{{ route('admin.ministerios.save', $ministerio->id ?? null) }}" method="POST"
             enctype="multipart/form-data">
             @csrf
+            <input type="hidden" name="remove_logo" id="removeLogoInput" value="0">
             <input type="hidden" name="id" value="{{ $ministerio->id ?? '' }}">
             <div class="row">
                 <div class="col-lg-4">

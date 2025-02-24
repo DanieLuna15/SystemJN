@@ -59,8 +59,14 @@ class MinisterioController extends Controller
         ]);
 
         try {
-            $data = $request->except('_token');
+            $data = $request->except('_token', 'remove_logo');
             $ministerio = $id ? Ministerio::findOrFail($id) : new Ministerio();
+
+            // 🔹 Eliminar la imagen solo si el usuario la quitó manualmente
+            if ($request->input('remove_logo') == '1') {
+                deleteFile($ministerio->logo);
+                $data['logo'] = null;
+            }
 
             // 🔹 Si se sube un nuevo logo, procesarlo
             if ($request->hasFile('logo')) {

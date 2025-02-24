@@ -59,5 +59,8 @@
         output.style.backgroundRepeat = 'no-repeat';
         removeBtn.style.display = 'none';
         document.getElementById('profilePicUpload{{ $id }}').value = '';
+        
+        // Marcar para eliminar la imagen
+        document.getElementById('removeLogoInput').value = '1';
     });
 </script>
