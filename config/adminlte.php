@@ -686,8 +686,9 @@ return [
     'assets' => [
         'js' => [
             'js/sweetAlertcustom.js',
-            'js/myscripts.js',
+            'js/myScripts.js',
             'js/datatables-config.js',
+            'js/disableSubmitButton.js',
         ],
         'css' => [
             'css/mystyles.css',

@@ -1,17 +1,15 @@
-document.addEventListener('DOMContentLoaded', function() {
-    var submitButtons = document.querySelectorAll('button[type="submit"]');
-    submitButtons.forEach(function(submitButton) {
-        submitButton.addEventListener('click', function(event) {
-            event.preventDefault(); // Evita el envío inmediato del formulario
-            if (submitButton.disabled) {
-                // Si el botón ya está deshabilitado, no hacer nada.
-                return;
+// Para dehabilitar el botón de submit
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll("form").forEach(form => {
+        form.addEventListener("submit", function(event) {
+            const submitButton = form.querySelector("button[type='submit']");
+            if (submitButton && !submitButton.disabled) {
+                // Obtener texto dinámico del atributo data-loading-text o usar un valor por defecto
+                const loadingText = submitButton.getAttribute("data-loading-text") || "Procesando...";
+                
+                submitButton.disabled = true;
+                submitButton.innerHTML = `<span class="fas fa-spinner fa-spin"></span> ${loadingText}`;
             }
-            submitButton.disabled = true;
-            submitButton.innerHTML = 'Enviando...';
-
-            // Envía el formulario manualmente
-            submitButton.closest('form').submit();
         });
     });
 });

@@ -92,8 +92,9 @@
     @endif
 
     <script src="{{ asset('js/sweetAlertcustom.js') }}"></script>
-    <script src="{{ asset('js/myscripts.js') }}"></script>
+    <script src="{{ asset('js/myScripts.js') }}"></script>
     <script src="{{ asset('js/datatables-config.js') }}"></script>
+    <script src="{{ asset('js/disableSubmitButton.js') }}"></script>
 </head>
 
 <body class="@yield('classes_body')" @yield('body_data')>

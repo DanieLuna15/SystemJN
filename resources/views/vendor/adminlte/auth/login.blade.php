@@ -50,7 +50,8 @@
 
             <div class="input-group-append">
                 <div class="input-group-text" id="togglePassword" style="cursor: pointer;">
-                    <span class="fas fa-eye {{ config('adminlte.classes_auth_icon', '') }}"></span> <!-- Icon for showing password -->
+                    <span class="fas fa-eye {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                    <!-- Icon for showing password -->
                 </div>
             </div>
 
@@ -74,7 +75,7 @@
             </div>
 
             <div class="col-5">
-                <button type="submit"
+                <button type="submit" data-loading-text="Accediendo..."
                     class="btn btn-block {{ config('adminlte.classes_auth_btn', 'btn-flat btn-primary') }}">
                     <span class="fas fa-sign-in-alt"></span>
                     {{ __('adminlte::adminlte.sign_in') }}
@@ -122,20 +123,4 @@
             }
         });
     </script>
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                const forms = document.querySelectorAll("form");
-
-                forms.forEach(form => {
-                    form.addEventListener("submit", function() {
-                        const submitButton = form.querySelector("button[type='submit']");
-                        if (submitButton) {
-                            submitButton.disabled = true;
-                            submitButton.innerHTML = `<span class="fas fa-spinner fa-spin"></span> Accediendo...`;
-                        }
-                    });
-                });
-
-            });
-        </script>
 @stop

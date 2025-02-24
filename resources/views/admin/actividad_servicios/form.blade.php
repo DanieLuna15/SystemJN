@@ -41,9 +41,6 @@
     </div>
 </x-adminlte-card>
 
-<!-- Inclusión del archivo JavaScript global -->
-<script src="{{ asset('js/disableSubmitButton.js') }}"></script>
-
 @push('breadcrumb-plugins')
     <a href="{{ route('admin.actividad_servicios.index') }}" class="btn btn-secondary rounded">
         <i class="fas fa-undo"></i> Regresar
