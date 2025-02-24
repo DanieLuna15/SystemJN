@@ -15,7 +15,7 @@ class UsersSeeder extends Seeder
                 'name' => 'Pastor Principal',
                 'email' => 'pastor@example.com',
                 'password' => Hash::make('password123'),
-                'role' => 'Pastor',
+                'role' => 'Pastor/Admin',
             ],
             [
                 'name' => 'Líder de Jóvenes',

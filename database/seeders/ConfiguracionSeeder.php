@@ -15,7 +15,7 @@ class ConfiguracionSeeder extends Seeder
     {
         Configuracion::create([
             'nombre' => 'Jehová Nissi',
-            'descripcion' => 'Congregación de Jehová Nissi',
+            'descripcion' => 'Congregación, etc....',
             'direccion' => 'Calle 123',
             'telefono' => '123456789',
             'email' => 'admin@empresa.com',

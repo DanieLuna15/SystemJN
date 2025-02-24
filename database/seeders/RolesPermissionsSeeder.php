@@ -11,36 +11,41 @@ class RolesPermissionsSeeder extends Seeder
     public function run()
     {
         $rolesPermissions = [
-            'Pastor' => [
-                'gestionar congregación',
+            'Pastor/Admin' => [
+                'gestionar configuracion del sistema',
                 'ver reportes generales',
+                //------------------------
                 'crear usuarios',
                 'ver usuarios',
                 'editar usuarios',
+                'cambiar estado usuarios',
                 'eliminar usuarios',
-                'crear eventos',
-                'ver eventos',
-                'editar eventos',
-                'eliminar eventos',
-                'crear grupos',
-                'ver grupos',
-                'editar grupos',
-                'eliminar grupos',
+                //------------------------
+                'crear ministerios',
+                'ver ministerios',
+                'cambiar estado ministerios',
+                'editar ministerios',
+                'eliminar ministerios',
+                //------------------------
+                'crear horarios',
+                'ver horarios',
+                'cambiar estado horarios',
+                'editar horarios',
+                'eliminar horarios',
+                //------------------------
+                'crear actividades_servicios',
+                'ver actividades_servicios',
+                'cambiar estado actividades_servicios',
+                'editar actividades_servicios',
+                'eliminar actividades_servicios',
             ],
             'Líder' => [
-                'gestionar grupos',
-                'ver reportes',
-                'crear eventos',
-                'ver eventos',
-                'editar eventos',
-                'crear grupos',
-                'ver grupos',
-                'editar grupos',
+                'ver horarios',
+                'ver actividades_servicios',
             ],
             'Miembro' => [
-                'ver eventos',
-                'ver reportes',
-                'ver grupos',
+                'ver horarios',
+                'ver actividades_servicios',
             ],
         ];
 
