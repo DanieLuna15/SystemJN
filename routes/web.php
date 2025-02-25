@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     // 📌 **Grupo de rutas para Configuraciones**
     Route::prefix('admin/configuraciones')->name('admin.configuracion.')->controller(App\Http\Controllers\ConfiguracionController::class)->group(function () {
         Route::get('/', 'index')->name('index');
+        Route::put('/update/{id}', 'update')->name('update');
     });
 
     // 📌 **Grupo de rutas para Ministerios**

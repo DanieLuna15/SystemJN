@@ -59,9 +59,23 @@ class ConfiguracionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Configuracion $configuracion)
+    public function update(Request $request, $id)
     {
-        //
+        // Validar los datos del formulario
+        $validatedData = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'descripcion' => 'nullable|string',
+            'direccion' => 'required|string|max:255',
+            'telefono' => 'required|string|max:20',
+            'url' => 'nullable|url|max:255',
+        ]);
+
+        // Encontrar y actualizar la configuración existente en una sola línea
+        Configuracion::where('id', $id)->update($validatedData);
+
+        // Redireccionar a la página de configuraciones con un mensaje de éxito
+        return redirect()->route('admin.configuracion.index')->with('success', 'Configuración actualizada correctamente.');
     }
 
     /**

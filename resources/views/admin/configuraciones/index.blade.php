@@ -46,17 +46,9 @@
 
                         <!-- Logotipo y Favicon -->
                         <div class="tab-pane" id="logotipos">
-                            <div class="text-center">
-                                <img class="img-thumbnail"
-                                    src="{{ asset('storage/' . $configuracion->logo ?? 'images/default-dark.png') }}"
-                                    alt="Logotipo del sistema" width="200px">
-                                <p class="mt-2">Logotipo actual</p>
 
-                                <img class="img-thumbnail"
-                                    src="{{ asset('storage/' . $configuracion->favicon ?? 'images/default-favicon.png') }}"
-                                    alt="Favicon del sistema" width="100px">
-                                <p class="mt-2">Favicon actual</p>
-                            </div>
+                            @include('admin.configuraciones.logotipos', ['configuracion' => $configuracion])
+                            
                         </div>
                     </div>
                 </div>
