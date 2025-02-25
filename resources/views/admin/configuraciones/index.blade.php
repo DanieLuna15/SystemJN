@@ -30,10 +30,10 @@
                 <div class="card-header p-2">
                     <ul class="nav nav-pills">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#general" data-toggle="tab">Configuración General</a>
+                            <a class="nav-link active" href="#general" data-toggle="tab" data-section="general">Configuración General</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#logotipos" data-toggle="tab">Logotipo y Favicon</a>
+                            <a class="nav-link" href="#logotipos" data-toggle="tab" data-section="logotipos">Logotipo y Favicon</a>
                         </li>
                     </ul>
                 </div>
@@ -65,4 +65,25 @@
             border: 3px solid #ddd;
         }
     </style>
+@endpush
+
+@push('js')
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Redirigir a la sección guardada cuando se cargue la página
+            const seccion = localStorage.getItem('seccion');
+            if (seccion) {
+                document.querySelector(`.nav-link[data-section="${seccion}"]`)?.click();
+            }
+
+            // Guardar la sección seleccionada en localStorage al hacer clic en un enlace
+            document.querySelectorAll('.nav-link').forEach(item => {
+                item.addEventListener('click', () => {
+                    localStorage.setItem('seccion', item.getAttribute('data-section'));
+                });
+            });
+        });
+
+    </script>
+
 @endpush

@@ -67,7 +67,7 @@ class ConfiguracionController extends Controller
             'email' => 'required|email|max:255',
             'descripcion' => 'nullable|string',
             'direccion' => 'required|string|max:255',
-            'telefono' => 'required|string|max:20',
+            'telefono' => 'required|string|min:3|max:10',
             'url' => 'nullable|url|max:255',
         ]);
 
