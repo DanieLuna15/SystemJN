@@ -9,9 +9,11 @@
                 <div class="card-body box-profile">
                     <div class="text-center">
                         <img class="profile-user-img img-fluid img-circle"
-                            src="{{ asset('storage/' . $configuracion->logo ?? 'images/default-dark.png') }}"
+                            src="{{ asset($configuracion->logo ?? 'images/default-dark.png') }}"
                             alt="Logotipo del sistema">
                     </div>
+
+                                    
                     <ul class="list-group list-group-unbordered mb-3">
                         <li class="list-group-item text-center">
                             <b>{{ $configuracion->nombre }}</b>
@@ -24,11 +26,11 @@
             </div>
         </div>
         <div class="col-md-9">
-            <div class="card">
+            <div class="card card-primary card-outline">
                 <div class="card-header p-2">
                     <ul class="nav nav-pills">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#general" data-toggle="tab">ConfiguraciónGeneral</a>
+                            <a class="nav-link active" href="#general" data-toggle="tab">Configuración General</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#logotipos" data-toggle="tab">Logotipo y Favicon</a>
@@ -39,16 +41,11 @@
                     <div class="tab-content">
                         <!-- Configuración General -->
                         <div class="active tab-pane" id="general">
-
-                                @include('admin.configuraciones.form', ['configuracion' => $configuracion])
-
+                            @include('admin.configuraciones.form', ['configuracion' => $configuracion])
                         </div>
-
                         <!-- Logotipo y Favicon -->
                         <div class="tab-pane" id="logotipos">
-
                             @include('admin.configuraciones.logotipos', ['configuracion' => $configuracion])
-                            
                         </div>
                     </div>
                 </div>

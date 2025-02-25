@@ -13,7 +13,7 @@
                 <div class="col-lg-4">
                     <div class="col-sm-12">
                         <!-- Campo Imagen -->
-                        <x-image-upload label="Imagen" name="imagen" :image="$actividad_servicio->imagen ?? null" :id="'actividad_servicio'" />
+                        <x-image-upload label="Imagen" name="imagen" :image="$actividad_servicio->imagen ?? null" :id="'logotipo_actual'" />
                     </div>
 
                 </div>

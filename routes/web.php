@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MinisterioController;
 use App\Http\Controllers\HorarioController;
+use App\Http\Controllers\ConfiguracionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,9 +29,10 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::middleware('auth')->group(function () {
 
     // 📌 **Grupo de rutas para Configuraciones**
-    Route::prefix('admin/configuraciones')->name('admin.configuracion.')->controller(App\Http\Controllers\ConfiguracionController::class)->group(function () {
+    Route::prefix('admin/configuraciones')->name('admin.configuracion.')->controller(ConfiguracionController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::put('/update/{id}', 'update')->name('update');
+        Route::put('/update_logo/{id}', 'update_logo')->name('update_logo');
     });
 
     // 📌 **Grupo de rutas para Ministerios**

@@ -78,6 +78,48 @@ class ConfiguracionController extends Controller
         return redirect()->route('admin.configuracion.index')->with('success', 'Configuración actualizada correctamente.');
     }
 
+    public function update_logo(Request $request, $id)
+    {
+        //dd($request->all());
+        // 🔹 Validar los datos del formulario
+        $validatedData = $request->validate([
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'favicon' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // 🔹 Obtener la configuración existente
+        $configuracion = Configuracion::findOrFail($id);
+
+        // 🔹 Eliminar imágenes si el usuario las quitó manualmente
+        if ($request->input('remove_logo') == '1') {
+            deleteFile($configuracion->logo);
+            $configuracion->logo = null;
+        }
+
+        if ($request->input('remove_favicon') == '1') {
+            deleteFile($configuracion->favicon);
+            $configuracion->favicon = null;
+        }
+
+        // 🔹 Subir nuevas imágenes si se adjuntaron
+        if ($request->hasFile('logo')) {
+            deleteFile($configuracion->logo); // Eliminar la anterior antes de guardar la nueva
+            $configuracion->logo = uploadFile($request->file('logo'), 'uploads/configuraciones');
+        }
+
+        if ($request->hasFile('favicon')) {
+            deleteFile($configuracion->favicon); // Eliminar la anterior antes de guardar la nueva
+            $configuracion->favicon = uploadFile($request->file('favicon'), 'uploads/configuraciones');
+        }
+
+        // 🔹 Guardar los cambios en la base de datos
+        $configuracion->save();
+
+        // 🔹 Redireccionar con mensaje de éxito
+        return redirect()->route('admin.configuracion.index')->with('success', 'Configuración actualizada correctamente.');
+    }
+
+
     /**
      * Remove the specified resource from storage.
      */

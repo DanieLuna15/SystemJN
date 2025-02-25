@@ -22,8 +22,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('horarios', function (Blueprint $table) {
-            $table->tinyInteger('dia_semana')->nullable(false)->change();
-
+            // Cambiar la columna para que no sea nullable
+            $table->tinyInteger('dia_semana')->default(0)->nullable(false)->change();
         });
     }
 };

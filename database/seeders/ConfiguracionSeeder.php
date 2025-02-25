@@ -20,7 +20,7 @@ class ConfiguracionSeeder extends Seeder
             'telefono' => '123456789',
             'email' => 'admin@empresa.com',
             'url' => 'https://miempresa.com',
-            'logo' => 'images/default-dark.png',
+            'logo' => 'images/default-favicon.png',
             'favicon' => 'images/default-favicon.png'
         ]);
     }
