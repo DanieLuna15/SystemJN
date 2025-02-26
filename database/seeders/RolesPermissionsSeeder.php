@@ -38,6 +38,15 @@ class RolesPermissionsSeeder extends Seeder
                 'cambiar estado actividades_servicios',
                 'editar actividades_servicios',
                 'eliminar actividades_servicios',
+                //------------------------
+                'crear roles',
+                'ver roles',
+                'cambiar estado roles',
+                'editar roles',
+                'eliminar roles',
+                //------------------------
+                'editar configuracion',
+                'ver configuracion',
             ],
             'Líder' => [
                 'ver horarios',
