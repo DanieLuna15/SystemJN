@@ -63,9 +63,16 @@ class ActividadServicioController extends Controller
     public function store(Request $request, $id = null)
     {
         $request->validate([
-            'nombre' => ['required', 'string', 'min:3', 'max:255', 'unique:actividad_servicios,nombre', 'regex:/^[a-zA-Z\s]+$/'],
+            'nombre' => [
+                'required',
+                'string',
+                'min:3',
+                'max:255',
+                'unique:actividad_servicios,nombre',
+                'regex:/^[\p{L}\s]+$/u'
+            ],
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        ]);        
 
         try {
             $data = $request->except('_token', 'remove_logo');

@@ -65,12 +65,12 @@ class ConfiguracionController extends Controller
     {
         // Validar los datos del formulario
         $validatedData = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
+            'nombre' => 'required|string|min:3|max:255|regex:/^[\p{L}\s]+$/u',
+            'email' => 'required|email|min:3|max:255',
             'descripcion' => 'nullable|string',
             'direccion' => 'required|string|max:255',
-            'telefono' => 'required|string|min:3|max:10',
-            'url' => 'nullable|url|max:255',
+            'telefono' => 'required|string|min:3|max:15|regex:/^\+?\d{8,15}$/',
+            'url' => 'nullable|url|min:3|max:255',
         ]);
 
         // Encontrar y actualizar la configuración existente en una sola línea
