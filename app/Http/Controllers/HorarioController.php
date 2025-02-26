@@ -11,6 +11,16 @@ use Illuminate\Support\Facades\Log;
 
 class HorarioController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('can:ver horarios')->only(['index', 'active', 'inactive']);
+        $this->middleware('can:crear horarios')->only(['create', 'store']);
+        $this->middleware('can:editar horarios')->only(['edit', 'store']);
+        $this->middleware('can:ver horario')->only(['show']);
+        $this->middleware('can:eliminar horarios')->only(['destroy']);
+        $this->middleware('can:cambiar estado horarios')->only(['status']);
+    }
     /**
      * Display a listing of the resource.
      */

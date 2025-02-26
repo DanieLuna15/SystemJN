@@ -9,6 +9,19 @@ use Illuminate\Http\Request;
 
 class MinisterioController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('can:ver ministerios')->only(['index', 'active', 'inactive']);
+        $this->middleware('can:crear ministerios')->only(['create', 'store']);
+        $this->middleware('can:editar ministerios')->only(['edit', 'store']);
+        $this->middleware('can:ver ministerio')->only(['show']);
+        $this->middleware('can:eliminar ministerios')->only(['destroy']);
+        $this->middleware('can:cambiar estado ministerios')->only(['status']);
+        $this->middleware('can:ver horarios_ministerio')->only(['horarios']);
+    }
+
     public function index()
     {
         $pageTitle = 'Todos los Ministerios';

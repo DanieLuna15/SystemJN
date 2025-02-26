@@ -28,8 +28,8 @@
                                         <!-- Imagen centrada -->
                                         <td class="align-middle">
                                             @if ($ministerio->logo)
-                                                <img src="{{ asset($ministerio->logo) }}"
-                                                    title="Imagen referencial" class="img-rounded">
+                                                <img src="{{ asset($ministerio->logo) }}" title="Imagen referencial"
+                                                    class="img-rounded">
                                             @else
                                                 <img src="{{ asset('images/default-dark.png') }}" title="Sin imagen"
                                                     class="img-rounded">
@@ -102,7 +102,9 @@
 @endpush
 
 @push('breadcrumb-plugins')
-    <a href="{{ route('admin.ministerios.create') }}" class="btn btn-success rounded">
-        <i class="fas fa-plus-square"></i> Nuevo
-    </a>
+    @can('crear ministerios')
+        <a href="{{ route('admin.ministerios.create') }}" class="btn btn-success rounded">
+            <i class="fas fa-plus-square"></i> Nuevo
+        </a>
+    @endcan
 @endpush

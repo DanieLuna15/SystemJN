@@ -7,15 +7,17 @@ use Illuminate\Http\Request;
 
 class ConfiguracionController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('can:ver configuracion')->only(['index']);
+        $this->middleware('can:editar configuracion informacion')->only(['update']);
+        $this->middleware('can:editar configuracion imagenes')->only(['update_logo']);
+    }
     /**
      * Display a listing of the resource.
      */
-    // public function index()
-    // {
-    //     $pageTitle = 'Toda la Configuración del sistema';
-    //     return view('admin.configuraciones.index', compact('pageTitle'));
-    // }
-
     public function index()
     {
         $pageTitle = 'Toda la Configuración del sistema';

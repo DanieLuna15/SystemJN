@@ -26,6 +26,7 @@ class RolesPermissionsSeeder extends Seeder
                 'cambiar estado ministerios',
                 'editar ministerios',
                 'eliminar ministerios',
+                'ver horarios_ministerio',
                 //------------------------
                 'crear horarios',
                 'ver horarios',
@@ -45,13 +46,15 @@ class RolesPermissionsSeeder extends Seeder
                 'editar roles',
                 'eliminar roles',
                 //------------------------
-                'editar configuracion',
+                'editar configuracion informacion',
+                'editar configuracion imagenes',
                 'ver configuracion',
             ],
             'Líder' => [
                 'ver horarios',
                 'ver actividades_servicios',
                 'ver ministerios',
+                'ver horarios_ministerio'
             ],
             'Miembro' => [
                 'ver horarios',

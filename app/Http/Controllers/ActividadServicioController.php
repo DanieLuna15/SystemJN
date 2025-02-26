@@ -8,6 +8,16 @@ use App\Models\ActividadServicio;
 
 class ActividadServicioController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('can:ver actividades_servicios')->only(['index', 'active', 'inactive']);
+        $this->middleware('can:crear actividades_servicios')->only(['create', 'store']);
+        $this->middleware('can:editar actividades_servicios')->only(['edit', 'store']);
+        $this->middleware('can:ver actividad_servicio')->only(['show']);
+        $this->middleware('can:eliminar actividades_servicios')->only(['destroy']);
+        $this->middleware('can:cambiar estado actividades_servicios')->only(['status']);
+    }
     /**
      * Display a listing of the resource.
      */    public function index()
