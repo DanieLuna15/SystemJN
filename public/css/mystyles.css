@@ -67,3 +67,13 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);  /* Sombra más pronunciada al pasar el mouse */
     border-color: #4e5b62;               /* Cambia el color del borde cuando se pasa el mouse */
 }
+/*PARA FIJAR LAS COLUMNAS DE LA TABLA HORARIOS  */
+
+#horarios-table th:nth-last-child(1),
+#horarios-table td:nth-last-child(1) {
+    position: sticky;
+    right: 0;
+    background: white;
+    z-index: 2;
+    box-shadow: -1px 0 5px rgba(0, 0, 0, 0.1);
+}

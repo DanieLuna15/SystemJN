@@ -11,34 +11,58 @@
                     <div class="table-responsive">
                         <table id="horarios-table"
                             class="table table-striped table-bordered table-hover table-sm datatable text-center">
-                            <thead class="text-center">
+                            <thead>
                                 <tr>
-                                    <th>Día de la Semana</th>
-                                    <th>Actividad o Servicio</th>
-                                    <th>Hora de Inicio</th>
-                                    <th>Hora Multa</th>
-                                    <th>Categoría</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
+
+                                    <th style="text-align: center">Día de la Semana</th>
+                                    <th style="text-align: center">Fecha</th>
+                                    <th style="text-align: center">Actividad o Servicio</th>
+                                    <th style="text-align: center">Hora de Inicio</th>
+                                    <th style="text-align: center">Hora Multa</th>
+                                    <th style="text-align: center">Tipo</th>
+                                    <th style="text-align: center">Estado</th>
+                                    <th style="text-align: center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($horarios as $horario)
                                     <tr>
+
                                         <!-- Día de la Semana centrado -->
-                                        <td >{{ $horario->dia_semana_texto }}</td>
+
+                                        <td class="text-center align-middle">
+                                            @if ($horario->dia_semana == null)
+                                                <small class="badge bg-gradient-warning w-100 h-100">
+                                                    Sin datos
+                                                </small>
+                                            @else
+                                            {{ $horario->dia_semana_texto }}
+                                            @endif
+                                        </td>
+
+                                         <!-- fecha centrado -->
+
+                                         <td class="text-center align-middle">
+                                            @if ($horario->fecha == null)
+                                                <small class="badge bg-gradient-warning w-100 h-100">
+                                                    Sin datos
+                                                </small>
+                                            @else
+                                            {{ $horario->fecha }}
+                                            @endif
+                                        </td>
 
                                         <!-- Actividad o Servicio centrado -->
                                         <td class="align-middle text-truncate">{{ __(strLimit($horario->actividadServicio->nombre, 20)) }}</td>
 
                                         <!-- Hora de Inicio centrada -->
-                                        <td class="align-middle">{{ $horario->hora_registro }}</td>
+                                        <td class="text-center">{{ $horario->hora_registro }}</td>
 
                                         <!-- Hora Multa centrada -->
-                                        <td class="align-middle">{{ $horario->hora_multa }}</td>
+                                        <td class="text-center">{{ $horario->hora_multa }}</td>
 
-                                        <!-- Categoría centrada -->
-                                        <td class="align-middle">
+                                        <!-- Tipo centrado -->
+                                        <td class="text-center align-middle">
                                             @if ($horario->tipo == 1)
                                                 <small class="badge bg-gradient-primary w-100 h-100">
                                                     <i class="fas fa-lock"></i> Fijo
@@ -51,12 +75,12 @@
                                         </td>
 
                                         <!-- Estado centrado -->
-                                        <td class="align-middle">
+                                        <td class="text-center align-middle">
                                             {!! $horario->statusBadge !!}
                                         </td>
 
                                         <!-- Acciones centradas -->
-                                        <td class="align-middle">
+                                        <td class="text-center">
                                             <div class="d-flex justify-content-center">
                                                 <a href="{{ route('admin.horarios.edit', $horario) }}"
                                                     class="btn btn-warning btn-sm mx-1" title="Editar">
@@ -79,6 +103,7 @@
             </div>
         </div>
     </div>
+
 @stop
 {{-- Push extra styles --}}
 @push('css')
