@@ -83,7 +83,5 @@
                 });
             });
         });
-
     </script>
-
 @endpush

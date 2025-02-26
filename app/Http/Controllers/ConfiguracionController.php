@@ -85,6 +85,7 @@ class ConfiguracionController extends Controller
         $validatedData = $request->validate([
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'favicon' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'loader' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // 🔹 Obtener la configuración existente
@@ -101,15 +102,25 @@ class ConfiguracionController extends Controller
             $configuracion->favicon = null;
         }
 
-        // 🔹 Subir nuevas imágenes si se adjuntaron
-        if ($request->hasFile('logo')) {
-            deleteFile($configuracion->logo); // Eliminar la anterior antes de guardar la nueva
-            $configuracion->logo = uploadFile($request->file('logo'), 'uploads/configuraciones');
+        if ($request->input('remove_loader') == '1') {
+            deleteFile($configuracion->loader);
+            $configuracion->loader = null;
         }
 
-        if ($request->hasFile('favicon')) {
-            deleteFile($configuracion->favicon); // Eliminar la anterior antes de guardar la nueva
-            $configuracion->favicon = uploadFile($request->file('favicon'), 'uploads/configuraciones');
+        // 🔹 Subir nuevas imágenes si se adjuntaron
+        if (isset($validatedData['logo'])) {
+            deleteFile($configuracion->logo);
+            $configuracion->logo = uploadFile($validatedData['logo'], 'uploads/configuraciones');
+        }
+
+        if (isset($validatedData['favicon'])) {
+            deleteFile($configuracion->favicon);
+            $configuracion->favicon = uploadFile($validatedData['favicon'], 'uploads/configuraciones');
+        }
+
+        if (isset($validatedData['loader'])) {
+            deleteFile($configuracion->loader);
+            $configuracion->loader = uploadFile($validatedData['loader'], 'uploads/configuraciones');
         }
 
         // 🔹 Guardar los cambios en la base de datos

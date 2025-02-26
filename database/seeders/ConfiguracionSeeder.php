@@ -21,7 +21,8 @@ class ConfiguracionSeeder extends Seeder
             'email' => 'admin@empresa.com',
             'url' => 'https://miempresa.com',
             'logo' => null,
-            'favicon' => null
+            'favicon' => null,
+            'loader' => null
         ]);
     }
 }
