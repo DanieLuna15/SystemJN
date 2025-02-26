@@ -51,6 +51,7 @@ class RolesPermissionsSeeder extends Seeder
             'Líder' => [
                 'ver horarios',
                 'ver actividades_servicios',
+                'ver ministerios',
             ],
             'Miembro' => [
                 'ver horarios',

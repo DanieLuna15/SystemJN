@@ -301,12 +301,12 @@ return [
     'menu' => [
         ['header' => 'ADMINISTRACIÓN'],
 
-        [
-            'text' => 'Dashboard',
-            'url'  => 'dashboard',
-            'icon' => 'fas fa-tachometer-alt',
-            'can'  => 'ver reportes', // Solo los que tienen este permiso lo verán
-        ],
+        // [
+        //     'text' => 'Dashboard',
+        //     'url'  => 'dashboard',
+        //     'icon' => 'fas fa-tachometer-alt',
+        //     'can'  => 'ver reportes', // Solo los que tienen este permiso lo verán
+        // ],
 
         [
             'text' => 'Usuarios',
@@ -315,49 +315,49 @@ return [
             'can'  => 'ver usuarios', // Solo los que tienen este permiso lo verán
         ],
 
-        [
-            'text' => 'Gestión de Congregación',
-            'url'  => 'admin/congregacion',
-            'icon' => 'fas fa-church',
-            'can'  => 'gestionar congregación', // Solo los que tienen este permiso lo verán
-        ],
+        // [
+        //     'text' => 'Gestión de Congregación',
+        //     'url'  => 'admin/congregacion',
+        //     'icon' => 'fas fa-church',
+        //     'can'  => 'gestionar congregación', // Solo los que tienen este permiso lo verán
+        // ],
 
-        [
-            'text' => 'Eventos',
-            'url'  => 'admin/eventos',
-            'icon' => 'fas fa-calendar-alt',
-            'can'  => 'gestionar eventos', // Solo los que tienen este permiso lo verán
-        ],
+        // [
+        //     'text' => 'Eventos',
+        //     'url'  => 'admin/eventos',
+        //     'icon' => 'fas fa-calendar-alt',
+        //     'can'  => 'gestionar eventos', // Solo los que tienen este permiso lo verán
+        // ],
 
-        [
-            'text' => 'Reportes',
-            'url'  => 'admin/reportes',
-            'icon' => 'fas fa-chart-bar',
-            'can'  => 'ver reportes', // Solo los que tienen este permiso lo verán
-        ],
+        // [
+        //     'text' => 'Reportes',
+        //     'url'  => 'admin/reportes',
+        //     'icon' => 'fas fa-chart-bar',
+        //     'can'  => 'ver reportes', // Solo los que tienen este permiso lo verán
+        // ],
 
-        ['header' => 'AJUSTES'],
+        // ['header' => 'AJUSTES'],
 
-        [
-            'text' => 'Configuración',
-            'url'  => 'admin/settings',
-            'icon' => 'fas fa-cogs',
-            'can'  => 'editar usuarios', // Solo los que tienen este permiso lo verán
-        ],
+        // [
+        //     'text' => 'Configuración',
+        //     'url'  => 'admin/settings',
+        //     'icon' => 'fas fa-cogs',
+        //     'can'  => 'editar usuarios', // Solo los que tienen este permiso lo verán
+        // ],
 
-        [
-            'text' => 'Perfil',
-            'url' => 'admin/profile',
-            'icon' => 'fas fa-fw fa-user',
-        ],
+        // [
+        //     'text' => 'Perfil',
+        //     'url' => 'admin/profile',
+        //     'icon' => 'fas fa-fw fa-user',
+        // ],
 
-        [
-            'text' => 'Cambiar Contraseña',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
-        ],
+        // [
+        //     'text' => 'Cambiar Contraseña',
+        //     'url' => 'admin/settings',
+        //     'icon' => 'fas fa-fw fa-lock',
+        // ],
 
-        ['header' => 'HERRAMIENTAS'],
+        // ['header' => 'HERRAMIENTAS'],
 
         [
             'type' => 'navbar-search',
@@ -370,38 +370,38 @@ return [
             'topnav_right' => true,
         ],
 
-        ['header' => 'OTRAS OPCIONES'],
+        // ['header' => 'OTRAS OPCIONES'],
 
-        [
-            'text' => 'Niveles de Menú',
-            'icon' => 'fas fa-fw fa-share',
-            'submenu' => [
-                [
-                    'text' => 'Nivel 1',
-                    'url' => '#',
-                ],
-                [
-                    'text' => 'Nivel 1',
-                    'url' => '#',
-                    'submenu' => [
-                        [
-                            'text' => 'Nivel 2',
-                            'url' => '#',
-                        ],
-                        [
-                            'text' => 'Nivel 2',
-                            'url' => '#',
-                            'submenu' => [
-                                [
-                                    'text' => 'Nivel 3',
-                                    'url' => '#',
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ],
+        // [
+        //     'text' => 'Niveles de Menú',
+        //     'icon' => 'fas fa-fw fa-share',
+        //     'submenu' => [
+        //         [
+        //             'text' => 'Nivel 1',
+        //             'url' => '#',
+        //         ],
+        //         [
+        //             'text' => 'Nivel 1',
+        //             'url' => '#',
+        //             'submenu' => [
+        //                 [
+        //                     'text' => 'Nivel 2',
+        //                     'url' => '#',
+        //                 ],
+        //                 [
+        //                     'text' => 'Nivel 2',
+        //                     'url' => '#',
+        //                     'submenu' => [
+        //                         [
+        //                             'text' => 'Nivel 3',
+        //                             'url' => '#',
+        //                         ],
+        //                     ],
+        //                 ],
+        //             ],
+        //         ],
+        //     ],
+        // ],
 
 
         [
