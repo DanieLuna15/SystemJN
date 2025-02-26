@@ -110,17 +110,17 @@ class ConfiguracionController extends Controller
         // 🔹 Subir nuevas imágenes si se adjuntaron
         if (isset($validatedData['logo'])) {
             deleteFile($configuracion->logo);
-            $configuracion->logo = uploadFile($validatedData['logo'], 'uploads/configuraciones');
+            $configuracion->logo = uploadFile($validatedData['logo'], 'uploads/configuraciones/logo');
         }
 
         if (isset($validatedData['favicon'])) {
             deleteFile($configuracion->favicon);
-            $configuracion->favicon = uploadFile($validatedData['favicon'], 'uploads/configuraciones');
+            $configuracion->favicon = uploadFile($validatedData['favicon'], 'uploads/configuraciones/favicon');
         }
 
         if (isset($validatedData['loader'])) {
             deleteFile($configuracion->loader);
-            $configuracion->loader = uploadFile($validatedData['loader'], 'uploads/configuraciones');
+            $configuracion->loader = uploadFile($validatedData['loader'], 'uploads/configuraciones/loader');
         }
 
         // 🔹 Guardar los cambios en la base de datos
