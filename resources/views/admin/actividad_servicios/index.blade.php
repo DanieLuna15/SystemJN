@@ -48,17 +48,22 @@
                                         <!-- Acciones centradas -->
                                         <td class="align-middle">
                                             <div class="d-flex justify-content-center">
-                                                <a href="{{ route('admin.actividad_servicios.edit', $actividad_servicio) }}"
-                                                    class="btn btn-warning btn-sm mx-1" title="Editar">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <button type="button" title="Cambiar estado"
-                                                    class="btn btn-sm {{ $actividad_servicio->estado ? 'btn-danger' : 'btn-success' }} confirmationBtn mx-1"
-                                                    data-action="{{ route('admin.actividad_servicios.status', $actividad_servicio->id) }}"
-                                                    data-question="{{ $actividad_servicio->estado ? '¿Seguro que deseas inhabilitar la Actividad o Servicio <strong>' . $actividad_servicio->nombre . '</strong>?' : '¿Seguro que deseas habilitar la Actividad o Servicio <strong>' . $actividad_servicio->nombre . '</strong>?' }}">
-                                                    <i
-                                                        class="fas {{ $actividad_servicio->estado ? 'fa-eye-slash' : 'fa-eye' }}"></i>
-                                                </button>
+                                                @can('editar actividades_servicios')
+                                                    <a href="{{ route('admin.actividad_servicios.edit', $actividad_servicio) }}"
+                                                        class="btn btn-warning btn-sm mx-1" title="Editar">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                @endcan
+                                                @can('cambiar estado actividades_servicios')
+                                                    <button type="button" title="Cambiar estado"
+                                                        class="btn btn-sm {{ $actividad_servicio->estado ? 'btn-danger' : 'btn-success' }} confirmationBtn mx-1"
+                                                        data-action="{{ route('admin.actividad_servicios.status', $actividad_servicio->id) }}"
+                                                        data-question="{{ $actividad_servicio->estado ? '¿Seguro que deseas inhabilitar la Actividad o Servicio <strong>' . $actividad_servicio->nombre . '</strong>?' : '¿Seguro que deseas habilitar la Actividad o Servicio <strong>' . $actividad_servicio->nombre . '</strong>?' }}">
+                                                        <i
+                                                            class="fas {{ $actividad_servicio->estado ? 'fa-eye-slash' : 'fa-eye' }}"></i>
+                                                    </button>
+                                                @endcan
+
                                             </div>
                                         </td>
                                     </tr>
@@ -81,7 +86,9 @@
 @endpush
 
 @push('breadcrumb-plugins')
+    @can('crear actividades_servicios')
     <a href="{{ route('admin.actividad_servicios.create') }}" class="btn btn-success rounded">
         <i class="fas fa-plus-square"></i> Nuevo
     </a>
+    @endcan
 @endpush

@@ -154,7 +154,9 @@
     });
 </script>
 @push('breadcrumb-plugins')
-    <a href="{{ route('admin.horarios.index') }}" class="btn btn-secondary rounded">
-        <i class="fas fa-undo"></i> Regresar
-    </a>
+    @can('crear actividades_servicios')
+        <a href="{{ route('admin.ministerios.create') }}" class="btn btn-success rounded">
+            <i class="fas fa-plus-square"></i> Nuevo
+        </a>
+    @endcan
 @endpush

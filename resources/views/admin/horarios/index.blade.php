@@ -28,7 +28,8 @@
                                 @foreach ($horarios as $horario)
                                     <tr>
                                         <!-- Ministerio centrado -->
-                                        <td class="align-middle text-truncate">{{ __(strLimit($horario->ministerio->nombre, 20)) }}</td>
+                                        <td class="align-middle text-truncate">
+                                            {{ __(strLimit($horario->ministerio->nombre, 20)) }}</td>
 
                                         <!-- Día de la Semana centrado -->
 
@@ -38,28 +39,29 @@
                                                     Sin datos
                                                 </small>
                                             @else
-                                            {{ $horario->dia_semana_texto }}
+                                                {{ $horario->dia_semana_texto }}
                                             @endif
                                         </td>
 
-                                         <!-- fecha centrado -->
-                                         
-                                         <td class="text-center align-middle">
+                                        <!-- fecha centrado -->
+
+                                        <td class="text-center align-middle">
                                             @if ($horario->fecha == null)
                                                 <small class="badge bg-gradient-warning w-100 h-100">
                                                     Sin datos
                                                 </small>
                                             @else
-                                            {{ $horario->fecha }}
+                                                {{ $horario->fecha }}
                                             @endif
                                         </td>
 
                                         <!-- Actividad o Servicio centrado -->
-                                        <td class="align-middle text-truncate">{{ __(strLimit($horario->actividadServicio->nombre, 20)) }}</td>
+                                        <td class="align-middle text-truncate">
+                                            {{ __(strLimit($horario->actividadServicio->nombre, 20)) }}</td>
 
                                         <!-- Hora de Inicio centrada -->
                                         <td class="text-center">{{ $horario->hora_registro }}</td>
-                                        
+
                                         <!-- Hora Multa centrada -->
                                         <td class="text-center">{{ $horario->hora_multa }}</td>
 
@@ -83,17 +85,23 @@
 
                                         <!-- Acciones centradas -->
                                         <td class="text-center">
+
                                             <div class="d-flex justify-content-center">
+                                                @can('editar horarios')
                                                 <a href="{{ route('admin.horarios.edit', $horario) }}"
                                                     class="btn btn-warning btn-sm mx-1" title="Editar">
-                                                    <i class="fas fa-edit"></i>
+                                                    <i class="fas fa-edit"></i>Editar
                                                 </a>
-                                                <button type="button" title="Cambiar estado"
-                                                    class="btn btn-sm {{ $horario->estado ? 'btn-danger' : 'btn-success' }} confirmationBtn mx-1"
-                                                    data-action="{{ route('admin.horarios.status', $horario->id) }}"
-                                                    data-question="{{ $horario->estado ? '¿Seguro que deseas inhabilitar el Horario del <strong>' . $horario->dia_semana_texto . '</strong>?' : '¿Seguro que deseas habilitar el Horario del <strong>' . $horario->dia_semana_texto . '</strong>?' }}">
-                                                    <i class="fas {{ $horario->estado ? 'fa-eye-slash' : 'fa-eye' }}"></i>
-                                                </button>
+                                                @endcan
+                                                @can('cambiar estado horarios')
+                                                    <button type="button" title="Cambiar estado"
+                                                        class="btn btn-sm {{ $horario->estado ? 'btn-danger' : 'btn-success' }} confirmationBtn mx-1"
+                                                        data-action="{{ route('admin.horarios.status', $horario->id) }}"
+                                                        data-question="{{ $horario->estado ? '¿Seguro que deseas inhabilitar el Horario del <strong>' . $horario->dia_semana_texto . '</strong>?' : '¿Seguro que deseas habilitar el Horario del <strong>' . $horario->dia_semana_texto . '</strong>?' }}">
+                                                        <i class="fas {{ $horario->estado ? 'fa-eye-slash' : 'fa-eye' }}"></i>
+                                                    </button>
+                                                @endcan
+
                                             </div>
                                         </td>
                                     </tr>
@@ -117,7 +125,9 @@
 @endpush
 
 @push('breadcrumb-plugins')
-    <a href="{{ route('admin.horarios.create') }}" class="btn btn-success rounded">
-        <i class="fas fa-plus-square"></i> Nuevo
-    </a>
+    @can('crear horarios')
+        <a href="{{ route('admin.horarios.create') }}" class="btn btn-success rounded">
+            <i class="fas fa-plus-square"></i> Nuevo
+        </a>
+    @endcan
 @endpush

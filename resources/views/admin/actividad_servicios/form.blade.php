@@ -42,7 +42,9 @@
 </x-adminlte-card>
 
 @push('breadcrumb-plugins')
-    <a href="{{ route('admin.actividad_servicios.index') }}" class="btn btn-secondary rounded">
-        <i class="fas fa-undo"></i> Regresar
-    </a>
+    @can('crear actividades_servicios')
+        <a href="{{ route('admin.actividad_servicios.index') }}" class="btn btn-secondary rounded">
+            <i class="fas fa-undo"></i> Nuevo
+        </a>
+    @endcan
 @endpush

@@ -64,22 +64,30 @@
                                         <!-- Acciones centradas -->
                                         <td class="align-middle">
                                             <div class="d-flex justify-content-center">
-                                                <a href="{{ route('admin.ministerios.edit', $ministerio) }}"
-                                                    class="btn btn-warning btn-sm mx-1" title="Editar">
-                                                    <i class="fas fa-edit"></i>
+                                                @can('editar ministerios')
+                                                    <a href="{{ route('admin.ministerios.edit', $ministerio) }}"
+                                                        class="btn btn-warning btn-sm mx-1" title="Editar">
+                                                        <i class="fas fa-edit"></i> Editar
+                                                    </a>
+                                                @endcan
                                                 </a>
-                                                <button type="button" title="Cambiar estado"
-                                                    class="btn btn-sm {{ $ministerio->estado ? 'btn-danger' : 'btn-success' }} confirmationBtn mx-1"
-                                                    data-action="{{ route('admin.ministerios.status', $ministerio->id) }}"
-                                                    data-question="{{ $ministerio->estado ? '¿Seguro que deseas inhabilitar el Ministerio <strong>' . $ministerio->nombre . '</strong>?' : '¿Seguro que deseas habilitar el Ministerio <strong>' . $ministerio->nombre . '</strong>?' }}">
-                                                    <i
-                                                        class="fas {{ $ministerio->estado ? 'fa-eye-slash' : 'fa-eye' }}"></i>
-                                                </button>
 
-                                                <a href="{{ route('admin.ministerios.horarios', $ministerio) }}"
-                                                    class="btn btn-secondary btn-sm mx-1" title="Verificar Horarios">
-                                                    <i class="fas fa-list-ul" style="color: #63E6BE;"></i>
-                                                </a>
+                                                @can('cambiar estado ministerios')
+                                                    <button type="button" title="Cambiar estado"
+                                                        class="btn btn-sm {{ $ministerio->estado ? 'btn-danger' : 'btn-success' }} confirmationBtn mx-1"
+                                                        data-action="{{ route('admin.ministerios.status', $ministerio->id) }}"
+                                                        data-question="{{ $ministerio->estado ? '¿Seguro que deseas inhabilitar el Ministerio <strong>' . $ministerio->nombre . '</strong>?' : '¿Seguro que deseas habilitar el Ministerio <strong>' . $ministerio->nombre . '</strong>?' }}">
+                                                        <i class="fas {{ $ministerio->estado ? 'fa-eye-slash' : 'fa-eye' }}">
+                                                        </i>Cambiar estado
+                                                    </button>
+                                                @endcan
+
+                                                @can('ver horarios_ministerio')
+                                                    <a href="{{ route('admin.ministerios.horarios', $ministerio) }}"
+                                                        class="btn btn-secondary btn-sm mx-1" title="Verificar Horarios">
+                                                        <i class="fas fa-list-ul" style="color: #63E6BE;"></i>
+                                                    </a>
+                                                @endcan
                                             </div>
                                         </td>
                                     </tr>
