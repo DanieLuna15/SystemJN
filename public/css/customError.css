@@ -1,0 +1,84 @@
+/* custom.css */
+body {
+    font-family: 'Arial', sans-serif;
+    color: #fff; /* Texto blanco por defecto */
+    height: 100vh; /* Asegura que el fondo cubra toda la altura de la ventana */
+    margin: 0; /* Elimina márgenes */
+    overflow: hidden; /* Previene el desbordamiento */
+    display: flex; /* Flexbox para el contenido centrado */
+    flex-direction: column; /* Coloca el footer al final */
+}
+
+.wrapper {
+    flex-grow: 1; /* Asegura que el contenedor principal crezca para llenar el espacio disponible */
+}
+
+.error-400 {
+    background-color: #ff851b; /* Fondo naranja */
+}
+
+.error-401 {
+    background-color: #17a2b8; /* Fondo azul claro */
+}
+
+.error-403 {
+    background-color: #dc3545; /* Fondo rojo */
+}
+
+.error-404 {
+    background-color: #6f42c1; /* Fondo púrpura */
+}
+
+.error-405 {
+    background-color: #20c997; /* Fondo verde menta */
+}
+
+.error-500 {
+    background-color: #ffc107; /* Fondo amarillo */
+}
+
+.error-502 {
+    background-color: #17a2b8; /* Fondo celeste */
+}
+
+.error-504 {
+    background-color: #fd7e14; /* Fondo naranja oscuro */
+}
+
+.error-503 {
+    background-color: #6c757d; /* Fondo gris */
+}
+
+.text-danger {
+    font-size: 10rem;
+    font-weight: bold;
+    color: #fff !important; /* Texto blanco para los números de error */
+}
+
+.error-content {
+    text-align: center;
+    height: 100%; /* Asegura que la altura cubra todo el contenedor */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.error-message {
+    color: #fff; /* Texto blanco para el mensaje */
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+    border-radius: 0.3rem;
+    color: #fff; /* Color del texto del botón */
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Color de fondo del botón al pasar el ratón */
+}
