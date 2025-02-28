@@ -67,10 +67,9 @@
                                                 @can('editar ministerios')
                                                     <a href="{{ route('admin.ministerios.edit', $ministerio) }}"
                                                         class="btn btn-warning btn-sm mx-1" title="Editar">
-                                                        <i class="fas fa-edit"></i> Editar
+                                                        <i class="fas fa-edit"></i>
                                                     </a>
                                                 @endcan
-                                                </a>
 
                                                 @can('cambiar estado ministerios')
                                                     <button type="button" title="Cambiar estado"
@@ -78,7 +77,7 @@
                                                         data-action="{{ route('admin.ministerios.status', $ministerio->id) }}"
                                                         data-question="{{ $ministerio->estado ? '¿Seguro que deseas inhabilitar el Ministerio <strong>' . $ministerio->nombre . '</strong>?' : '¿Seguro que deseas habilitar el Ministerio <strong>' . $ministerio->nombre . '</strong>?' }}">
                                                         <i class="fas {{ $ministerio->estado ? 'fa-eye-slash' : 'fa-eye' }}">
-                                                        </i>Cambiar estado
+                                                        </i>
                                                     </button>
                                                 @endcan
 

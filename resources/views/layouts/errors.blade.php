@@ -11,7 +11,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/dist/css/adminlte.min.css') }}">
-
+    <link rel="stylesheet" href="{{ asset('css/customError.css') }}">
     @yield('css') <!-- Incluye esta línea para los estilos específicos de la vista -->
 </head>
 <body class="hold-transition sidebar-mini @yield('body-class')">

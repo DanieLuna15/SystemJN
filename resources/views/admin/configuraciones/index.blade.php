@@ -9,11 +9,10 @@
                 <div class="card-body box-profile">
                     <div class="text-center">
                         <img class="profile-user-img img-fluid img-circle"
-                            src="{{ asset($configuracion->logo ?? 'images/default-dark.png') }}"
-                            alt="Logotipo del sistema">
+                            src="{{ asset($configuracion->logo ?? 'images/default-dark.png') }}" alt="Logotipo del sistema">
                     </div>
 
-                                    
+
                     <ul class="list-group list-group-unbordered mb-3">
                         <li class="list-group-item text-center">
                             <b>{{ $configuracion->nombre }}</b>
@@ -30,10 +29,12 @@
                 <div class="card-header p-2">
                     <ul class="nav nav-pills">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#general" data-toggle="tab" data-section="general">Configuración General</a>
+                            <a class="nav-link active" href="#general" data-toggle="tab"
+                                data-section="general">Configuración General</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#logotipos" data-toggle="tab" data-section="logotipos">Logotipo y Favicon</a>
+                            <a class="nav-link" href="#logotipos" data-toggle="tab" data-section="logotipos">Logotipo y
+                                Favicon</a>
                         </li>
                     </ul>
                 </div>
@@ -45,7 +46,9 @@
                         </div>
                         <!-- Logotipo y Favicon -->
                         <div class="tab-pane" id="logotipos">
-                            @include('admin.configuraciones.logotipos', ['configuracion' => $configuracion])
+                            @include('admin.configuraciones.logotipos', [
+                                'configuracion' => $configuracion,
+                            ])
                         </div>
                     </div>
                 </div>

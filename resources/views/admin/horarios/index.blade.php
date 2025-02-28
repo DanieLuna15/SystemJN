@@ -85,13 +85,12 @@
 
                                         <!-- Acciones centradas -->
                                         <td class="text-center">
-
                                             <div class="d-flex justify-content-center">
                                                 @can('editar horarios')
-                                                <a href="{{ route('admin.horarios.edit', $horario) }}"
-                                                    class="btn btn-warning btn-sm mx-1" title="Editar">
-                                                    <i class="fas fa-edit"></i>Editar
-                                                </a>
+                                                    <a href="{{ route('admin.horarios.edit', $horario) }}"
+                                                        class="btn btn-warning btn-sm mx-1" title="Editar">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
                                                 @endcan
                                                 @can('cambiar estado horarios')
                                                     <button type="button" title="Cambiar estado"
@@ -101,7 +100,6 @@
                                                         <i class="fas {{ $horario->estado ? 'fa-eye-slash' : 'fa-eye' }}"></i>
                                                     </button>
                                                 @endcan
-
                                             </div>
                                         </td>
                                     </tr>

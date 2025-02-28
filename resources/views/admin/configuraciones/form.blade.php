@@ -40,7 +40,6 @@
     </div>
 
     @can('editar configuracion informacion')
-        <!-- Botón solo visible si el usuario tiene permiso -->
         <div class="d-flex justify-content-between">
             <x-adminlte-button class="btn w-100" type="submit" label="Guardar cambios" theme="success"
                 icon="fas fa-lg fa-save" />

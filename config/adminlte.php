@@ -404,13 +404,6 @@ return [
         // ],
 
 
-        [
-            'text' => 'Configuración',
-            'url' => 'admin/configuraciones',
-            // 'classes' => 'bg-blue text-white',
-            'icon' => 'fas fa-cogs',
-            'can'  => 'ver configuaracion',
-        ],
 
         [
             'text' => 'Ministerios',
@@ -506,14 +499,14 @@ return [
                     'url' => 'admin/horarios/active',
                     'icon' => 'fas fa-check-circle',
                     'classes' => 'btn btn-outline-success btn-sm text-left',
-                    'can'  => 'cambiar estado horarios',
+                    'can'  => 'ver horarios',
                 ],
                 [
                     'text' => 'Horarios Inactivos',
                     'url' => 'admin/horarios/inactive',
                     'icon' => 'fas fa-ban',
                     'classes' => 'btn btn-outline-success btn-sm text-left',
-                    'can'  => 'cambiar estado horarios',
+                    'can'  => 'ver horarios',
                 ],
                 [
                     'text' => 'Crear Nuevo Horario',
@@ -539,6 +532,15 @@ return [
                 ]
             ]
         ],
+
+        [
+            'text' => 'Configuración',
+            'url' => 'admin/configuraciones',
+            // 'classes' => 'bg-blue text-white',
+            'icon' => 'fas fa-cogs',
+            'can'  => 'ver configuracion',
+        ],
+
 
     ],
 

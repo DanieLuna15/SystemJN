@@ -63,7 +63,6 @@
                                                             class="fas {{ $actividad_servicio->estado ? 'fa-eye-slash' : 'fa-eye' }}"></i>
                                                     </button>
                                                 @endcan
-
                                             </div>
                                         </td>
                                     </tr>
@@ -87,8 +86,8 @@
 
 @push('breadcrumb-plugins')
     @can('crear actividades_servicios')
-    <a href="{{ route('admin.actividad_servicios.create') }}" class="btn btn-success rounded">
-        <i class="fas fa-plus-square"></i> Nuevo
-    </a>
+        <a href="{{ route('admin.actividad_servicios.create') }}" class="btn btn-success rounded">
+            <i class="fas fa-plus-square"></i> Nuevo
+        </a>
     @endcan
 @endpush
