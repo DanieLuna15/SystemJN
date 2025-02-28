@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ministerio;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Constants\Status;
 
 class HomeController extends Controller
 {
@@ -23,6 +26,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $ministerios= Ministerio::where('estado', Status::ACTIVE)->count();
+        return view('home', compact('ministerios'));
     }
 }
