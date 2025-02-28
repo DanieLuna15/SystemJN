@@ -9,57 +9,58 @@
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-info">
                     <div class="inner">
-                        <h3>150</h3>
-                        <p>Usuarios Registrados</p>
+                        <h3>151</h3>
+                        <p>Ministerios Usuarios</p>
                     </div>
                     <div class="icon">
                         <i class="fas fa-users"></i>
                     </div>
-                    <a href="{{ route('admin.ministerios.index') }}" class="small-box-footer">Más información <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="#" class="small-box-footer">Más información <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
 
-            <!-- Tarjeta de Ventas -->
+            <!-- Tarjeta de Ministerios -->
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-success">
                     <div class="inner">
-                        <h3>53<sup style="font-size: 20px">%</sup></h3>
-                        <p>Crecimiento de Ventas</p>
+                        <h3>{{ $ministerios }}</h3>
+                        <p>Ministerios Registrados</p>
                     </div>
                     <div class="icon">
-                        <i class="fas fa-chart-line"></i>
+                        <i class="fas fa-church"></i>
                     </div>
-                    <a href="#" class="small-box-footer">Más información <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('admin.ministerios.index') }}" class="small-box-footer">Más información <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
-            </div>
+            </div>            
 
-            <!-- Tarjeta de Nuevas Órdenes -->
+            <!-- Tarjeta Servicios o Actividades -->
             <div class="col-lg-3 col-6">
-                <div class="small-box bg-warning">
+                <div class="small-box bg-primary"> 
                     <div class="inner">
-                        <h3>44</h3>
-                        <p>Nuevas Órdenes</p>
+                        <h3>{{ $actividadServicios }}</h3>
+                        <p>Servicios y/o Actividades Registrados</p>
                     </div>
                     <div class="icon">
-                        <i class="fas fa-shopping-cart"></i>
+                        <i class="fas fa-calendar-alt"></i>
                     </div>
-                    <a href="#" class="small-box-footer">Más información <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('admin.actividad_servicios.index') }}" class="small-box-footer">Más información <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
-            </div>
-
-            <!-- Tarjeta de Soporte -->
+            </div>            
+            
+            <!-- Tarjeta de Hoararios -->
             <div class="col-lg-3 col-6">
-                <div class="small-box bg-danger">
+                <div class="small-box bg-warning"> 
                     <div class="inner">
-                        <h3>65</h3>
-                        <p>Consultas de Soporte</p>
+                        <h3>{{ $horarios }}</h3>
+                        <p>Consultas de Horarios</p>
                     </div>
                     <div class="icon">
-                        <i class="fas fa-headset"></i>
+                        <i class="fas fa-clock"></i> 
                     </div>
-                    <a href="#" class="small-box-footer">Más información <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('admin.horarios.index') }}" class="small-box-footer">Más información <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
+            
         </div>
 
         <!-- Sección de Gráficos -->
