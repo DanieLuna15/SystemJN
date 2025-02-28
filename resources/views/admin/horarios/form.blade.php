@@ -115,10 +115,9 @@
 
         <!-- Botones de Acción -->
         <div class="d-flex justify-content-between">
-            <x-adminlte-button class="btn" type="submit"
-                label="{{ isset($horario->id) ? 'Actualizar' : 'Guardar' }}" theme="success"
+            <x-adminlte-button class="btn w-100" type="submit"
+                label="{{ isset($horario->id) ? 'Guardar cambios' : 'Guardar' }}" theme="success"
                 icon="fas fa-lg fa-save" />
-            <a href="{{ route('admin.horarios.index') }}" class="btn btn-secondary">Cancelar</a>
         </div>
     </form>
 </x-adminlte-card>
@@ -154,9 +153,7 @@
     });
 </script>
 @push('breadcrumb-plugins')
-    @can('crear actividades_servicios')
-        <a href="{{ route('admin.ministerios.create') }}" class="btn btn-success rounded">
-            <i class="fas fa-plus-square"></i> Nuevo
-        </a>
-    @endcan
+    <a href="{{ route('admin.horarios.index') }}" class="btn btn-secondary rounded">
+        <i class="fas fa-undo"></i> Regresar
+    </a>
 @endpush

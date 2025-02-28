@@ -14,6 +14,7 @@ class RolesPermissionsSeeder extends Seeder
             'Pastor/Admin' => [
                 'gestionar configuracion del sistema',
                 'ver reportes generales',
+                'ver dashboard',
                 //------------------------
                 'crear usuarios',
                 'ver usuarios',

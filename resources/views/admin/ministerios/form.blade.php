@@ -56,10 +56,9 @@
         </div>
         <!-- Botones de Acción -->
         <div class="d-flex justify-content-between">
-            <x-adminlte-button class="btn" type="submit"
-                label="{{ isset($ministerio->id) ? 'Actualizar' : 'Guardar' }}" theme="success"
+            <x-adminlte-button class="btn w-100" type="submit"
+                label="{{ isset($ministerio->id) ? 'Guardar cambios' : 'Guardar' }}" theme="success"
                 icon="fas fa-lg fa-save" />
-            <a href="{{ route('admin.ministerios.index') }}" class="btn btn-secondary">Cancelar</a>
         </div>
     </form>
 </x-adminlte-card>

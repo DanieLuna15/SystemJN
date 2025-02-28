@@ -301,18 +301,18 @@ return [
     'menu' => [
         ['header' => 'ADMINISTRACIÓN'],
 
-        // [
-        //     'text' => 'Dashboard',
-        //     'url'  => 'dashboard',
-        //     'icon' => 'fas fa-tachometer-alt',
-        //     'can'  => 'ver reportes', // Solo los que tienen este permiso lo verán
-        // ],
+        [
+            'text' => 'Dashboard',
+            'url'  => 'home',
+            'icon' => 'fas fa-tachometer-alt',
+            'can'  => 'ver reportes generales',
+        ],
 
         [
             'text' => 'Usuarios',
             'url'  => 'admin/users',
             'icon' => 'fas fa-users',
-            'can'  => 'ver usuarios', // Solo los que tienen este permiso lo verán
+            'can'  => 'ver usuarios',
         ],
 
         // [

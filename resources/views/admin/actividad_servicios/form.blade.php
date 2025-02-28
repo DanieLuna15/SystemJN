@@ -31,12 +31,10 @@
             <!-- Botones de Acción -->
 
             <div class="d-flex justify-content-between">
-                <x-adminlte-button class="btn btn-success" type="submit"
-                    label="{{ isset($actividad_servicio->id) ? 'Actualizar' : 'Guardar' }}" theme="success"
+                <x-adminlte-button class="btn btn-success w-100" type="submit"
+                    label="{{ isset($actividad_servicio->id) ? 'Guardar cambios' : 'Guardar' }}" theme="success"
                     icon="fas fa-lg fa-save" />
-                <a href="{{ route('admin.actividad_servicios.index') }}" class="btn btn-secondary">Cancelar</a>
             </div>
-
         </form>
     </div>
 </x-adminlte-card>
