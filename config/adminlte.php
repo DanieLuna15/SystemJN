@@ -305,7 +305,14 @@ return [
             'text' => 'Dashboard',
             'url'  => 'home',
             'icon' => 'fas fa-tachometer-alt',
-            'can'  => 'ver reportes generales',
+            'can'  => 'ver dashboard',
+        ],
+
+        [
+            'text' => 'Reportes',
+            'url'  => 'admin/reportes',
+            'icon' => 'fas fa-chart-bar',
+            'can'  => 'ver reportes',
         ],
 
         [
@@ -329,12 +336,7 @@ return [
         //     'can'  => 'gestionar eventos', // Solo los que tienen este permiso lo verán
         // ],
 
-        // [
-        //     'text' => 'Reportes',
-        //     'url'  => 'admin/reportes',
-        //     'icon' => 'fas fa-chart-bar',
-        //     'can'  => 'ver reportes', // Solo los que tienen este permiso lo verán
-        // ],
+
 
         // ['header' => 'AJUSTES'],
 
@@ -407,7 +409,7 @@ return [
 
         [
             'text' => 'Ministerios',
-            'icon' => 'fas fa-users',
+            'icon' => 'fas fa-bars',
             'active' => ['admin/ministerios*'],
             'can'  => 'ver ministerios',
             'submenu' => [

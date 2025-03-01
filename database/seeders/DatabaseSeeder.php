@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Database\Seeders\MinisterioSeeder;
+use Database\Seeders\ActividadServiciosSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,7 +15,8 @@ class DatabaseSeeder extends Seeder
             RolesPermissionsSeeder::class,
             UsersSeeder::class,
             ConfiguracionSeeder::class,
-            ActividadServicios::class
+            ActividadServiciosSeeder::class,
+            MinisterioSeeder::class,
         ]);
     }
 }

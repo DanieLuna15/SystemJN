@@ -12,8 +12,7 @@ class RolesPermissionsSeeder extends Seeder
     {
         $rolesPermissions = [
             'Pastor/Admin' => [
-                'gestionar configuracion del sistema',
-                'ver reportes generales',
+                'ver reportes',
                 'ver dashboard',
                 //------------------------
                 'crear usuarios',
@@ -52,12 +51,14 @@ class RolesPermissionsSeeder extends Seeder
                 'ver configuracion',
             ],
             'Líder' => [
+                'ver dashboard',
                 'ver horarios',
                 'ver actividades_servicios',
                 'ver ministerios',
-                'ver horarios_ministerio'
+                'ver horarios_ministerio',
             ],
             'Miembro' => [
+                'ver dashboard',
                 'ver horarios',
                 'ver actividades_servicios',
             ],

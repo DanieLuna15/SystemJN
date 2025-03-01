@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\ActividadServicioController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MinisterioController;
 use App\Http\Controllers\HorarioController;
+use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\MinisterioController;
 use App\Http\Controllers\ConfiguracionController;
+use App\Http\Controllers\ActividadServicioController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,5 +62,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/save/{id?}', 'store')->name('save');
         Route::patch('/status/{id}', 'status')->name('status');
         Route::resource('/', HorarioController::class)->except(['store', 'update'])->parameters(['' => 'horario']);
+    });
+
+
+    // 📌 **Grupo de rutas para Reportes**
+    Route::prefix('admin/reportes')->name('admin.reporte.')->controller(ReporteController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
     });
 });
