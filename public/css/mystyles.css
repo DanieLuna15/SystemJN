@@ -50,25 +50,37 @@
 
 /* Para estilizar imágenes en tablas listado */
 .img-rounded {
-    width: 60px; /* Ancho fijo */
-    height: 40px; /* Alto fijo */
-    border-radius: 20%; /* Bordes redondeados (más suaves) */
-    object-fit: contain; /* Asegura que la imagen cubra completamente el contenedor */
-    object-position: center; /* Centra la imagen si no cubre completamente el contenedor */
-    border: 2px solid #65696b; /* Borde más grueso de 2px y color gris oscuro */
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);  /* Sombra sutil para darle profundidad */
-    transition: all 0.3s ease; /* Suaviza la transición al pasar el mouse */
+    width: 60px;
+    /* Ancho fijo */
+    height: 40px;
+    /* Alto fijo */
+    border-radius: 20%;
+    /* Bordes redondeados (más suaves) */
+    object-fit: contain;
+    /* Asegura que la imagen cubra completamente el contenedor */
+    object-position: center;
+    /* Centra la imagen si no cubre completamente el contenedor */
+    border: 2px solid #65696b;
+    /* Borde más grueso de 2px y color gris oscuro */
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    /* Sombra sutil para darle profundidad */
+    transition: all 0.3s ease;
+    /* Suaviza la transición al pasar el mouse */
 }
 
 /* Efecto al pasar el mouse (hover) */
 .img-rounded:hover {
-    transform: scale(3);                 /* Le da un efecto de zoom en el lado derecho */
-    transform-origin: left;             /* Establece el punto de escalado en el lado derecho */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);  /* Sombra más pronunciada al pasar el mouse */
-    border-color: #4e5b62;               /* Cambia el color del borde cuando se pasa el mouse */
+    transform: scale(3);
+    /* Le da un efecto de zoom en el lado derecho */
+    transform-origin: left;
+    /* Establece el punto de escalado en el lado derecho */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    /* Sombra más pronunciada al pasar el mouse */
+    border-color: #4e5b62;
+    /* Cambia el color del borde cuando se pasa el mouse */
 }
-/*PARA FIJAR LAS COLUMNAS DE LA TABLA HORARIOS  */
 
+/* PARA FIJAR LAS COLUMNAS DE LA TABLA HORARIOS  */
 #horarios-table th:nth-last-child(1),
 #horarios-table td:nth-last-child(1) {
     position: sticky;
@@ -77,3 +89,25 @@
     z-index: 2;
     box-shadow: -1px 0 5px rgba(0, 0, 0, 0.1);
 }
+
+/* Cuando AdminLTE está en modo oscuro */
+body.dark-mode #horarios-table th:nth-last-child(1),
+body.dark-mode #horarios-table td:nth-last-child(1) {
+    background: #343a40;
+    color: white;
+    box-shadow: -1px 0 5px rgba(255, 255, 255, 0.1);
+}
+
+/* PARA SELECT 2 EN MODO OSCURO  */
+/* Ajustar el input visible de Select2 en modo oscuro */
+body.dark-mode .select2-container--bootstrap4 .select2-selection--single {
+    background-color: #343a40 !important;
+    color: white !important;
+    border: 1px solid #6c757d !important;
+}
+
+/* Ajustar el texto dentro del input de Select2 en modo oscuro */
+body.dark-mode .select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered {
+    color: white !important;
+}
+
