@@ -10,19 +10,20 @@ class ReporteController extends Controller
 {
     public function index(Request $request)
     {
+        //dd($request->all());
         // $startDate = $request->input('start_date', Carbon::now()->startOfMonth()->format('Y-m-d 00:00:00'));
         // $endDate = $request->input('end_date', Carbon::now()->endOfDay()->format('Y-m-d 23:59:59'));
 
         $startDate = $request->input('start_date', '2025-01-01 00:00:00');
-        $endDate = $request->input('end_date', '2025-01-31 00:00:00');
-        $deptId = $request->input('dept_id', 6);
+        $endDate = $request->input('end_date', '2025-02-27 23:59:59');
+        $deptId = $request->input('dept_id', 3);
 
         //dd(['startDate' => $startDate, 'endDate' => $endDate, 'deptId' => $deptId]);
 
         $pageTitle = 'Reporte de multas, desde el: ' . $startDate . ' hasta el: ' . $endDate;
 
         // Consulta a la tabla hr_employee en la conexión SQLite
-        $empleados = DB::connection('sqlite')->table('hr_employee')->get();
+        $ministerios = DB::connection('sqlite')->table('hr_department')->get();
 
         // Consulta detalles con parámetros dinámicos
         $multas_detalle = DB::connection('sqlite')->select("
@@ -216,6 +217,6 @@ class ReporteController extends Controller
 
         ", [$startDate, $endDate, $deptId]);
 
-        return view('admin.reportes.index', compact('empleados', 'multas_detalle', 'multas_general', 'pageTitle'));
+        return view('admin.reportes.index', compact('ministerios', 'multas_detalle', 'multas_general', 'pageTitle'));
     }
 }
