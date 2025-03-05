@@ -13,23 +13,22 @@ class MinisterioSeeder extends Seeder
     public function run(): void
     {
         $ministerios = [
-            ['nombre' => 'Ministerio de Adoración', 'logo' => null, 'multa_incremento' => 2, 'tipo' => 0, 'estado' => 1],
-            ['nombre' => 'Ministerio de Niños', 'logo' => null, 'multa_incremento' => 2, 'tipo' => 0, 'estado' => 1],
-            ['nombre' => 'Ministerio de Jóvenes', 'logo' => null, 'multa_incremento' => 2, 'tipo' => 0, 'estado' => 1],
-            ['nombre' => 'Ministerio de Líderes', 'logo' => null, 'multa_incremento' => 2, 'tipo' => 1, 'estado' => 1],
-            ['nombre' => 'Ministerio de Evangelismo', 'logo' => null, 'multa_incremento' => 2, 'tipo' => 0, 'estado' => 1],
-            ['nombre' => 'Ministerio de Servicio y Voluntariado', 'logo' => null, 'multa_incremento' => 2, 'tipo' => 0, 'estado' => 1],
-            ['nombre' => 'Ministerio de Ayuno', 'logo' => null, 'multa_incremento' => 2, 'tipo' => 0, 'estado' => 1],
-            ['nombre' => 'Ministerio de Oración e Intercesión', 'logo' => null, 'multa_incremento' => 2, 'tipo' => 0, 'estado' => 1],
-            ['nombre' => 'Ministerio de Alabanza y Adoración', 'logo' => null, 'multa_incremento' => 2, 'tipo' => 0, 'estado' => 1],
-            ['nombre' => 'Ministerio de Visitas', 'logo' => null, 'multa_incremento' => 2, 'tipo' => 0, 'estado' => 1],
-            ['nombre' => 'Ministerio de Ujieres', 'logo' => null, 'multa_incremento' => 2, 'tipo' => 0, 'estado' => 1],
-            ['nombre' => 'Ministerio de Teatro y Danza', 'logo' => null, 'multa_incremento' => 2, 'tipo' => 0, 'estado' => 1],
-            ['nombre' => 'Ministerio de Pandero', 'logo' => null, 'multa_incremento' => 2, 'tipo' => 0, 'estado' => 1],
-            ['nombre' => 'Ministerio de Tecnología y Medios de Comunicación', 'logo' => null, 'multa_incremento' => 2, 'tipo' => 0, 'estado' => 1],
+            ['nombre' => 'Líderes', 'multa_incremento' => 2, 'tipo' => 1],
+            ['nombre' => 'Alabanza y Adoración', 'multa_incremento' => 2, 'tipo' => 0],
+            ['nombre' => 'Pandero', 'multa_incremento' => 2, 'tipo' => 0],
+            ['nombre' => 'Ujieres', 'multa_incremento' => 2, 'tipo' => 0],
+            ['nombre' => 'Jóvenes', 'multa_incremento' => 2, 'tipo' => 0],
+            ['nombre' => 'Niños', 'multa_incremento' => 2, 'tipo' => 0],
+            ['nombre' => 'Tecnología y Medios de Comunicación', 'multa_incremento' => 2, 'tipo' => 0],
+            ['nombre' => 'Evangelismo', 'multa_incremento' => 2, 'tipo' => 0],
+            ['nombre' => 'Servicio y Voluntariado', 'multa_incremento' => 2, 'tipo' => 0],
+            ['nombre' => 'Ayuno', 'multa_incremento' => 2, 'tipo' => 0],
+            ['nombre' => 'Oración e Intercesión', 'multa_incremento' => 2, 'tipo' => 0],
+            ['nombre' => 'Visitas', 'multa_incremento' => 2, 'tipo' => 0],
+            ['nombre' => 'Teatro y Danza', 'multa_incremento' => 2, 'tipo' => 0],
+
         ];
 
-        // Insertar en la base de datos
         Ministerio::insert($ministerios);
     }
 }
