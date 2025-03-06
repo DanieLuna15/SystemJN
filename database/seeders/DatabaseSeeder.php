@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             ConfiguracionSeeder::class,
             ActividadServicios::class,
             MinisterioSeeder::class,
+            Horarios::class
         ]);
     }
 }
