@@ -16,6 +16,9 @@ class ReporteController extends Controller
         // Separar fecha de inicio y fin
         [$startDate, $endDate] = explode(' - ', $dateRange);
 
+        // Guardar el rango de fechas en la sesión
+        $request->session()->put('date_range', $dateRange);
+
         // Convertir a formato correcto para la base de datos (YYYY-MM-DD)
         $startDate = Carbon::createFromFormat('d-m-Y H:i:s', trim($startDate))->format('Y-m-d H:i:s');
         $endDate = Carbon::createFromFormat('d-m-Y H:i:s', trim($endDate))->format('Y-m-d H:i:s');

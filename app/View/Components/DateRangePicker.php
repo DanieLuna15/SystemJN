@@ -15,8 +15,8 @@ class DateRangePicker extends Component
         $this->label = $label;
         $this->config = array_merge([
             'showDropdowns' => true,
-            'startDate' => 'js:moment().startOf("month")',
-            'endDate' => 'js:moment().endOf("month")',
+            //'startDate' => 'js:moment().startOf("month")',
+            //'endDate' => 'js:moment().endOf("month")',
             'minYear' => 2000,
             'maxYear' => "js:parseInt(moment().format('YYYY'),10)",
             'timePicker' => true,

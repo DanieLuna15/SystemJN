@@ -2,7 +2,7 @@
     @csrf
     <div class="row">
         <div class="col-md-6 col-lg-6">
-            <x-date-range-picker name="date_range" label="Rango de Fecha/Hora" />
+            <x-date-range-picker name="date_range" label="Rango de Fecha/Hora" :value="$dateRange" />
         </div>
 
         <div class="col-md-6 col-lg-6">
