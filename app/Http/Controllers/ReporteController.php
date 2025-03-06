@@ -14,13 +14,23 @@ class ReporteController extends Controller
         // $startDate = $request->input('start_date', Carbon::now()->startOfMonth()->format('Y-m-d 00:00:00'));
         // $endDate = $request->input('end_date', Carbon::now()->endOfDay()->format('Y-m-d 23:59:59'));
 
-        $startDate = $request->input('start_date', '2025-01-01 00:00:00');
-        $endDate = $request->input('end_date', '2025-02-27 23:59:59');
-        $deptId = $request->input('dept_id', 3);
+        // Obtener el rango de fechas enviado desde el formulario
+        $dateRange = $request->input('date_range', now()->startOfMonth()->format('d-m-Y 00:00:00') . ' - ' . now()->endOfMonth()->format('d-m-Y 23:59:59'));
+
+        // Separar fecha de inicio y fin
+        [$startDate, $endDate] = explode(' - ', $dateRange);
+
+        // Convertir a formato correcto para la base de datos (YYYY-MM-DD)
+        $startDate = Carbon::createFromFormat('d-m-Y H:i:s', trim($startDate))->format('Y-m-d H:i:s');
+        $endDate = Carbon::createFromFormat('d-m-Y H:i:s', trim($endDate))->format('Y-m-d H:i:s');
+        $deptId = $request->input('ministerio_id', 3);
 
         //dd(['startDate' => $startDate, 'endDate' => $endDate, 'deptId' => $deptId]);
 
-        $pageTitle = 'Reporte de multas, desde el: ' . $startDate . ' hasta el: ' . $endDate;
+        $pageTitle = 'Reporte de multas, desde el: '
+            . Carbon::parse($startDate)->translatedFormat('d F Y')
+            . ' hasta el: '
+            . Carbon::parse($endDate)->translatedFormat('d F Y');
 
         // Consulta a la tabla hr_employee en la conexión SQLite
         $ministerios = DB::connection('sqlite')->table('hr_department')->get();
