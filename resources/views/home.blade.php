@@ -10,7 +10,7 @@
                 <div class="small-box bg-info">
                     <div class="inner">
                         <h3>151</h3>
-                        <p>Ministerios Usuarios</p>
+                        <p>Usuarios Registrados</p>
                     </div>
                     <div class="icon">
                         <i class="fas fa-users"></i>
@@ -38,7 +38,7 @@
                 <div class="small-box bg-primary"> 
                     <div class="inner">
                         <h3>{{ $actividadServicios }}</h3>
-                        <p>Servicios y/o Actividades Registrados</p>
+                        <p>Act. o Servicios Registrados</p>
                     </div>
                     <div class="icon">
                         <i class="fas fa-calendar-alt"></i>
@@ -52,7 +52,7 @@
                 <div class="small-box bg-warning"> 
                     <div class="inner">
                         <h3>{{ $horarios }}</h3>
-                        <p>Consultas de Horarios</p>
+                        <p>Horarios Registrados</p>
                     </div>
                     <div class="icon">
                         <i class="fas fa-clock"></i> 

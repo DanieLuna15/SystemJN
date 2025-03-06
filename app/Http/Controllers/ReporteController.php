@@ -10,10 +10,6 @@ class ReporteController extends Controller
 {
     public function index(Request $request)
     {
-        //dd($request->all());
-        // $startDate = $request->input('start_date', Carbon::now()->startOfMonth()->format('Y-m-d 00:00:00'));
-        // $endDate = $request->input('end_date', Carbon::now()->endOfDay()->format('Y-m-d 23:59:59'));
-
         // Obtener el rango de fechas enviado desde el formulario
         $dateRange = $request->input('date_range', now()->startOfMonth()->format('d-m-Y 00:00:00') . ' - ' . now()->endOfMonth()->format('d-m-Y 23:59:59'));
 
@@ -227,6 +223,6 @@ class ReporteController extends Controller
 
         ", [$startDate, $endDate, $deptId]);
 
-        return view('admin.reportes.index', compact('ministerios', 'multas_detalle', 'multas_general', 'pageTitle'));
+        return view('admin.reportes.index', compact('ministerios', 'multas_detalle', 'multas_general', 'pageTitle', 'deptId', 'dateRange'));
     }
 }

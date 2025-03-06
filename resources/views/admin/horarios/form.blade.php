@@ -65,7 +65,6 @@
                 </div>
             </div>
 
-
             <!-- Campo Fecha (Oculto por defecto) -->
             <div class="col-md-12 col-lg-12" id="fechaContainer" style="display: none;">
                 <x-adminlte-input type="date" name="fecha" label="Fecha:" id="fechaInput"
@@ -110,7 +109,6 @@
                     </x-slot>
                 </x-adminlte-input>
             </div>
-
         </div>
 
         <!-- Botones de Acción -->

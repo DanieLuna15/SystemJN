@@ -64,7 +64,6 @@ Route::middleware('auth')->group(function () {
         Route::resource('/', HorarioController::class)->except(['store', 'update'])->parameters(['' => 'horario']);
     });
 
-
     // 📌 **Grupo de rutas para Reportes**
     Route::prefix('admin/reportes')->name('admin.reporte.')->controller(ReporteController::class)->group(function () {
         Route::match(['get', 'post'], '/', 'index')->name('index'); // Permitir GET y POST en la misma ruta
