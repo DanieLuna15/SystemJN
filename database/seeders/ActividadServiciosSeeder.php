@@ -6,7 +6,7 @@ use App\Models\ActividadServicio;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class ActividadServicios extends Seeder
+class ActividadServiciosSeeder extends Seeder
 {
     /**
      * Run the database seeds.
