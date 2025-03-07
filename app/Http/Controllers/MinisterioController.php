@@ -46,7 +46,7 @@ class MinisterioController extends Controller
 
     protected function commonQuery()
     {
-        return Ministerio::query()->orderBy('id', 'DESC');
+        return Ministerio::query()->orderBy('id');
     }
 
 

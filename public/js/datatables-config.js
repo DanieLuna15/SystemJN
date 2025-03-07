@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     extend: 'excelHtml5',
                     className: 'btn btn-success',
                     exportOptions: {
-                        columns: ':not(.no-export)' // Excluir columnas con clase 'no-export'
+                        columns: ':not(.no-export)'
                     }
                 },
                 {
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 {
                     text: '<i class="fa fa-copy"></i> Copiar',
                     extend: 'copyHtml5',
-                    className: 'btn btn-secondary',
+                    className: 'btn btn-primary',
                     exportOptions: {
                         columns: ':not(.no-export)'
                     }

@@ -47,7 +47,7 @@ class HorarioController extends Controller
 
     protected function commonQuery()
     {
-        return Horario::query()->orderBy('id', 'DESC');
+        return Horario::query()->orderByDesc('id');
     }
 
     /**

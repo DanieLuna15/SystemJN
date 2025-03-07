@@ -94,7 +94,7 @@
 @push('breadcrumb-plugins')
     {{-- @can('crear ministerios') --}}
         <a href="{{ route('admin.reportes.exportar') }}" class="btn btn-info rounded">
-            <i class="fas fa-plus-square"></i> Exportar Reporte
+            <i class="fas fa-file-export"></i> Exportar Reporte
         </a>
     {{-- @endcan --}}
 @endpush
