@@ -64,9 +64,18 @@ Route::middleware('auth')->group(function () {
         Route::resource('/', HorarioController::class)->except(['store', 'update'])->parameters(['' => 'horario']);
     });
 
+    // // 📌 **Grupo de rutas para Reportes**
+    // Route::prefix('admin/reportes')->name('admin.reportes.')->controller(ReporteController::class)->group(function () {
+    //     Route::match(['get', 'post'], '/', 'index')->name('index'); // Permitir GET y POST en la misma ruta
+    //     Route::get('exportar-reporte', 'exportarReporte')->name('exportar');
+    // });
+
     // 📌 **Grupo de rutas para Reportes**
     Route::prefix('admin/reportes')->name('admin.reportes.')->controller(ReporteController::class)->group(function () {
-        Route::match(['get', 'post'], '/', 'index')->name('index'); // Permitir GET y POST en la misma ruta
-        Route::get('exportar-reporte', 'exportarReporte')->name('exportar');
+        Route::match(['get', 'post'], '/multa', 'multa')->name('multa');
+        Route::match(['get', 'post'], '/asistencia', 'asistencia')->name('asistencia');
+        Route::match(['get', 'post'], '/fidelizacion', 'fidelizacion')->name('fidelizacion');
+
+        Route::get('/exportar-reporte', 'exportarReporte')->name('exportar');
     });
 });

@@ -310,9 +310,32 @@ return [
 
         [
             'text' => 'Reportes',
-            'url'  => 'admin/reportes',
             'icon' => 'fas fa-chart-bar',
+            'active' => ['admin/reportes*'],
             'can'  => 'ver reportes',
+            'submenu' => [
+                [
+                    'text' => 'Multas',
+                    'url'  => 'admin/reportes/multa',
+                    'icon' => 'fas fa-file-invoice-dollar',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
+                    //'can'  => 'generar reportes',
+                ],
+                [
+                    'text' => 'Asistencia',
+                    'url'  => 'admin/reportes/asistencia',
+                    'icon' => 'fas fa-user-check',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
+                    //'can'  => 'generar reportes',
+                ],
+                [
+                    'text' => 'Fidelización',
+                    'url'  => 'admin/reportes/fidelizacion',
+                    'icon' => 'fas fa-hand-holding-heart',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
+                    //'can'  => 'generar reportes',
+                ]
+            ],
         ],
 
         [

@@ -1,4 +1,4 @@
-<form action="{{ route('admin.reportes.index') }}" method="POST">
+<form action="{{ route('admin.reportes.multa') }}" method="POST">
     @csrf
     <div class="row">
         <div class="col-md-6 col-lg-6">
