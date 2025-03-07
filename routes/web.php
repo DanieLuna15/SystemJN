@@ -65,7 +65,8 @@ Route::middleware('auth')->group(function () {
     });
 
     // 📌 **Grupo de rutas para Reportes**
-    Route::prefix('admin/reportes')->name('admin.reporte.')->controller(ReporteController::class)->group(function () {
+    Route::prefix('admin/reportes')->name('admin.reportes.')->controller(ReporteController::class)->group(function () {
         Route::match(['get', 'post'], '/', 'index')->name('index'); // Permitir GET y POST en la misma ruta
+        Route::get('exportar-reporte', 'exportarReporte')->name('exportar');
     });
 });

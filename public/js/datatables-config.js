@@ -23,35 +23,49 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             "responsive": true,
             "autoWidth": false,
-            "dom": 'lBfrtip',  // 🔹 Agregado 'l' para mostrar el select
+            "dom": 'lBfrtip',
             "buttons": [
                 {
                     text: '<i class="fa fa-file-excel"></i> Exportar a Excel',
                     extend: 'excelHtml5',
-                    className: 'btn btn-success'
+                    className: 'btn btn-success',
+                    exportOptions: {
+                        columns: ':not(.no-export)' // Excluir columnas con clase 'no-export'
+                    }
                 },
                 {
                     text: '<i class="fa fa-file-pdf"></i> Exportar a PDF',
                     extend: 'pdfHtml5',
-                    className: 'btn btn-danger'
+                    className: 'btn btn-danger',
+                    exportOptions: {
+                        columns: ':not(.no-export)'
+                    }
                 },
                 {
                     text: '<i class="fa fa-file-csv"></i> Exportar a CSV',
                     extend: 'csvHtml5',
-                    className: 'btn btn-info'
+                    className: 'btn btn-info',
+                    exportOptions: {
+                        columns: ':not(.no-export)'
+                    }
                 },
-                // {
-                //     text: '<i class="fa fa-copy"></i> Copiar',
-                //     extend: 'copyHtml5',
-                //     className: 'btn btn-secondary'
-                // },
+                {
+                    text: '<i class="fa fa-copy"></i> Copiar',
+                    extend: 'copyHtml5',
+                    className: 'btn btn-secondary',
+                    exportOptions: {
+                        columns: ':not(.no-export)'
+                    }
+                },
                 {
                     text: '<i class="fa fa-print"></i> Imprimir',
                     extend: 'print',
-                    className: 'btn btn-warning'
+                    className: 'btn btn-warning',
+                    exportOptions: {
+                        columns: ':not(.no-export)'
+                    }
                 }
             ]
         }).buttons().container().appendTo($(table).closest(".dataTables_wrapper").find('.row:eq(0)'));
     });
 });
-

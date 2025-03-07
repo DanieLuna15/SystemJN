@@ -14,19 +14,19 @@
                             class="table table-striped table-bordered table-hover table-sm datatable text-center">
                             <thead class="text-center">
                                 <tr>
-                                    <th>Imagen</th>
+                                    <th class="no-export">Imagen</th>
                                     <th>Nombre</th>
                                     <th>Monto Sancion (Bs)</th>
                                     <th>Estado</th>
                                     <th>Categoria</th>
-                                    <th>Acciones</th>
+                                    <th class="no-export">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($ministerios as $ministerio)
                                     <tr>
                                         <!-- Imagen centrada -->
-                                        <td class="align-middle">
+                                        <td class="align-middle no-export">
                                             @if ($ministerio->logo)
                                                 <img src="{{ asset($ministerio->logo) }}" title="Imagen referencial"
                                                     class="img-rounded">
@@ -62,7 +62,7 @@
                                         </td>
 
                                         <!-- Acciones centradas -->
-                                        <td class="align-middle">
+                                        <td class="align-middle no-export">
                                             <div class="d-flex justify-content-center">
                                                 @can('editar ministerios')
                                                     <a href="{{ route('admin.ministerios.edit', $ministerio) }}"
