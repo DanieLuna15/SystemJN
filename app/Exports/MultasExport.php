@@ -2,20 +2,21 @@
 
 namespace App\Exports;
 
+use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Style\Color;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithTitle;
-use Maatwebsite\Excel\Concerns\WithCustomStartCell;
-use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 
 class MultasExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithTitle, WithCustomStartCell, WithEvents
 {
@@ -34,32 +35,54 @@ class MultasExport implements FromCollection, WithHeadings, WithMapping, ShouldA
     public function headings(): array
     {
         return [
-            'Nombre', 
-            'Apellido', 
-            'Ministerio', 
-            'Dia de la semana', 
-            'Fecha',
-            'Hora de Ingreso', 
-            'Multa'
+            'N°',
+            'INTEGRANTES',
+            '1-ene',
+            '2-ene',
+            '5-ene',
+            '9-ene',
+            '12-ene',
+            '16-ene',
+            '19-ene',
+            '23-ene',
+            '26-ene',
+            '30-ene',
+            'Total General',
+            'Total a pagar',
+            'Puntualidad',
+            'Pagos',
+            'OBSERVACIONES',
+
         ];
     }
 
-    // Mapear los datos a las columnas correspondientes
     public function map($row): array
     {
         return [
-            $row->emp_firstname,
-            $row->emp_lastname,
-            $row->dept_name,
-            $row->dia_semana,
-            $row->punch_date,
-            $row->punch_hour,
-            $row->multa_bs
+
+            isset($row->id) ? $row->id : null,
+            isset($row->emp_firstname) ? $row->emp_firstname . ' ' . $row->emp_lastname : null,
+            isset($row->multa_1_ene) ? $row->multa_1_ene : null,
+            isset($row->multa_2_ene) ? $row->multa_2_ene : null,
+            isset($row->multa_5_ene) ? $row->multa_5_ene : null,
+            isset($row->multa_9_ene) ? $row->multa_9_ene : null,
+            isset($row->multa_12_ene) ? $row->multa_12_ene : null,
+            isset($row->multa_16_ene) ? $row->multa_16_ene : null,
+            isset($row->multa_19_ene) ? $row->multa_19_ene : null,
+            isset($row->multa_23_ene) ? $row->multa_23_ene : null,
+            isset($row->multa_26_ene) ? $row->multa_26_ene : null,
+            isset($row->multa_30_ene) ? $row->multa_30_ene : null,
+            isset($row->total_general) ? $row->total_general : null,
+            isset($row->total_pagar) ? $row->total_pagar : null,
+            isset($row->puntualidad) ? $row->puntualidad : null,
+            isset($row->pagos) ? $row->pagos : null,
+            isset($row->observaciones) ? $row->observaciones : null,
+
+
         ];
     }
 
-    // Aplicar estilos (en este caso, color de fondo a la fila de encabezado)
-    public function styles($sheet)
+    public function styles(Worksheet $sheet)
     {
         $sheet->getStyle('A4:R4')->applyFromArray([
             'font' => [
@@ -87,6 +110,15 @@ class MultasExport implements FromCollection, WithHeadings, WithMapping, ShouldA
             'A' => [
                 'font' => ['bold' => true],
             ],
+            //             // Estilo para las columna
+            // 'C,D,G' => [
+            //             'alignment' => [
+            //                 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            //                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            //                 'textRotation' => 90, // Rota el texto en 90 grados
+            //             ]
+            //            ],
+
         ];
     }
 
@@ -122,16 +154,16 @@ class MultasExport implements FromCollection, WithHeadings, WithMapping, ShouldA
                 ],
             ],
             'alignment' => [
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
             ],
         ]);
 
         $sheet->mergeCells('A4:A7');
         $sheet->getStyle('A4:A7')->applyFromArray([
             'alignment' => [
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
             ],
             'borders' => [
                 'outline' => [
@@ -141,6 +173,34 @@ class MultasExport implements FromCollection, WithHeadings, WithMapping, ShouldA
                     ],
                 ],
             ],
+        ]);
+        $sheet->setCellValue('A4', 'N°');
+
+        $sheet->mergeCells('B4:B7');
+        $sheet->getStyle('B4:B7')->applyFromArray([
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+        ]);
+
+        $sheet->setCellValue('B4', 'INTEGRANTES');
+
+        $drawing = new Drawing();
+        $drawing->setName('Logo');
+        $drawing->setDescription('Logo');
+        $drawing->setPath(public_path('vendor/adminlte/dist/img/logo.jpg'));
+        $drawing->setHeight(50);
+        $drawing->setCoordinates('A1');
+        $drawing->setOffsetX(10);
+        $drawing->setOffsetY(10);
+        $drawing->setWorksheet($sheet);
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => [self::class, 'afterSheet'],
         ];
     }
 }
