@@ -26,7 +26,7 @@
                                 @foreach ($ministerios as $ministerio)
                                     <tr>
                                         <!-- Imagen centrada -->
-                                        <td class="align-middle no-export">
+                                        <td class="align-middle">
                                             @if ($ministerio->logo)
                                                 <img src="{{ asset($ministerio->logo) }}" title="Imagen referencial"
                                                     class="img-rounded">
@@ -62,7 +62,7 @@
                                         </td>
 
                                         <!-- Acciones centradas -->
-                                        <td class="align-middle no-export">
+                                        <td class="align-middle">
                                             <div class="d-flex justify-content-center">
                                                 @can('editar ministerios')
                                                     <a href="{{ route('admin.ministerios.edit', $ministerio) }}"
@@ -88,7 +88,7 @@
                                                     </a>
                                                 @endcan
                                             </div>
-                                        </td>
+                                        </td>-
                                     </tr>
                                 @endforeach
                             </tbody>

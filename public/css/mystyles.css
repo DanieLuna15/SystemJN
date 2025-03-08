@@ -9,6 +9,8 @@
     margin-bottom: 15px;
 }
 
+
+
 .dataTables_wrapper .btn {
     color: #ffffff;
     border-radius: 4px;
@@ -40,6 +42,11 @@
 
 .dataTables_wrapper .dt-buttons .btn-warning {
     background-color: #ffc107;
+    border: none;
+}
+
+.dataTables_wrapper .dt-buttons .btn-primary {
+    background-color: #007bff;
     border: none;
 }
 

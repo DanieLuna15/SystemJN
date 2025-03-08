@@ -44,7 +44,7 @@ class ActividadServicioController extends Controller
 
     protected function commonQuery()
     {
-        return ActividadServicio::query()->orderBy('id', 'DESC');
+        return ActividadServicio::query()->orderBy('id');
     }
 
 

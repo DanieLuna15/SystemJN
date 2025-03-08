@@ -34,41 +34,32 @@ class MultasExport implements FromCollection, WithHeadings, WithMapping, ShouldA
     public function headings(): array
     {
         return [
-            'N°',
-            'INTEGRANTES',
-            '1-ene', '2-ene', '5-ene', '9-ene', '12-ene', '16-ene', '19-ene', '23-ene', '26-ene', '30-ene',
-            'Total General',
-            'Total a pagar',
-            'Puntualidad',
-            'Pagos',
-            'OBSERVACIONES',
+            'Nombre', 
+            'Apellido', 
+            'Ministerio', 
+            'Dia de la semana', 
+            'Fecha',
+            'Hora de Ingreso', 
+            'Multa'
         ];
     }
 
+    // Mapear los datos a las columnas correspondientes
     public function map($row): array
     {
         return [
-            isset($row->id) ? $row->id : null,
-            isset($row->emp_firstname) ? $row->emp_firstname . ' ' . $row->emp_lastname : null,
-            isset($row->multa_1_ene) ? $row->multa_1_ene : null,
-            isset($row->multa_2_ene) ? $row->multa_2_ene : null,
-            isset($row->multa_5_ene) ? $row->multa_5_ene : null,
-            isset($row->multa_9_ene) ? $row->multa_9_ene : null,
-            isset($row->multa_12_ene) ? $row->multa_12_ene : null,
-            isset($row->multa_16_ene) ? $row->multa_16_ene : null,
-            isset($row->multa_19_ene) ? $row->multa_19_ene : null,
-            isset($row->multa_23_ene) ? $row->multa_23_ene : null,
-            isset($row->multa_26_ene) ? $row->multa_26_ene : null,
-            isset($row->multa_30_ene) ? $row->multa_30_ene : null,
-            isset($row->total_general) ? $row->total_general : null,
-            isset($row->total_pagar) ? $row->total_pagar : null,
-            isset($row->puntualidad) ? $row->puntualidad : null,
-            isset($row->pagos) ? $row->pagos : null,
-            isset($row->observaciones) ? $row->observaciones : null,
+            $row->emp_firstname,
+            $row->emp_lastname,
+            $row->dept_name,
+            $row->dia_semana,
+            $row->punch_date,
+            $row->punch_hour,
+            $row->multa_bs
         ];
     }
 
-    public function styles(Worksheet $sheet)
+    // Aplicar estilos (en este caso, color de fondo a la fila de encabezado)
+    public function styles($sheet)
     {
         $sheet->getStyle('A4:R4')->applyFromArray([
             'font' => [
@@ -150,34 +141,6 @@ class MultasExport implements FromCollection, WithHeadings, WithMapping, ShouldA
                     ],
                 ],
             ],
-        ]);
-        $sheet->setCellValue('A4', 'N°');
-
-        $sheet->mergeCells('B4:B7');
-        $sheet->getStyle('B4:B7')->applyFromArray([
-            'alignment' => [
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-            ],
-        ]);
-
-        $sheet->setCellValue('B4', 'INTEGRANTES');
-
-        $drawing = new Drawing();
-        $drawing->setName('Logo');
-        $drawing->setDescription('Logo');
-        $drawing->setPath(public_path('vendor/adminlte/dist/img/logo.jpg'));
-        $drawing->setHeight(50);
-        $drawing->setCoordinates('A1');
-        $drawing->setOffsetX(10);
-        $drawing->setOffsetY(10);
-        $drawing->setWorksheet($sheet);
-    }
-
-    public function registerEvents(): array
-    {
-        return [
-            AfterSheet::class => [self::class, 'afterSheet'],
         ];
     }
 }
