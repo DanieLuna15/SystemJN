@@ -148,15 +148,8 @@ class ReporteController extends Controller
 
         $act_eventuales = Horario::where('tipo', 0)
             ->whereBetween('fecha', [$startDate, $endDate])
-            // ->where('ministerio_id', $deptId)
-            ->get()->keyBy('fecha');
-
-        $horario_fijo_jueves = Horario::where('tipo', 1)
-            ->select('dia_semana', 'hora_registro', 'hora_multa')
-            ->where('dia_semana', 4)
-            ->where('ministerio_id', 1)
             ->get();
-
+            
         // Consulta detalles con parámetros dinámicos
         $multas_detalle = DB::connection('sqlite')->select("
             WITH primeras_marcaciones_viernes AS (
@@ -180,37 +173,34 @@ class ReporteController extends Controller
                     WHEN '5' THEN 'Viernes'
                     WHEN '6' THEN 'Sábado'
                 END AS dia_semana,
+
                 CASE 
-                    -- Usamos un CASE para las fechas dinámicas
-                    " . implode(' ', $act_eventuales->map(function ($eventual) {
-                        return "WHEN DATE(marc.punch_time) = '{$eventual->fecha}' AND TIME(marc.punch_time) <= '{$eventual->hora_multa}' THEN '0'";
-                    })->toArray()) . "
-            
+                    -- Excepción para el 21 de febrero de 2025: solo contar después de las 22:15:59
+                    WHEN DATE(marc.punch_time) = '2025-02-21' AND TIME(marc.punch_time) <= '22:15:59' THEN '0'
+                    
                     -- Aplicar regla a todos los viernes: solo contar la primera marcación después de las 19:30:59
                     WHEN strftime('%w', marc.punch_time) = '5' 
-                        AND NOT EXISTS (
-                            SELECT 1 
-                            FROM primeras_marcaciones_viernes p 
-                            WHERE p.emp_id = marc.emp_id 
-                            AND p.punch_time = marc.punch_time
-                        ) 
+                         AND NOT EXISTS (
+                             SELECT 1 
+                             FROM primeras_marcaciones_viernes p 
+                             WHERE p.emp_id = marc.emp_id 
+                             AND p.punch_time = marc.punch_time
+                         ) 
                     THEN '0'
-            
+
                     -- Si es viernes y se atrasa, mostrar 'Debe producto' en lugar de calcular multa
-                    WHEN strftime('%w', marc.punch_time) = '5' AND TIME(marc.punch_time) > '19:30:00' 
+                    WHEN strftime('%w', marc.punch_time) = '5' AND TIME(marc.punch_time) > '19:30:59' 
                     THEN 'Debe producto'
 
                     -- Multa para los jueves después de las 19:15:59
-                        " . implode(' ', $horario_fijo_jueves->map(function ($fijo) {
-                        return " WHEN strftime('%w', marc.punch_time) = '{$fijo->dia_semana}' AND TIME(marc.punch_time) > '{$fijo->hora_multa}' 
-                                    THEN 
-                                        CASE 
-                                            WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || '{$fijo->hora_multa}')) > 1800 
-                                            THEN '20' 
-                                            ELSE (CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || '{$fijo->hora_multa}')) / 300 AS INTEGER) + 1) * 2
-                                        END ";
-                    })->toArray()) . "
-            
+                    WHEN strftime('%w', marc.punch_time) = '4' AND TIME(marc.punch_time) > '19:15:59' 
+                    THEN 
+                        CASE 
+                            WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || '19:15:59')) > 1800 
+                            THEN '20' 
+                            ELSE (CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 19:15:59')) / 300 AS INTEGER) + 1) * 2
+                        END
+
                     -- Multas para el domingo (día 0)
                     WHEN strftime('%w', marc.punch_time) = '0' THEN 
                         CASE 
@@ -222,7 +212,7 @@ class ReporteController extends Controller
                                     THEN '20'
                                     ELSE (CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 07:45:59')) / 300 AS INTEGER) + 1) * 2
                                 END
-            
+
                             -- 2da marcación (10:45:59 a 13:00)
                             WHEN TIME(marc.punch_time) > '10:45:59' AND TIME(marc.punch_time) <= '13:00:00' 
                             THEN 
@@ -231,7 +221,7 @@ class ReporteController extends Controller
                                     THEN '20'
                                     ELSE (CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 10:45:59')) / 300 AS INTEGER) + 1) * 2
                                 END
-            
+
                             -- 3ra marcación (14:45:59 a 17:00)
                             WHEN TIME(marc.punch_time) > '14:45:59' AND TIME(marc.punch_time) <= '18:00:00' 
                             THEN 
@@ -248,14 +238,9 @@ class ReporteController extends Controller
             INNER JOIN att_punches AS marc ON m.id = marc.emp_id
             INNER JOIN hr_department AS d ON m.emp_dept = d.id
             WHERE marc.punch_time BETWEEN ? AND ? 
-            AND d.id = ? 
+            AND d.id = ?
             ORDER BY marc.punch_time ASC;
-        ", [
-            $startDate,
-            $endDate,
-            $deptId
-        ]);
-
+        ", [$startDate, $endDate, $deptId]);
 
         // Consulta general con parámetros dinámicos
         $multas_general = DB::connection('sqlite')->select("
