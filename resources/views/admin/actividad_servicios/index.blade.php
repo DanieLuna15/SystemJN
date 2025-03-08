@@ -14,10 +14,10 @@
                             class="table table-striped table-bordered table-hover table-sm datatable text-center">
                             <thead class="text-center">
                                 <tr>
-                                    <th>Imagen</th>
+                                    <th class="no-export">Imagen</th>
                                     <th>Nombre</th>
                                     <th>Estado</th>
-                                    <th>Acciones</th>
+                                    <th class="no-export">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -25,7 +25,7 @@
                                     <tr>
                                         <!-- Imagen centrada -->
                                         <td class="align-middle">
-                                            @if ($actividad_servicio->imagen)
+                                            @if ($actividad_servicio->imagen )
                                                 <img src="{{ asset($actividad_servicio->imagen) }}"
                                                     title="Imagen referencial" class="img-rounded">
                                             @else

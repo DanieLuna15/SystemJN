@@ -29,13 +29,14 @@ class MultasExport implements FromCollection, WithHeadings, WithMapping, ShouldA
     // Definir los encabezados de las columnas
     public function headings(): array
     {
-        return [
-            'Nombre', 
-            'Apellido', 
-            'Ministerio', 
-            'Dia de la semana', 
+        return
+        [
+            'Nombre',
+            'Apellido',
+            'Ministerio',
+            'Dia de la semana',
             'Fecha',
-            'Hora de Ingreso', 
+            'Hora de Ingreso',
             'Multa'
         ];
     }
@@ -44,13 +45,13 @@ class MultasExport implements FromCollection, WithHeadings, WithMapping, ShouldA
     public function map($row): array
     {
         return [
-            $row->emp_firstname,
-            $row->emp_lastname,
-            $row->dept_name,
-            $row->dia_semana,
-            $row->punch_date,
-            $row->punch_hour,
-            $row->multa_bs
+            $row->emp_firstname, //a
+            $row->emp_lastname, //b
+            $row->dept_name, //c
+            $row->dia_semana, //d
+            $row->punch_date, //e
+            $row->punch_hour, //f
+            $row->multa_bs //g
         ];
     }
 
@@ -68,6 +69,16 @@ class MultasExport implements FromCollection, WithHeadings, WithMapping, ShouldA
                     ]
                 ]
             ],
-        ];
+//             // Estilo para las columna
+// 'C,D,G' => [
+//             'alignment' => [
+//                 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+//                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+//                 'textRotation' => 90, // Rota el texto en 90 grados
+//             ]
+//            ],
+
+       ];
+
     }
 }
