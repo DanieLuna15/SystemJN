@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Horario;
 use App\Constants\Status;
 use App\Models\Ministerio;
-use App\Models\Horario;
 use Illuminate\Http\Request;
 
 class MinisterioController extends Controller
@@ -43,12 +44,10 @@ class MinisterioController extends Controller
         return view('admin.ministerios.index', compact('ministerios', 'pageTitle'));
     }
 
-
     protected function commonQuery()
     {
         return Ministerio::query()->orderBy('id');
     }
-
 
     public function create()
     {

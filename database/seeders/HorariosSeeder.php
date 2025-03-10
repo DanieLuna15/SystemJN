@@ -13,7 +13,7 @@ class HorariosSeeder extends Seeder
     public function run()
     {
         //['ministerio_id'=>1, 'actividad_servicio_id'=>1,'dia_semana'=>4, 'hora_registro'=>'17:00:00', 'hora_multa'=>'19:15:00', 'tipo'=>1],
-
+        //[ministerios[1,2,3,4],actividad_servicio_id, dia_semana,fecha, hora_registro, hora_multa]
         $ministerios = [
             1 => [ // Líderes
                 [1, 4, '17:00:00', '19:15:00'],
