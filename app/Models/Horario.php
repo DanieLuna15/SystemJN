@@ -23,9 +23,13 @@ class Horario extends Model
     ];
 
     // Relación con Ministerio
-    public function ministerio()
+    // public function ministerio()
+    // {
+    //     return $this->belongsTo(Ministerio::class, 'ministerio_id', 'id');
+    // }
+    public function ministerios()
     {
-        return $this->belongsTo(Ministerio::class, 'ministerio_id', 'id');
+        return $this->belongsToMany(Ministerio::class, 'horario_ministerio')->withTimestamps();
     }
 
     // Relación con actividad servicio

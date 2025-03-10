@@ -67,7 +67,6 @@ class HorarioController extends Controller
 
     public function store(Request $request, $id = null)
     {
-
         // 📌 Log para ver los datos originales recibidos
         Log::debug('🔹 Datos recibidos en la solicitud:', $request->all());
 
@@ -83,16 +82,15 @@ class HorarioController extends Controller
             'hora_multa' => $request->hora_multa
         ]);
 
-
         if ($request->tipo == 1) { // Si es tipo fijo
             $request->merge(['fecha' => null]);
         } elseif ($request->tipo == 0) { // Si es tipo eventual
             $request->merge(['dia_semana' => null]);
         }
 
-
         $rules = [
-            'ministerio_id' => 'required|exists:ministerios,id',
+            'ministerio_id' => 'required|array', // Ahora espera un array de IDs
+            'ministerio_id.*' => 'exists:ministerios,id', // Valida que cada ID existe en la tabla ministerios
             'actividad_servicio_id' => 'required|exists:actividad_servicios,id',
             'hora_registro' => ['required', 'date_format:H:i'],
             'hora_multa' => 'required|date_format:H:i|after:hora_registro',
@@ -106,17 +104,19 @@ class HorarioController extends Controller
         Log::debug('✅ Validación pasada con éxito.');
 
         try {
-            $data = $request->except(['_token']);
-
+            // 📌 Extraer datos sin el _token y guardar en la base de datos
+            $data = $request->except(['_token', 'ministerio_id']); // Excluimos ministerio_id porque lo manejamos aparte
 
             if ($id) {
                 $horario = Horario::findOrFail($id);
                 Log::debug("🔄 Actualizando horario con ID: $id", $data);
                 $horario->update($data);
+                $horario->ministerios()->sync($request->ministerio_id); // Sincroniza ministerios seleccionados
                 $message = 'Horario actualizado correctamente.';
             } else {
                 Log::debug('🆕 Creando nuevo horario', $data);
-                Horario::create($data);
+                $horario = Horario::create($data);
+                $horario->ministerios()->attach($request->ministerio_id); // Guarda la relación muchos a muchos
                 $message = 'Horario creado correctamente.';
             }
 
@@ -130,6 +130,7 @@ class HorarioController extends Controller
             return redirect()->route('admin.horarios.index')->with('error', 'Hubo un error en la operación.');
         }
     }
+
 
     /**
      * Display the specified resource.

@@ -1,3 +1,7 @@
+@php
+    $select2Config = config('select2');
+@endphp
+
 <x-adminlte-card>
     <form action="{{ route('admin.horarios.save', $horario->id ?? null) }}" method="POST">
         @csrf
@@ -35,18 +39,15 @@
             </div>
 
             <div class="col-md-12 col-lg-12">
-                <div class="form-group">
-                    <label>Ministerio:</label>
-                    <x-adminlte-select2 name="ministerio_id" class="form-control">
-                        <option value="" selected disabled>Seleccione un ministerio</option>
-                        @foreach ($ministerios as $ministerio)
-                            <option value="{{ $ministerio->id }}"
-                                {{ old('ministerio_id', $horario->ministerio_id ?? '') == $ministerio->id ? 'selected' : '' }}>
-                                {{ $ministerio->nombre }}
-                            </option>
-                        @endforeach
-                    </x-adminlte-select2>
-                </div>
+                <x-adminlte-select2 id="ministeriosSelect" name="ministerio_id[]" label="Ministerios" :config="array_merge($select2Config, ['placeholder' => 'Seleccione uno o varios ministerios...'])"
+                    multiple>
+                    @foreach ($ministerios as $ministerio)
+                        <option value="{{ $ministerio->id }}"
+                            {{ in_array($ministerio->id, old('ministerio_id', $horario->ministerios->pluck('id')->toArray() ?? [])) ? 'selected' : '' }}>
+                            {{ $ministerio->nombre }}
+                        </option>
+                    @endforeach
+                </x-adminlte-select2>
             </div>
 
             <!-- Día de la Semana -->
