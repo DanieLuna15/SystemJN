@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Database\Seeders\HorariosSeeder;
 use Illuminate\Database\Seeder;
 use Database\Seeders\MinisterioSeeder;
 use Database\Seeders\ActividadServiciosSeeder;
@@ -17,7 +18,8 @@ class DatabaseSeeder extends Seeder
             ConfiguracionSeeder::class,
             ActividadServiciosSeeder::class,
             MinisterioSeeder::class,
-            HorariosSeeder::class
+            HorariosSeeder::class,
+            HorarioMinisterioSeeder::class
         ]);
     }
 }

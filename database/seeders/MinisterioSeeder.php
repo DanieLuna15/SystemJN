@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use App\Models\Ministerio;
 use Illuminate\Database\Seeder;
 
@@ -15,7 +16,7 @@ class MinisterioSeeder extends Seeder
         $ministerios = [
             ['nombre' => 'Líderes', 'multa_incremento' => 2, 'tipo' => 1],
             ['nombre' => 'Alabanza y Adoración', 'multa_incremento' => 2, 'tipo' => 0],
-            ['nombre' => 'Pandero', 'multa_incremento' => 2, 'tipo' => 0],
+            ['nombre' => 'Panderos', 'multa_incremento' => 2, 'tipo' => 0],
             ['nombre' => 'Ujieres', 'multa_incremento' => 2, 'tipo' => 0],
             ['nombre' => 'Jóvenes', 'multa_incremento' => 2, 'tipo' => 0],
             ['nombre' => 'Niños', 'multa_incremento' => 2, 'tipo' => 0],
@@ -26,8 +27,12 @@ class MinisterioSeeder extends Seeder
             ['nombre' => 'Oración e Intercesión', 'multa_incremento' => 2, 'tipo' => 0],
             ['nombre' => 'Visitas', 'multa_incremento' => 2, 'tipo' => 0],
             ['nombre' => 'Teatro y Danza', 'multa_incremento' => 2, 'tipo' => 0],
-
         ];
+
+        foreach ($ministerios as & $ministerio){
+            $horario['created_at'] = Carbon::now();
+            $horario['updated_at'] = Carbon::now();
+        }
 
         Ministerio::insert($ministerios);
     }

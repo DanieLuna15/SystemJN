@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\ActividadServicio;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Carbon\Carbon;
 
 class ActividadServiciosSeeder extends Seeder
 {
@@ -38,6 +38,11 @@ class ActividadServiciosSeeder extends Seeder
             ['nombre' => 'Oración y Ayuno'],
             ['nombre' => 'Bautismos'],
         ];
+
+        foreach ($servicios as $servicio) {
+            $servicio['created_at'] = Carbon::now();
+            $servicio['updated_at'] = Carbon::now();
+        }
 
         ActividadServicio::insert($servicios);
     }

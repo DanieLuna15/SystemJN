@@ -103,10 +103,12 @@ class MinisterioController extends Controller
     public function horarios(Ministerio $ministerio)
     {
         $pageTitle = 'Todos los horarios del ministerio: ' . $ministerio->nombre;
-        $horarios = Horario::where('ministerio_id', $ministerio->id)
+
+        $horarios = $ministerio->horarios()
             ->where('estado', Status::ACTIVE)
             ->orderByDesc('id')
             ->get();
+
         return view('admin.ministerios.horarios', compact('horarios', 'pageTitle'));
     }
 }

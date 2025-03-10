@@ -2,66 +2,32 @@
 
 namespace Database\Seeders;
 
-use App\Models\Horario;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class HorariosSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run()
     {
-        //['ministerio_id'=>1, 'actividad_servicio_id'=>1,'dia_semana'=>4, 'hora_registro'=>'17:00:00', 'hora_multa'=>'19:15:00', 'tipo'=>1],
-        //[ministerios[1,2,3,4],actividad_servicio_id, dia_semana,fecha, hora_registro, hora_multa]
-        $ministerios = [
-            1 => [ // Líderes
-                [1, 4, '17:00:00', '19:15:00'],
-                [2, 7, '07:00:00', '07:45:00'],
-                [3, 7, '10:20:00', '10:45:00'],
-                [4, 7, '14:20:00', '14:45:00'],
-                [5, 5, '18:00:00', '18:45:00'],
-            ],
-            2 => [ // Alabanza
-                [1, 4, '18:00:00', '19:20:00'],
-                [2, 7, '07:00:00', '07:45:00'],
-                [3, 7, '10:20:00', '10:45:00'],
-                [4, 7, '14:20:00', '14:45:00'],
-                [6, 6, '16:00:00', '17:00:00'],
-                [7, 6, '14:00:00', '15:45:00'],
-                [8, 6, '13:00:00', '14:00:00'],
-            ],
-            3 => [ // Pandero
-                [1, 4, '18:00:00', '19:15:00'],
-                [2, 7, '07:00:00', '07:45:00'],
-                [3, 7, '10:20:00', '10:45:00'],
-                [4, 7, '14:20:00', '14:45:00'],
-                [9, 6, '14:00:00', '15:00:00'],
-            ],
-            4 => [ // Ujieres
-                [1, 4, '17:00:00', '19:15:00'],
-                [2, 7, '07:00:00', '07:45:00'],
-                [3, 7, '10:20:00', '10:45:00'],
-                [4, 7, '14:20:00', '14:45:00'],
-                [10, 6, '12:00:00', '13:00:00'],
-            ],
-        ];
+        $horarios = collect([
+            ['dia_semana' => 4, 'hora_registro' => '16:00:00', 'hora_multa' => '19:15:00', 'actividad_servicio_id' => 1],
+            ['dia_semana' => 7, 'hora_registro' => '07:00:00', 'hora_multa' => '07:45:00', 'actividad_servicio_id' => 2],
+            ['dia_semana' => 7, 'hora_registro' => '10:20:00', 'hora_multa' => '10:45:00', 'actividad_servicio_id' => 3],
+            ['dia_semana' => 7, 'hora_registro' => '15:00:00', 'hora_multa' => '15:45:00', 'actividad_servicio_id' => 4],
+            ['dia_semana' => 5, 'hora_registro' => '19:00:00', 'hora_multa' => '19:30:00', 'actividad_servicio_id' => 5],
+            ['dia_semana' => 6, 'hora_registro' => '12:00:00', 'hora_multa' => '14:00:00', 'actividad_servicio_id' => 10],
+            ['dia_semana' => 6, 'hora_registro' => '14:00:00', 'hora_multa' => '15:00:00', 'actividad_servicio_id' => 9],
+            ['dia_semana' => 6, 'hora_registro' => '13:00:00', 'hora_multa' => '14:00:00', 'actividad_servicio_id' => 8],
+            ['dia_semana' => 6, 'hora_registro' => '14:00:00', 'hora_multa' => '15:00:00', 'actividad_servicio_id' => 7],
+            ['dia_semana' => 6, 'hora_registro' => '15:30:00', 'hora_multa' => '16:30:00', 'actividad_servicio_id' => 6],
+        ])->map(function ($horario) {
+            return array_merge($horario, [
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ]);
+        })->toArray();
 
-        $horarios = [];
-
-        foreach ($ministerios as $ministerio_id => $actividades) {
-            foreach ($actividades as [$actividad_id, $dia, $registro, $multa]) {
-                $horarios[] = [
-                    'ministerio_id' => $ministerio_id,
-                    'actividad_servicio_id' => $actividad_id,
-                    'dia_semana' => $dia,
-                    'hora_registro' => $registro,
-                    'hora_multa' => $multa,
-                    'tipo' => 1
-                ];
-            }
-        }
-
-        Horario::insert($horarios);
+        DB::table('horarios')->insert($horarios);
     }
 }
