@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Ministerio extends Model
 {
-    use HasFactory,  GlobalStatus;
+    use HasFactory, GlobalStatus;
 
-    protected $fillable = ['nombre', 'logo', 'multa_incremento', 'tipo','estado'];
+    protected $fillable = ['nombre', 'logo', 'multa_incremento', 'tipo', 'estado'];
     protected $table = 'ministerios';
     protected $primaryKey = 'id';
     public $timestamps = true;
@@ -27,6 +27,12 @@ class Ministerio extends Model
     {
         return $this->belongsToMany(Horario::class, 'horario_ministerio')->withTimestamps();
     }
+
+    public function usuarios()
+    {
+        return $this->belongsToMany(User::class, 'ministerio_user')->withTimestamps();
+    }
+
 
     public function statusBadge(): Attribute
     {

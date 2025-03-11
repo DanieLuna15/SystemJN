@@ -1,3 +1,7 @@
+@php
+    $select2Config = config('select2');
+@endphp
+
 <x-adminlte-card>
     <form action="{{ route('admin.ministerios.save', $ministerio->id ?? null) }}" method="POST"
         enctype="multipart/form-data">
@@ -7,7 +11,8 @@
             <div class="col-lg-4">
                 <div class="col-sm-12">
                     <!-- Campo Imagen -->
-                    <x-image-upload label="Imagen" name="logo" :image="$ministerio->logo ?? null" :id="'logotipo_actual'" />
+                    <x-image-upload label="Imagen" name="logo" :image="$ministerio->logo ?? null"
+                        :id="'logotipo_actual'" />
                     <input type="hidden" name="remove_logo" id="removeLogoInput_logotipo_actual" value="0">
                 </div>
             </div>
@@ -25,8 +30,7 @@
                             <x-adminlte-select2 name="tipo" class="form-control">
                                 <option value="" disabled>Seleccione Categoría</option>
                                 @foreach ([1 => 'Alto', 0 => 'Estandar'] as $key => $type)
-                                    <option value="{{ $key }}"
-                                        {{ old('tipo', $ministerio->tipo ?? 0) == $key ? 'selected' : '' }}>
+                                    <option value="{{ $key }}" {{ old('tipo', $ministerio->tipo ?? 0) == $key ? 'selected' : '' }}>
                                         {{ $type }}
                                     </option>
                                 @endforeach
@@ -51,31 +55,15 @@
                         </x-adminlte-input>
                     </div>
 
-
-                    {{-- With multiple slots, and plugin config parameters --}}
-                    @php
-                        $config = [
-                            'placeholder' => 'Select multiple options...',
-                            'allowClear' => true,
-                        ];
-                    @endphp
                     <div class="col-md-12 col-lg-12">
-                        <x-adminlte-select2 id="sel2Category" name="sel2Category[]" label="Categories"
-                            label-class="text-danger" igroup-size="sm" :config="$config" multiple>
-                            <x-slot name="prependSlot">
-                                <div class="input-group-text bg-gradient-red">
-                                    <i class="fas fa-tag"></i>
-                                </div>
-                            </x-slot>
-                            <x-slot name="appendSlot">
-                                <x-adminlte-button theme="outline-dark" label="Clear"
-                                    icon="fas fa-lg fa-ban text-danger" />
-                            </x-slot>
-                            <option>Sports</option>
-                            <option>News</option>
-                            <option>Games</option>
-                            <option>Science</option>
-                            <option>Maths</option>
+                        <!-- Campo Líderes -->
+                        <x-adminlte-select2 id="usuariosSelect" name="user_id[]" label="Líderes"
+                            :config="array_merge($select2Config, ['placeholder' => 'Seleccione uno o varios líderes...'])" multiple>
+                            @foreach ($usuarios as $usuario)
+                                <option value="{{ $usuario->id }}" {{ in_array($usuario->id, old('user_id', $ministerio->usuarios->pluck('id')->toArray() ?? [])) ? 'selected' : '' }}>
+                                    {{ $usuario->name }}
+                                </option>
+                            @endforeach
                         </x-adminlte-select2>
                     </div>
                 </div>

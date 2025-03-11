@@ -26,7 +26,8 @@ class MinisterioController extends Controller
     public function index()
     {
         $pageTitle = 'Todos los Ministerios';
-        $ministerios = $this->commonQuery()->get();
+        // Cargar los ministerios junto con los usuarios relacionados
+        $ministerios = $this->commonQuery()->with('usuarios')->get();
         return view('admin.ministerios.index', compact('ministerios', 'pageTitle'));
     }
 
@@ -52,13 +53,21 @@ class MinisterioController extends Controller
     public function create()
     {
         $pageTitle = 'Nuevo Ministerio';
-        return view('admin.ministerios.create', compact('pageTitle'));
+        // Obtener usuarios que no están asociados a ningún ministerio
+        $usuarios = User::whereDoesntHave('ministerios')->get();
+        return view('admin.ministerios.create', compact('pageTitle', 'usuarios'));
     }
 
     public function edit(Ministerio $ministerio)
     {
         $pageTitle = 'Edición de Ministerio: ' . $ministerio->nombre;
-        return view('admin.ministerios.edit', compact('ministerio', 'pageTitle'));
+        // Recuperar usuarios ó (Líderes) que no están asociados a ningún ministerio
+        // o que están asociados al ministerio actual
+        $usuarios = User::whereDoesntHave('ministerios')
+            ->orWhereHas('ministerios', function ($query) use ($ministerio) {
+                $query->where('ministerios.id', $ministerio->id);
+            })->get();
+        return view('admin.ministerios.edit', compact('ministerio', 'pageTitle', 'usuarios'));
     }
 
     public function store(Request $request, $id = null)
@@ -73,6 +82,8 @@ class MinisterioController extends Controller
         try {
             $data = $request->except('_token', 'remove_logo');
             $ministerio = $id ? Ministerio::findOrFail($id) : new Ministerio();
+            // 🔹 Sincronizar usuarios seleccionados (líderes)
+            $ministerio->usuarios()->sync($request->input('user_id', []));
 
             // 🔹 Eliminar la imagen solo si el usuario la quitó manualmente
             if ($request->input('remove_logo') == '1') {

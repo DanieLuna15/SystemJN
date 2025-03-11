@@ -13,6 +13,12 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
+    public function ministerios()
+    {
+        return $this->belongsToMany(Ministerio::class, 'ministerio_user')->withTimestamps();
+    }
+
+
     /**
      * The attributes that are mass assignable.
      *
