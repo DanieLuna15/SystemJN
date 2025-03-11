@@ -80,7 +80,8 @@
 
             <div class="col-md-6 col-lg-6">
                 <x-adminlte-input type="time" name="hora_registro" label="Hora de Registro:"
-                    value="{{ old('hora_registro', $horario->hora_registro ?? '') }}">
+                    value="{{ old('hora_registro', $horario->hora_registro ?? '') }}"
+                    step="1">
                     <x-slot name="prependSlot">
                         <div class="input-group-text">
                             <i class="far fa-clock"></i>
@@ -97,7 +98,8 @@
 
             <div class="col-md-6 col-lg-6">
                 <x-adminlte-input type="time" name="hora_multa" label="Hora de Multa:"
-                    value="{{ old('hora_multa', $horario->hora_multa ?? '') }}">
+                    value="{{ old('hora_multa', $horario->hora_multa ?? '') }}"
+                    step="1">
                     <x-slot name="prependSlot">
                         <div class="input-group-text">
                             <i class="far fa-clock"></i>
