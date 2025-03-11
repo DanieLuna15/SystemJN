@@ -154,10 +154,121 @@ class ReporteController extends Controller
         $horario_fijo_jueves = Horario::where('tipo', 1)
             ->select('dia_semana', 'hora_registro', 'hora_multa')
             ->where('dia_semana', 4)
-            ->where('ministerio_id', 1)
+            // ->where('ministerio_id', 1)
             ->get();
 
+            
         // Consulta detalles con parámetros dinámicos
+        // $multas_detalle = DB::connection('sqlite')->select("
+        //     WITH primeras_marcaciones_viernes AS (
+        //         SELECT emp_id, MIN(punch_time) AS punch_time
+        //         FROM att_punches
+        //         WHERE strftime('%w', punch_time) = '5' AND TIME(punch_time) >= '19:30:00'
+        //         GROUP BY emp_id, DATE(punch_time)
+        //     )
+        //     SELECT 
+        //         m.emp_firstname, 
+        //         m.emp_lastname,         
+        //         DATE(marc.punch_time) AS punch_date, 
+        //         TIME(marc.punch_time) AS punch_hour,
+        //         d.dept_name, 
+        //         CASE strftime('%w', marc.punch_time)
+        //             WHEN '0' THEN 'Domingo'
+        //             WHEN '1' THEN 'Lunes'
+        //             WHEN '2' THEN 'Martes'
+        //             WHEN '3' THEN 'Miércoles'
+        //             WHEN '4' THEN 'Jueves'
+        //             WHEN '5' THEN 'Viernes'
+        //             WHEN '6' THEN 'Sábado'
+        //         END AS dia_semana,
+        //         CASE 
+        //             " . implode(' ', $act_eventuales->map(function ($eventual) {
+        //                 return "WHEN DATE(marc.punch_time) = '{$eventual->fecha}' AND TIME(marc.punch_time) <= '{$eventual->hora_multa}' THEN '0'";
+        //             })->toArray()) . "
+        
+        //             WHEN strftime('%w', marc.punch_time) = '5' 
+        //                 AND NOT EXISTS (
+        //                     SELECT 1 
+        //                     FROM primeras_marcaciones_viernes p 
+        //                     WHERE p.emp_id = marc.emp_id 
+        //                     AND p.punch_time = marc.punch_time
+        //                 ) 
+        //             THEN '0'
+        
+        //             WHEN strftime('%w', marc.punch_time) = '5' AND TIME(marc.punch_time) > '19:30:00' 
+        //             THEN 'Debe producto'
+        
+        //             " . implode(' ', $horario_fijo_jueves->map(function ($fijo) {
+        //                 return " WHEN strftime('%w', marc.punch_time) = '{$fijo->dia_semana}' AND TIME(marc.punch_time) > '{$fijo->hora_multa}' 
+        //                         THEN 
+        //                             CASE 
+        //                                 WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || '{$fijo->hora_multa}')) > 1800 
+        //                                 THEN '20' 
+        //                                 ELSE (CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || '{$fijo->hora_multa}')) / 300 AS INTEGER) + 1) * 2
+        //                             END ";
+        //             })->toArray()) . "
+        
+        //             WHEN strftime('%w', marc.punch_time) = '0' THEN 
+        //                 CASE 
+        //                     WHEN TIME(marc.punch_time) > '07:45:59' AND TIME(marc.punch_time) <= '10:00:00' 
+        //                     THEN 
+        //                         CASE 
+        //                             WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 07:45:59')) > 1800 
+        //                             THEN '20'
+        //                             ELSE (CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 07:45:59')) / 300 AS INTEGER) + 1) * 2
+        //                         END
+                        
+        //                     WHEN TIME(marc.punch_time) > '10:45:59' AND TIME(marc.punch_time) <= '13:00:00' 
+        //                     THEN 
+        //                         CASE 
+        //                             WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 10:45:59')) > 1800 
+        //                             THEN '20'
+        //                             ELSE (CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 10:45:59')) / 300 AS INTEGER) + 1) * 2
+        //                         END
+        
+        //                     WHEN TIME(marc.punch_time) > '14:45:59' AND TIME(marc.punch_time) <= '18:00:00' 
+        //                     THEN 
+        //                         CASE 
+        //                             WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 14:45:59')) > 1800 
+        //                             THEN '20'
+        //                             ELSE (CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 14:45:59')) / 300 AS INTEGER) + 1) * 2
+        //                         END
+        //                     ELSE '0'
+        //                 END
+        //             ELSE '0'
+        //         END AS multa_bs
+        //     FROM hr_employee AS m
+        //     LEFT JOIN att_punches AS marc 
+        //         ON m.id = marc.emp_id 
+        //         AND marc.punch_time BETWEEN ? AND ? 
+        //     INNER JOIN hr_department AS d ON m.emp_dept = d.id
+        
+        //     -- REGLA: Si un empleado no marcó en ninguna hora esperada, debe 40 Bs
+        //     UNION
+        //     SELECT 
+        //         m.emp_firstname, 
+        //         m.emp_lastname,         
+        //         NULL AS punch_date, 
+        //         NULL AS punch_hour,
+        //         d.dept_name, 
+        //         'Sin marcación' AS dia_semana,
+        //         '40' AS multa_bs
+        //     FROM hr_employee AS m
+        //     INNER JOIN hr_department AS d ON m.emp_dept = d.id
+        //     WHERE NOT EXISTS (
+        //         SELECT 1 
+        //         FROM att_punches AS marc 
+        //         WHERE marc.emp_id = m.id 
+        //         AND marc.punch_time BETWEEN ? AND ?
+        //     ) 
+        //     AND d.id = ?
+            
+        //     ORDER BY punch_date ASC NULLS LAST;
+        // ", [
+        //     $startDate, $endDate,
+        //     $startDate, $endDate, $deptId
+        // ]);
+    
         $multas_detalle = DB::connection('sqlite')->select("
             WITH primeras_marcaciones_viernes AS (
                 SELECT emp_id, MIN(punch_time) AS punch_time
@@ -222,7 +333,7 @@ class ReporteController extends Controller
                                     THEN '20'
                                     ELSE (CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 07:45:59')) / 300 AS INTEGER) + 1) * 2
                                 END
-            
+                        
                             -- 2da marcación (10:45:59 a 13:00)
                             WHEN TIME(marc.punch_time) > '10:45:59' AND TIME(marc.punch_time) <= '13:00:00' 
                             THEN 
@@ -255,7 +366,6 @@ class ReporteController extends Controller
             $endDate,
             $deptId
         ]);
-
 
         // Consulta general con parámetros dinámicos
         $multas_general = DB::connection('sqlite')->select("
