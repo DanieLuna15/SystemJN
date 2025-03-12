@@ -89,8 +89,8 @@ class HorarioController extends Controller
         }
 
         $rules = [
-            'ministerio_id' => 'required|array', // Ahora espera un array de IDs
-            'ministerio_id.*' => 'exists:ministerios,id', // Valida que cada ID existe en la tabla ministerios
+            'ministerio_id' => 'required|array',
+            'ministerio_id.*' => 'exists:ministerios,id', 
             'actividad_servicio_id' => 'required|exists:actividad_servicios,id',
             'hora_registro' => ['required', 'date_format:H:i:s'],
             'hora_multa' => 'required|date_format:H:i:s|after:hora_registro',
