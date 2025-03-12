@@ -16,9 +16,8 @@ return new class extends Migration
             $table->string('address')->nullable()->after('last_name');
             $table->string('ci')->unique()->after('address');
             $table->string('profile_image')->nullable()->after('ci');
-            $table->string('phone')->nullable()->after('ci'); 
-            $table->boolean('estado')->default(true)->after('phone'); 
-           
+            $table->string('phone')->nullable()->after('profile_image');
+            $table->boolean('estado')->default(true)->after('phone');
         });
     }
 
@@ -28,6 +27,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
+
             $table->dropColumn(['last_name', 'address', 'ci', 'profile_image', 'phone', 'estado']);
         });
     }
