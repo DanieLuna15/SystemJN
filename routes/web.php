@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\MinisterioController;
@@ -64,12 +65,6 @@ Route::middleware('auth')->group(function () {
         Route::resource('/', HorarioController::class)->except(['store', 'update'])->parameters(['' => 'horario']);
     });
 
-    // // 📌 **Grupo de rutas para Reportes**
-    // Route::prefix('admin/reportes')->name('admin.reportes.')->controller(ReporteController::class)->group(function () {
-    //     Route::match(['get', 'post'], '/', 'index')->name('index'); // Permitir GET y POST en la misma ruta
-    //     Route::get('exportar-reporte', 'exportarReporte')->name('exportar');
-    // });
-
     // 📌 **Grupo de rutas para Reportes**
     Route::prefix('admin/reportes')->name('admin.reportes.')->controller(ReporteController::class)->group(function () {
         Route::match(['get', 'post'], '/multa', 'multa')->name('multa');
@@ -77,5 +72,14 @@ Route::middleware('auth')->group(function () {
         Route::match(['get', 'post'], '/fidelizacion', 'fidelizacion')->name('fidelizacion');
 
         Route::get('/exportar-reporte', 'exportarReporte')->name('exportar');
+    });
+
+    // 📌 **Grupo de rutas para Usuarios**
+    Route::prefix('admin/usuarios')->name('admin.usuarios.')->controller(UserController::class)->group(function () {
+        Route::get('/active', 'active')->name('active');
+        Route::get('/inactive', 'inactive')->name('inactive');
+        Route::post('/save/{id?}', 'store')->name('save');
+        Route::patch('/status/{id}', 'status')->name('status');
+        Route::resource('/', UserController::class)->except(['store', 'update'])->parameters(['' => 'usuario']);
     });
 });
