@@ -60,11 +60,6 @@ class HorarioController extends Controller
         $actividadServicios = ActividadServicio::where('estado', Status::ACTIVE)->get();
         return view('admin.horarios.create', compact('actividadServicios', 'ministerios', 'pageTitle'));
     }
-    public function updateHorario(Horario $horario, $horaRegistro, $horaMulta)
-    {
-        $horario->hora_registro = $horaRegistro;
-        $horario->hora_multa = $horaMulta;
-        $horario->save();}
 
     /**
      * Store a newly created resource in storage.
@@ -110,7 +105,7 @@ class HorarioController extends Controller
 
         try {
             // 📌 Extraer datos sin el _token y guardar en la base de datos
-            $data = $request->except(['_token', 'ministerio_id']); // Excluimos ministerio_id porque lo manejamos aparte
+            $data = $request->except(['_token', 'ministerio_id']);
 
             if ($id) {
                 $horario = Horario::findOrFail($id);
