@@ -340,9 +340,39 @@ return [
 
         [
             'text' => 'Usuarios',
-            'url'  => 'admin/users',
+            'active' => ['admin/usuarios*'],
             'icon' => 'fas fa-users',
             'can'  => 'ver usuarios',
+            'submenu' => [
+                [
+                    'text' => 'Todos los Usuarios',
+                    'url' => 'admin/usuarios',
+                    'icon' => 'fas fa-list-ul',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
+                    'can'  => 'ver usuarios',
+                ],
+                [
+                    'text' => 'Usuarios Activos',
+                    'url' => 'admin/usuarios/active',
+                    'icon' => 'fas fa-check-circle',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
+                    'can'  => 'ver usuarios',
+                ],
+                [
+                    'text' => 'Usuarios Inactivos',
+                    'url' => 'admin/usuarios/inactive',
+                    'icon' => 'fas fa-ban',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
+                    'can'  => 'ver usuarios',
+                ],
+                [
+                    'text' => 'Crear Nuevo Usuario',
+                    'url' => 'admin/usuarios/create',
+                    'icon' => 'fas fa-plus-square',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
+                    'can'  => 'crear usuarios',
+                ],
+            ],
         ],
 
         // [

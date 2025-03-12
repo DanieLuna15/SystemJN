@@ -27,22 +27,22 @@ class UserController extends Controller
     public function index()
     {
         $pageTitle = 'Todos los Usuarios';
-        $users = $this->commonQuery()->get();
-        return view('admin.users.index', compact('users', 'pageTitle'));
+        $usuarios = $this->commonQuery()->get();
+        return view('admin.usuarios.index', compact('usuarios', 'pageTitle'));
     }
 
     public function active()
     {
         $pageTitle = 'Usuarios Activos';
-        $users =  $this->commonQuery()->active()->get();
-        return view('admin.users.index', compact('users', 'pageTitle'));
+        $usuarios =  $this->commonQuery()->active()->get();
+        return view('admin.usuarios.index', compact('usuarios', 'pageTitle'));
     }
 
     public function inactive()
     {
         $pageTitle = 'Usuarios Inactivos';
-        $users =  $this->commonQuery()->inactive()->get();
-        return view('admin.users.index', compact('users', 'pageTitle'));
+        $usuarios =  $this->commonQuery()->inactive()->get();
+        return view('admin.usuarios.index', compact('usuarios', 'pageTitle'));
     }
 
     protected function commonQuery()
@@ -53,13 +53,13 @@ class UserController extends Controller
     public function create()
     {
         $pageTitle = 'Nuevo Usuario';
-        return view('admin.users.create', compact('pageTitle'));
+        return view('admin.usuarios.create', compact('pageTitle'));
     }
 
     public function edit(User $user)
     {
         $pageTitle = 'Editar Usuario: ' . $user->name;
-        return view('admin.users.edit', compact('user', 'pageTitle'));
+        return view('admin.usuarios.edit', compact('user', 'pageTitle'));
     }
 
     public function store(Request $request, $id = null)
