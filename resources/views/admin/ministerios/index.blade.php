@@ -64,9 +64,9 @@
 
                                     <!-- Líderes centrado -->
                                     <td class="align-middle text-truncate">
-                                        @if($ministerio->usuarios->isNotEmpty())
-                                            @foreach ($ministerio->usuarios as $usuario)
-                                                <span class="badge badge-info">{{ $usuario->name }}</span>
+                                        @if($ministerio->lideres->isNotEmpty())
+                                            @foreach ($ministerio->lideres as $lider)
+                                                <span class="badge badge-info">{{ $lider->name }}</span>
                                             @endforeach
                                         @else
                                             <span class="text-muted">Sin líderes asignados</span>

@@ -59,9 +59,9 @@
                         <!-- Campo Líderes -->
                         <x-adminlte-select2 id="usuariosSelect" name="user_id[]" label="Líderes"
                             :config="array_merge($select2Config, ['placeholder' => 'Seleccione uno o varios líderes...'])" multiple>
-                            @foreach ($usuarios as $usuario)
-                                <option value="{{ $usuario->id }}" {{ in_array($usuario->id, old('user_id', $ministerio->usuarios->pluck('id')->toArray() ?? [])) ? 'selected' : '' }}>
-                                    {{ $usuario->name }}
+                            @foreach ($lideres as $lider)
+                                <option value="{{ $lider->id }}" {{ in_array($lider->id, old('user_id', $ministerio->lideres->pluck('id')->toArray() ?? [])) ? 'selected' : '' }}>
+                                    {{ $lider->name }}
                                 </option>
                             @endforeach
                         </x-adminlte-select2>

@@ -34,20 +34,20 @@ class HorarioController extends Controller
     public function active()
     {
         $pageTitle = 'Horarios Activos';
-        $horarios = $this->commonQuery()->where('estado', Status::ACTIVE)->get();
+        $horarios = $this->commonQuery()->active()->get();
         return view('admin.horarios.index', compact('horarios', 'pageTitle'));
     }
 
     public function inactive()
     {
         $pageTitle = 'Horarios Inactivos';
-        $horarios = $this->commonQuery()->where('estado', Status::INACTIVE)->get();
+        $horarios = $this->commonQuery()->inactive()->get();
         return view('admin.horarios.index', compact('horarios', 'pageTitle'));
     }
 
     protected function commonQuery()
     {
-        return Horario::query()->orderByDesc('id');
+        return Horario::orderByDesc('id');
     }
 
     /**

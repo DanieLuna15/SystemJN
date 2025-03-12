@@ -30,21 +30,21 @@ class ActividadServicioController extends Controller
     public function active()
     {
         $pageTitle = 'Actividades y Servicios Activos';
-        $actividad_servicios = $this->commonQuery()->where('estado', Status::ACTIVE)->get();
+        $actividad_servicios = $this->commonQuery()->active()->get();
         return view('admin.actividad_servicios.index', compact('actividad_servicios', 'pageTitle'));
     }
 
     public function inactive()
     {
         $pageTitle = 'Actividades y Servicios Inactivos';
-        $actividad_servicios = $this->commonQuery()->where('estado', Status::INACTIVE)->get();
+        $actividad_servicios = $this->commonQuery()->inactive()->get();
         return view('admin.actividad_servicios.index', compact('actividad_servicios', 'pageTitle'));
     }
 
 
     protected function commonQuery()
     {
-        return ActividadServicio::query()->orderBy('id');
+        return ActividadServicio::orderBy('id');
     }
 
 

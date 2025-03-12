@@ -18,14 +18,14 @@ class Ministerio extends Model
     protected $primaryKey = 'id';
     public $timestamps = true;
 
-    // public function horarios()
-    // {
-    //     return $this->hasMany(Horario::class, 'ministerio_id', 'id');
-    // }
-
     public function horarios()
     {
         return $this->belongsToMany(Horario::class, 'horario_ministerio')->withTimestamps();
+    }
+
+    public function lideres()
+    {
+        return $this->belongsToMany(User::class, 'ministerio_lider')->withTimestamps();
     }
 
     public function usuarios()
