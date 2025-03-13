@@ -182,4 +182,11 @@ class UserController extends Controller
 
         return view('admin.usuarios.info', compact('usuario', 'pageTitle'));
     }
+
+    public function profile()
+    {
+        $pageTitle = 'Mi perfil';
+        $user = auth()->user();
+        return view('admin.usuarios.profile', compact('pageTitle', 'user'));
+    }
 }

@@ -76,6 +76,7 @@ Route::middleware('auth')->group(function () {
 
     // 📌 **Grupo de rutas para Usuarios**
     Route::prefix('admin/usuarios')->name('admin.usuarios.')->controller(UserController::class)->group(function () {
+        Route::get('profile', 'profile')->name('profile');
         Route::get('/active', 'active')->name('active');
         Route::get('/inactive', 'inactive')->name('inactive');
         Route::post('/save/{id?}', 'store')->name('save');
