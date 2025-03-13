@@ -18,6 +18,7 @@
                                 <th>Nombre</th>
                                 <th>Apellido</th>
                                 <th>CI</th>
+                                <th>Telefono</th>
                                 <th>Ministerio</th>
                                 <th>Rol</th>
                                 <th>Estado</th>
@@ -51,11 +52,14 @@
                                     <!-- CI centrado -->
                                     <td class="align-middle">{{ $usuario->ci }}</td>
 
+                                    <!-- Telefono centrado -->
+                                    <td class="align-middle">{{ $usuario->phone }}</td>
+
                                     <!-- Ministerio centrado -->
                                     <td class="align-middle text-truncate">
                                         @if($usuario->ministerios->isNotEmpty())
                                             @foreach ($usuario->ministerios as $ministerio)
-                                                <span class="badge badge-info">{{ $ministerio->name }}</span>
+                                                <span class="badge badge-info">{{ $ministerio->nombre }}</span>
                                             @endforeach
                                         @else
                                             <span class="text-muted">Sin ministerios asignados</span>
@@ -63,16 +67,24 @@
                                     </td>
 
 
-                                    <!-- Categoria centrada -->
+                                    <!-- Rol centrada -->
                                     <td class="align-middle">
-                                        @if ($usuario->tipo == 1)
-                                            <small class="badge bg-gradient-primary w-100 h-100"><i class="fas fa-crown"></i>
-                                                Alto</small>
+                                        @if ($usuario->roles->isNotEmpty())
+                                            @foreach ($usuario->getRoleNames() as $role)
+                                                @if ($role == 'admin')
+                                                    <small class="badge bg-gradient-primary w-100 h-100"><i class="fas fa-crown"></i>
+                                                        {{ $role }}</small>
+                                                @else
+                                                    <small class="badge bg-gradient-info w-100 h-100"><i class="fas fa-star"></i>
+                                                        {{ $role }}</small>
+                                                @endif
+                                            @endforeach
                                         @else
-                                            <small class="badge bg-gradient-info w-100 h-100"><i class="fas fa-star"></i>
-                                                Estándar</small>
+                                            <small class="badge bg-gradient-secondary w-100 h-100"><i class="fas fa-minus"></i>
+                                                Sin Rol</small>
                                         @endif
                                     </td>
+                                    
 
                                     <!-- Estado centrado -->
                                     <td class="align-middle">
@@ -89,14 +101,14 @@
                                     <!-- Acciones centradas -->
                                     <td class="align-middle">
                                         <div class="d-flex justify-content-center">
-                                            @can('editar ministerios')
+                                            @can('editar usuarios')
                                                 <a href="{{ route('admin.usuarios.edit', $usuario) }}"
                                                     class="btn btn-warning btn-sm mx-1" title="Editar">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                             @endcan
 
-                                            @can('cambiar estado ministerios')
+                                            @can('cambiar estado usuarios')
                                                 <button type="button" title="Cambiar estado"
                                                     class="btn btn-sm {{ $usuario->estado ? 'btn-danger' : 'btn-success' }} confirmationBtn mx-1"
                                                     data-action="{{ route('admin.usuarios.status', $usuario->id) }}"
@@ -106,9 +118,9 @@
                                                 </button>
                                             @endcan
 
-                                            @can('ver horarios_ministerio')
-                                                <a href="{{ route('admin.ministerios.horarios', $usuario) }}"
-                                                    class="btn btn-secondary btn-sm mx-1" title="Verificar Horarios">
+                                            @can('ver info_usuario')
+                                                <a href="{{ route('admin.usuarios.info', $usuario) }}"
+                                                    class="btn btn-secondary btn-sm mx-1" title="Ver Info usuarios">
                                                     <i class="fas fa-list-ul" style="color: #63E6BE;"></i>
                                                 </a>
                                             @endcan
@@ -136,7 +148,7 @@
 
 @push('breadcrumb-plugins')
     @can('crear usuarios')
-        <a href="{{ route('admin.ministerios.create') }}" class="btn btn-success rounded">
+        <a href="{{ route('admin.usuarios.create') }}" class="btn btn-success rounded">
             <i class="fas fa-plus-square"></i> Nuevo
         </a>
     @endcan

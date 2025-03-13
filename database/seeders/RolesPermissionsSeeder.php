@@ -17,6 +17,7 @@ class RolesPermissionsSeeder extends Seeder
                 //------------------------
                 'crear usuarios',
                 'ver usuarios',
+                'ver info_usuario',
                 'editar usuarios',
                 'cambiar estado usuarios',
                 'eliminar usuarios',

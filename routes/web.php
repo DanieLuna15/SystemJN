@@ -80,6 +80,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/inactive', 'inactive')->name('inactive');
         Route::post('/save/{id?}', 'store')->name('save');
         Route::patch('/status/{id}', 'status')->name('status');
+        Route::get('/{usuario}/info', 'info')->name('info');
         Route::resource('/', UserController::class)->except(['store', 'update'])->parameters(['' => 'usuario']);
     });
 });

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Ministerio;
+use App\Constants\Status;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -27,21 +29,21 @@ class UserController extends Controller
     public function index()
     {
         $pageTitle = 'Todos los Usuarios';
-        $usuarios = $this->commonQuery()->get();
+        $usuarios = $this->commonQuery()->with(['ministerios', 'roles'])->get();
         return view('admin.usuarios.index', compact('usuarios', 'pageTitle'));
     }
 
     public function active()
     {
         $pageTitle = 'Usuarios Activos';
-        $usuarios =  $this->commonQuery()->active()->get();
+        $usuarios = $this->commonQuery()->active()->get();
         return view('admin.usuarios.index', compact('usuarios', 'pageTitle'));
     }
 
     public function inactive()
     {
         $pageTitle = 'Usuarios Inactivos';
-        $usuarios =  $this->commonQuery()->inactive()->get();
+        $usuarios = $this->commonQuery()->inactive()->get();
         return view('admin.usuarios.index', compact('usuarios', 'pageTitle'));
     }
 
@@ -53,18 +55,22 @@ class UserController extends Controller
     public function create()
     {
         $pageTitle = 'Nuevo Usuario';
-        return view('admin.usuarios.create', compact('pageTitle'));
+        $ministerios = Ministerio::where('estado', Status::ACTIVE)->get();
+        $roles = Role::all(); // Obtén los roles definidos en tu sistema
+        return view('admin.usuarios.create', compact('pageTitle', 'ministerios', 'roles'));
     }
 
-    public function edit(User $user)
+    public function edit(User $usuario)
     {
-        $pageTitle = 'Editar Usuario: ' . $user->name;
-        return view('admin.usuarios.edit', compact('user', 'pageTitle'));
+        $pageTitle = 'Editar Usuario: ' . $usuario->name;
+        $roles = Role::all(); // Obtén los roles definidos en tu sistema
+        $ministerios = Ministerio::where('estado', Status::ACTIVE)->get();
+        return view('admin.usuarios.edit', compact('usuario', 'roles', 'ministerios', 'pageTitle'));
     }
 
     public function store(Request $request, $id = null)
     {
-        // Validación de los datos (sin cambios)
+        // Validación de los datos
         $request->validate([
             'name' => 'required|string|min:3|max:255|unique:users,name,' . ($id ? $id : 'NULL'),
             'email' => 'required|email|unique:users,email,' . ($id ? $id : 'NULL'),
@@ -80,41 +86,59 @@ class UserController extends Controller
         // Recoger los datos, excepto el token
         $data = $request->except('_token', 'remove_logo');
 
+        // Definir $usuario si $id no es nulo (proceso de edición)
+        $usuario = $id ? User::findOrFail($id) : null;
+
         // 🔹 Eliminar la profile_image solo si el usuario la quitó manualmente
-        if ($request->input('remove_logo') == '1') {
-            $user = User::findOrFail($id);
-            deleteFile($user->profile_image);
+        if ($request->input('remove_logo') == '1' && $usuario) {
+            deleteFile($usuario->profile_image);
             $data['profile_image'] = null;
         }
 
         // 🔹 Si se sube una nueva profile_image, procesarla
         if ($request->hasFile('profile_image')) {
-            deleteFile($user->profile_image); // Eliminar el anterior antes de guardar el nuevo
-            $data['profile_image'] = uploadFile($request->file('profile_image'), 'uploads/actividad_servicios');
+            if ($usuario && $usuario->profile_image) {
+                deleteFile($usuario->profile_image); // Eliminar la imagen anterior si existe
+            }
+            $data['profile_image'] = uploadFile($request->file('profile_image'), 'uploads/usuarios');
         }
 
         try {
             if ($id) {
-                // Si se trata de una edición, buscar al usuario y actualizarlo
-                $user = User::findOrFail($id);
-                $user->update($data);
-
+                // Si es una edición, actualizar el usuario existente
+                $usuario->update($data);
                 $message = 'Usuario actualizado correctamente.';
             } else {
-                // Si es un nuevo usuario, encriptar la contraseña y crear el usuario
+                // Si es un nuevo usuario, crear el usuario con contraseña encriptada
                 $password = $this->generatePassword($request->name, $request->last_name, $request->ci, $request->phone);
                 $data['password'] = bcrypt($password);
-                $user = User::create($data);
-
+                $usuario = User::create($data); // Crear nuevo usuario
                 $message = 'Usuario creado correctamente.';
             }
 
-            return redirect()->route('admin.users.index')->with('success', $message);
+            // Obtener el nombre del rol basado en el ID enviado desde el formulario
+            $roleName = Role::find($request->input('rol_id'))->name;
+
+            // Verificar que el rol exista
+            if (!$roleName) {
+                return redirect()->back()->with('error', 'El rol seleccionado no es válido.');
+            }
+
+            // Sincronizar el rol con el usuario
+            $usuario->syncRoles([$roleName]);
+
+            // Sincronizar ministerios
+            $usuario->ministerios()->sync($request->input('ministerio_id', []));
+
+            // Redirigir con éxito
+            return redirect()->route('admin.usuarios.index')->with('success', $message);
         } catch (\Exception $e) {
+            // Registrar el error en los logs
             Log::error('Error al guardar el usuario: ' . $e->getMessage());
-            return redirect()->route('admin.users.index')->with('error', 'Hubo un error en la operación.');
+            return redirect()->route('admin.usuarios.index')->with('error', 'Hubo un error en la operación.');
         }
     }
+
 
 
     public function destroy(User $user)
@@ -150,5 +174,12 @@ class UserController extends Controller
 
         // Generar la contraseña: iniciales + 3 primeros dígitos del CI + últimos 4 dígitos del teléfono
         return $initials . $ciPart . $phonePart;
+    }
+
+    public function info(User $usuario)
+    {
+        $pageTitle = 'Informacion del Usuario: ' . $usuario->name;
+
+        return view('admin.usuarios.info', compact('usuario', 'pageTitle'));
     }
 }

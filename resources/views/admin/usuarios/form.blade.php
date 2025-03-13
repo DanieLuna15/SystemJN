@@ -3,15 +3,14 @@
 @endphp
 
 <x-adminlte-card>
-    <form action="{{ route('admin.ministerios.save', $ministerio->id ?? null) }}" method="POST"
-        enctype="multipart/form-data">
+    <form action="{{ route('admin.usuarios.save', $usuario->id ?? null) }}" method="POST" enctype="multipart/form-data">
         @csrf
-        <input type="hidden" name="id" value="{{ $ministerio->id ?? '' }}">
+        <input type="hidden" name="id" value="{{ $usuario->id ?? '' }}">
         <div class="row">
             <div class="col-lg-4">
                 <div class="col-sm-12">
                     <!-- Campo Imagen -->
-                    <x-image-upload label="Imagen" name="logo" :image="$ministerio->logo ?? null"
+                    <x-image-upload label="Imagen" name="profile_image" :image="$usuario->profile_image ?? null"
                         :id="'logotipo_actual'" />
                     <input type="hidden" name="remove_logo" id="removeLogoInput_logotipo_actual" value="0">
                 </div>
@@ -20,52 +19,60 @@
                 <div class="row">
                     <div class="col-md-12 col-lg-12">
                         <!-- Campo Nombre -->
-                        <x-adminlte-input name="nombre" label="Nombre:"
-                            value="{{ old('nombre', $ministerio->nombre ?? '') }}" />
+                        <x-adminlte-input name="name" label="Nombre:"
+                            value="{{ old('name', $usuario->name ?? '') }}" />
                     </div>
 
                     <div class="col-md-12 col-lg-12">
-                        <div class="form-group">
-                            <label>Categoría:</label>
-                            <x-adminlte-select2 name="tipo" class="form-control">
-                                <option value="" disabled>Seleccione Categoría</option>
-                                @foreach ([1 => 'Alto', 0 => 'Estandar'] as $key => $type)
-                                    <option value="{{ $key }}" {{ old('tipo', $ministerio->tipo ?? 0) == $key ? 'selected' : '' }}>
-                                        {{ $type }}
-                                    </option>
-                                @endforeach
-                            </x-adminlte-select2>
-                        </div>
+                        <!-- Campo Apellido -->
+                        <x-adminlte-input name="last_name" label="Apellido:"
+                            value="{{ old('apellido', $usuario->last_name ?? '') }}" />
                     </div>
 
-                    <div class="col-md-12 col-lg-12">
-                        <!-- Campo Multa por Retraso -->
-                        <x-adminlte-input name="multa_incremento" label="Sancion por Retraso (Bs):" type="number"
-                            step="0.01" value="{{ old('multa_incremento', $ministerio->multa_incremento ?? '') }}">
-                            <x-slot name="prependSlot">
-                                <div class="input-group-text">
-                                    <b>Bs.</b>
-                                </div>
-                            </x-slot>
-                            <x-slot name="bottomSlot">
-                                <span class="text-sm text-gray">
-                                    [Este es el monto de multa acumulativa.]
-                                </span>
-                            </x-slot>
-                        </x-adminlte-input>
+                    <div class="col-md-6 col-lg-6">
+                        <!-- Campo CI -->
+                        <x-adminlte-input name="ci" label="CI:" value="{{ old('ci', $usuario->ci ?? '') }}" />
                     </div>
 
+                    <div class="col-md-6 col-lg-6">
+                        <!-- Campo Roles -->
+                        <x-adminlte-select2 id="rolesSelect" name="rol_id" label="Rol:">
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->id }}" {{ old('rol_id', $usuario->roles->first()->id ?? 3) == $role->id ? 'selected' : '' }}>
+                                    {{ ucfirst($role->name) }}
+                                </option>
+                            @endforeach
+                        </x-adminlte-select2>
+
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-6">
+                        <!-- Campo Correo -->
+                        <x-adminlte-input name="email" label="Correo:"
+                            value="{{ old('correo', $usuario->email ?? '') }}" />
+                    </div>
+                    <div class="col-md-6 col-lg-6">
+                        <!-- Campo Teléfono -->
+                        <x-adminlte-input name="phone" label="Teléfono:"
+                            value="{{ old('telefono', $usuario->phone ?? '') }}" />
+                    </div>
+
+
+
                     <div class="col-md-12 col-lg-12">
-                        <!-- Campo Líderes -->
-                        <x-adminlte-select2 id="usuariosSelect" name="user_id[]" label="Líderes"
-                            :config="array_merge($select2Config, ['placeholder' => 'Seleccione uno o varios líderes...'])" multiple>
-                            @foreach ($lideres as $lider)
-                                <option value="{{ $lider->id }}" {{ in_array($lider->id, old('user_id', $ministerio->lideres->pluck('id')->toArray() ?? [])) ? 'selected' : '' }}>
-                                    {{ $lider->name }}
+                        <!-- Campo Ministerios -->
+                        <x-adminlte-select2 id="ministeriosSelect" name="ministerio_id[]" label="Ministerios:"
+                            :config="array_merge($select2Config, ['placeholder' => 'Seleccione uno o varios ministerios...'])" multiple>
+                            @foreach ($ministerios as $ministerio)
+                                <option value="{{ $ministerio->id }}" {{ in_array($ministerio->id, old('ministerio_id', $usuario->ministerios->pluck('id')->toArray() ?? [])) ? 'selected' : '' }}>
+                                    {{ $ministerio->nombre }}
                                 </option>
                             @endforeach
                         </x-adminlte-select2>
                     </div>
+
+
                 </div>
 
             </div>
@@ -73,14 +80,14 @@
         <!-- Botones de Acción -->
         <div class="d-flex justify-content-between">
             <x-adminlte-button class="btn w-100" type="submit"
-                label="{{ isset($ministerio->id) ? 'Guardar cambios' : 'Guardar' }}" theme="success"
+                label="{{ isset($usuario->id) ? 'Guardar cambios' : 'Guardar' }}" theme="success"
                 icon="fas fa-lg fa-save" />
         </div>
     </form>
 </x-adminlte-card>
 
 @push('breadcrumb-plugins')
-    <a href="{{ route('admin.ministerios.index') }}" class="btn btn-secondary rounded">
+    <a href="{{ route('admin.usuarios.index') }}" class="btn btn-secondary rounded">
         <i class="fas fa-undo"></i> Regresar
     </a>
 @endpush
