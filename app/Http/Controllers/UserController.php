@@ -70,73 +70,116 @@ class UserController extends Controller
 
     public function store(Request $request, $id = null)
     {
+        // Log inicial para identificar el flujo
+        Log::info('Iniciando proceso de guardar usuario.', ['id' => $id]);
+
         // Validación de los datos
-        $request->validate([
+        $validatedData = $request->validate([
             'name' => 'required|string|min:3|max:255|unique:users,name,' . ($id ? $id : 'NULL'),
-            'email' => 'required|email|unique:users,email,' . ($id ? $id : 'NULL'),
-            'password' => 'required|string|min:8|confirmed',
-            'role' => ['required', Rule::in(Role::pluck('name'))],
             'last_name' => 'required|string|min:3|max:255',
+            'email' => 'required|email|unique:users,email,' . ($id ? $id : 'NULL'),
+            'password' => $id ? 'nullable' : 'required|string|min:8|confirmed', // La contraseña es opcional en edición
+            'rol_id' => ['required', Rule::in(Role::pluck('id'))],
             'address' => 'nullable|string|max:255',
             'ci' => 'required|numeric|min:1000000|max:99999999|unique:users,ci,' . ($id ? $id : 'NULL'),
             'phone' => 'nullable|numeric|min:10000000|max:99999999',
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+        Log::debug('Datos validados.', $validatedData);
 
-        // Recoger los datos, excepto el token
+        // Recoger los datos, excepto el token y otras claves innecesarias
         $data = $request->except('_token', 'remove_logo');
+        Log::debug('Datos procesados para guardar.', $data);
 
         // Definir $usuario si $id no es nulo (proceso de edición)
-        $usuario = $id ? User::findOrFail($id) : null;
+        $usuario = $id ? User::find($id) : null;
+        if ($id && !$usuario) {
+            Log::warning('Usuario no encontrado.', ['id' => $id]);
+            return redirect()->back()->with('error', 'Usuario no encontrado.');
+        }
+        Log::info('Usuario encontrado o preparado para creación.', ['usuario' => $usuario]);
 
-        // 🔹 Eliminar la profile_image solo si el usuario la quitó manualmente
+        // Eliminar la profile_image solo si el usuario la quitó manualmente
         if ($request->input('remove_logo') == '1' && $usuario) {
             deleteFile($usuario->profile_image);
             $data['profile_image'] = null;
+            Log::info('Imagen de perfil eliminada.', ['user_id' => $usuario->id]);
         }
 
-        // 🔹 Si se sube una nueva profile_image, procesarla
+        // Procesar nueva profile_image si se subió
         if ($request->hasFile('profile_image')) {
             if ($usuario && $usuario->profile_image) {
                 deleteFile($usuario->profile_image); // Eliminar la imagen anterior si existe
             }
             $data['profile_image'] = uploadFile($request->file('profile_image'), 'uploads/usuarios');
+            Log::info('Nueva imagen de perfil procesada.', ['file_path' => $data['profile_image']]);
         }
 
         try {
             if ($id) {
-                // Si es una edición, actualizar el usuario existente
+                // Actualizar usuario existente
                 $usuario->update($data);
                 $message = 'Usuario actualizado correctamente.';
+                Log::info('Usuario actualizado.', ['user_id' => $usuario->id]);
             } else {
-                // Si es un nuevo usuario, crear el usuario con contraseña encriptada
+                // Crear nuevo usuario
                 $password = $this->generatePassword($request->name, $request->last_name, $request->ci, $request->phone);
                 $data['password'] = bcrypt($password);
-                $usuario = User::create($data); // Crear nuevo usuario
+                $usuario = User::create($data);
                 $message = 'Usuario creado correctamente.';
+                Log::info('Usuario creado.', ['user_id' => $usuario->id]);
             }
 
-            // Obtener el nombre del rol basado en el ID enviado desde el formulario
-            $roleName = Role::find($request->input('rol_id'))->name;
-
-            // Verificar que el rol exista
+            // Obtener el nombre del rol y validar
+            $roleName = Role::find($request->input('rol_id'))->name ?? null;
             if (!$roleName) {
+                Log::warning('Rol inválido seleccionado.', ['rol_id' => $request->input('rol_id')]);
                 return redirect()->back()->with('error', 'El rol seleccionado no es válido.');
             }
 
             // Sincronizar el rol con el usuario
             $usuario->syncRoles([$roleName]);
+            Log::info('Roles sincronizados.', ['user_id' => $usuario->id, 'roles' => $roleName]);
 
             // Sincronizar ministerios
             $usuario->ministerios()->sync($request->input('ministerio_id', []));
+            Log::info('Ministerios sincronizados.', ['user_id' => $usuario->id]);
 
             // Redirigir con éxito
             return redirect()->route('admin.usuarios.index')->with('success', $message);
         } catch (\Exception $e) {
-            // Registrar el error en los logs
-            Log::error('Error al guardar el usuario: ' . $e->getMessage());
+            // Log del error
+            Log::error('Error al guardar el usuario.', [
+                'error_message' => $e->getMessage(),
+                'stack_trace' => $e->getTraceAsString()
+            ]);
             return redirect()->route('admin.usuarios.index')->with('error', 'Hubo un error en la operación.');
         }
+    }
+
+    public function update(Request $request, $id)
+    {
+        Log::info('Iniciando actualización del usuario.', ['id' => $id]);
+
+        $usuario = User::findOrFail($id);
+
+        if ($request->input('form_type') === 'secundario') {
+            $validatedData = $request->validate([
+                'name' => 'required|string|min:3|max:255|unique:users,name,' . $id,
+                'last_name' => 'required|string|min:3|max:255',
+                'email' => 'required|email|unique:users,email,' . $id,
+                'phone' => 'nullable|numeric|min:10000000|max:99999999',
+                'address' => 'nullable|string|max:255',
+            ]);
+        } else {
+            return redirect()->back()->with('error', 'Formulario no válido.');
+        }
+
+        $usuario->fill($validatedData);
+        $usuario->save();
+
+        return redirect()->route('admin.usuarios.info', ['usuario' => $usuario->id])->with('success', 'Usuario actualizado correctamente.');
+
     }
 
 

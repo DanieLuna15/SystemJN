@@ -70,20 +70,27 @@
                                     <!-- Rol centrada -->
                                     <td class="align-middle">
                                         @if ($usuario->roles->isNotEmpty())
-                                            @foreach ($usuario->getRoleNames() as $role)
-                                                @if ($role == 'admin')
-                                                    <small class="badge bg-gradient-primary w-100 h-100"><i class="fas fa-crown"></i>
-                                                        {{ $role }}</small>
+                                            @foreach ($usuario->roles as $role)
+                                                @if ($role->id == 1) <!-- Reemplaza "1" con el ID correspondiente al rol "Pastor/Admin" -->
+                                                    <small class="badge bg-gradient-primary w-100 h-100">
+                                                        <i class="fas fa-crown"></i> {{ ucfirst($role->name) }}
+                                                    </small>
+                                                @elseif ($role->id == 2) <!-- Reemplaza "2" con el ID correspondiente al rol "Líder" -->
+                                                    <small class="badge bg-gradient-success w-100 h-100">
+                                                        <i class="fas fa-star"></i> {{ ucfirst($role->name) }}
+                                                    </small>
                                                 @else
-                                                    <small class="badge bg-gradient-info w-100 h-100"><i class="fas fa-star"></i>
-                                                        {{ $role }}</small>
+                                                    <small class="badge bg-gradient-info w-100 h-100">
+                                                        <i class="fas fa-user-tie"></i> {{ ucfirst($role->name) }}
+                                                    </small>
                                                 @endif
                                             @endforeach
                                         @else
-                                            <small class="badge bg-gradient-secondary w-100 h-100"><i class="fas fa-minus"></i>
-                                                Sin Rol</small>
+                                            <small class="badge bg-gradient-secondary w-100 h-100">
+                                                <i class="fas fa-minus"></i> Sin Rol
+                                            </small>
                                         @endif
-                                    </td>
+                                    </td>                                    
                                     
 
                                     <!-- Estado centrado -->
