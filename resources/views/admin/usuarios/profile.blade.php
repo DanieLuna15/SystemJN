@@ -5,36 +5,50 @@
     <div class="row">
         <div class="col-md-3">
             <div class="card card-primary card-outline">
-                <div class="card-body box-profile text-center">
+                <div class="card-body box-profile">
                     <!-- Imagen de perfil -->
-                    <label for="profile_image_input">
-                        <img id="profileImagePreview" class="profile-user-img img-fluid img-circle"
-                            src="{{ asset($user->profile_image ?? 'images/default-dark.png') }}" alt="Imagen de perfil"
+                    <label for="profile_image_input" class="d-block text-center">
+                        <img id="profileImagePreview" class="profile-user-img img-fluid img-circle mx-auto d-block"
+                            src="{{ asset($user->profile_image ?? 'images/default-dark.png') }}"
                             style="width: 180px; height: 180px; object-fit: cover; cursor: pointer;">
                     </label>
                     <input type="file" name="profile_image" id="profile_image_input" style="display: none;"
-                        accept="image/*"
-                        onchange="document.getElementById('profileImagePreview').src = window.URL.createObjectURL(this.files[0])">
+                        accept="image/*" onchange="document.getElementById('profileImagePreview').src = window.URL.createObjectURL(this.files[0])">
 
                     <!-- Datos del usuario -->
-                    <div class="card card-primary mt-3">
-                        <div class="card-header">
-                            <h3 class="card-title"><b>{{ $user->name }}</b></h3>
-                        </div>
-                        <div class="card-body">
-                            <strong><i class="fas-regular fa-mobile-retro"></i> Teléfono</strong>
-                            <p class="text-muted">{{ $user->phone }}</p>
-                            <hr>
-                            <strong><i class="fas fa-map-marker-alt mr-1"></i> Ubicación</strong>
-                            <p class="text-muted">{{ $user->address }}</p>
-                            <hr>
-                            <strong><i class="fas fa-pencil-alt mr-1"></i> Email</strong>
-                            <p class="text-muted">{{ $user->email }}</p>
-                            <hr>
-                            <strong><i class="far fa-file-alt mr-1"></i> Carnet de Identidad</strong>
-                            <p class="text-muted">{{ $user->ci }}</p>
-                        </div>
-                    </div>
+
+                    <h3 class="text-center">{{ $user->name }} {{ $user->last_name }}</h3>
+
+                    <ul class="list-group list-group-unbordered mb-3">
+                        <li class="list-group-item">
+                            <b>Cargo</b>
+                            <a class="float-right">.........</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Ministerio</b>
+                            <a class="float-right">............</a>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+
+            <div class="card card-primary mt-3">
+                <div class="card-header">
+                    <h3 class="card-title">Sobre mi</h3>
+                </div>
+                <div class="card-body">
+                    <strong><i class="fas-regular fa-mobile-retro"></i> Teléfono</strong>
+                    <p class="text-muted">{{ $user->phone }}</p>
+                    <hr>
+                    <strong><i class="fas fa-map-marker-alt mr-1"></i> Ubicación</strong>
+                    <p class="text-muted">{{ $user->address }}</p>
+                    <hr>
+                    <strong><i class="fas fa-pencil-alt mr-1"></i> Email</strong>
+                    <p class="text-muted">{{ $user->email }}</p>
+                    <hr>
+                    <strong><i class="far fa-file-alt mr-1"></i> Carnet de Identidad</strong>
+                    <p class="text-muted">{{ $user->ci }}</p>
                 </div>
             </div>
         </div>
