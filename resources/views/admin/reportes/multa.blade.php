@@ -17,7 +17,13 @@
                             <a class="nav-link active" href="#general" data-toggle="tab" data-section="general">General</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#detallado" data-toggle="tab" data-section="logotipos">Detallado</a>
+                            <a class="nav-link" href="#detallado" data-toggle="tab" data-section="detallado">Detallado</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#servicios" data-toggle="tab" data-section="servicios">Servicios</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#servicios" data-toggle="tab" data-section="servicios">Reunion de Lideres</a>
                         </li>
                     </ul>
                 </div>
@@ -91,11 +97,55 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Reporte tipo Pivot (Columnas dinámicas para cada día) -->
+
+                        <div class="tab-pane" id="servicios">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="table-responsive">
+                                        <table id="reporte-asistencias-table"
+                                            class="table table-striped table-bordered table-hover table-sm datatable text-center">
+                                            
+                                            <thead>
+
+                                                <tr>
+                                                    <th>Nombre</th>
+                                                    <th>Apellido</th>
+                                                    <th>Departamento</th>
+                                                    {{-- Se generan dinámicamente las cabeceras de cada fecha --}}
+                                                    @foreach ($dates as $date)
+                                                        <th>{{ "{$date['fecha']} - {$date['dia_semana_lit']}" }}</th>
+                                                    @endforeach
+                                                    <th>Total Multas</th>
+                                                    <th>Observaciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($multas_detalle_reporte as $empleado)
+                                                    <tr>
+                                                        <td>{{ $empleado->emp_firstname }}</td>
+                                                        <td>{{ $empleado->emp_lastname }}</td>
+                                                        <td>{{ $empleado->dept_name }}</td>
+                                                        {{-- Se muestran las multas correspondientes a cada fecha dinámica --}}
+                                                        @foreach ($dates as $date)
+                                                            <td>{{ $empleado->{$date['alias']} ?? 0 }}</td>
+                                                        @endforeach
+                                                        <td>{{ $empleado->Total_Multas ?? 0 }}</td>
+                                                        <td></td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 
 
@@ -116,3 +166,5 @@
     </a>
     {{-- @endcan --}}
 @endpush
+
+

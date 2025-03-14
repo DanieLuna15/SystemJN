@@ -122,7 +122,6 @@ class ReporteController extends Controller
 
     public function multa(Request $request)
     {
-        //dd($request->all());
         // Obtener el rango de fechas enviado desde el formulario
         $dateRange = $request->input('date_range', now()->startOfMonth()->format('d-m-Y 00:00:00') . ' - ' . now()->endOfMonth()->format('d-m-Y 23:59:59'));
 
@@ -267,8 +266,12 @@ class ReporteController extends Controller
             ORDER BY marc.punch_time ASC;
         ", [$startDate, $endDate, $deptId]);
 
-        $startDate = $request->input('start_date', '2025-02-01');  // Si no existe, usa '2025-02-01' como valor por defecto
-        $endDate   = $request->input('end_date', '2025-02-27');   // Si no existe, usa '2025-02-27' como valor por defecto      
+
+
+        
+        $startDate = '2025-01-01';
+        $endDate   = '2025-02-7';
+        $deptId    = 3;
 
         // Paso 1: Obtener las fechas únicas dentro del rango para los días de interés (jueves=4, viernes=5, domingo=0)
         $datesResult = DB::connection('sqlite')->select("
@@ -278,6 +281,7 @@ class ReporteController extends Controller
             AND strftime('%w', punch_time) IN ('0', '4', '5')
             ORDER BY fecha ASC
         ", [$startDate, $endDate]);
+
 
         $dayNames = [
             '0' => 'Domingo',
@@ -423,10 +427,8 @@ class ReporteController extends Controller
 
 
 
-        // Mostrar o retornar el reporte (por ejemplo, con dd)
+        // // Mostrar o retornar el reporte (por ejemplo, con dd)
         // dd($multas_detalle);
-
-
 
 
         // Consulta general con parámetros dinámicos
