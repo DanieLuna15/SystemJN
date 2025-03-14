@@ -59,15 +59,6 @@
 @stop
 
 @push('css')
-    <style>
-        .profile-user-img {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 3px solid #ddd;
-        }
-    </style>
 @endpush
 
 @push('js')

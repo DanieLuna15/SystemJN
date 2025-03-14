@@ -19,7 +19,7 @@ class UsersSeeder extends Seeder
                 'role' => 'Pastor/Admin',
                 'address' => 'Calle Ficticia 123, Ciudad',
                 'ci' => '1234567',
-                'profile_image' => 'images/pastor_profile.jpg',
+                'profile_image' => null,
             ],
             [
                 'name' => 'Líder de Jóvenes',
@@ -29,7 +29,7 @@ class UsersSeeder extends Seeder
                 'role' => 'Líder',
                 'address' => 'Calle Juvenil 456, Ciudad',
                 'ci' => '8765432',
-                'profile_image' => 'images/lider_profile.jpg',
+                'profile_image' => null,
             ],
             [
                 'name' => 'Miembro de Congregación',
@@ -39,7 +39,7 @@ class UsersSeeder extends Seeder
                 'role' => 'Miembro',
                 'address' => 'Calle Miembros 789, Ciudad',
                 'ci' => '1122334',
-                'profile_image' => 'images/miembro_profile.jpg',
+                'profile_image' => null,
             ],
         ];
 

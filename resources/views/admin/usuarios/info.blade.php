@@ -7,9 +7,10 @@
             <div class="card card-primary card-outline">
                 <div class="card-body box-profile text-center">
                     <!-- Imagen de perfil -->
-                    <img class="profile-user-img img-fluid img-circle"
-                        src="{{ asset($usuario->profile_image ?? 'images/default-dark.png') }}" alt="Foto de perfil">
-
+                    <div class="text-center">
+                        <img class="profile-user-img img-fluid img-circle"
+                            src="{{ asset($usuario->profile_image  ?? 'images/default-dark.png') }}" alt="Foto de perfil">
+                    </div>
                     <!-- datos del usuario -->
                     <ul class="list-group list-group-unbordered mb-3">
                         <li class="list-group-item text-center">
@@ -19,7 +20,7 @@
                             <p class="text-muted ">{{ $usuario->address }}</p>
                         </li>
                     </ul>
-                    
+
                 </div>
             </div>
         </div>
@@ -36,8 +37,7 @@
                                 y Multas</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#agenda" data-toggle="tab"
-                                data-section="contraseña">Agenda</a>
+                            <a class="nav-link" href="#agenda" data-toggle="tab" data-section="contraseña">Agenda</a>
                         </li>
                     </ul>
                 </div>
@@ -47,24 +47,28 @@
                             <h5 class="text-center">Informacion General</h5>
                             <!-- Aquí puedes agregar más información -->
 
-                            <form action="{{ route('admin.usuarios.update', $usuario->id) }}" method="POST" enctype="multipart/form-data">
+                            <form action="{{ route('admin.usuarios.update', $usuario->id) }}" method="POST"
+                                enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT') <!-- Esto asegura que se use el método PUT -->
                                 <input type="hidden" name="form_type" value="secundario">
                                 <div class="row">
-                            
+
                                     <div class="col-md-6 col-lg-6">
                                         <!-- Campo Nombre -->
-                                        <x-adminlte-input name="name" label="Nombre:" value="{{ old('name', $usuario->name ?? '') }}" />
+                                        <x-adminlte-input name="name" label="Nombre:"
+                                            value="{{ old('name', $usuario->name ?? '') }}" />
                                     </div>
                                     <div class="col-md-6 col-lg-6">
                                         <!-- Campo Apellido -->
-                                        <x-adminlte-input name="last_name" label="Apellido:" value="{{ old('last_name', $usuario->last_name ?? '') }}" />
+                                        <x-adminlte-input name="last_name" label="Apellido:"
+                                            value="{{ old('last_name', $usuario->last_name ?? '') }}" />
                                     </div>
-                            
+
                                     <div class="col-md-6 col-lg-6">
                                         <!-- Campo Email -->
-                                        <x-adminlte-input name="email" label="Correo:" value="{{ old('email', $usuario->email ?? '') }}" />
+                                        <x-adminlte-input name="email" label="Correo:"
+                                            value="{{ old('email', $usuario->email ?? '') }}" />
                                     </div>
 
                                     <div class="col-md-6 col-lg-6">
@@ -72,19 +76,19 @@
                                         <x-adminlte-input name="phone" label="Telefono:"
                                             value="{{ old('phone', $usuario->phone ?? '') }}" />
                                     </div>
-                            
+
                                     <div class="col-md-12 col-lg-12">
                                         <!-- Campo Direccion -->
                                         <x-adminlte-input name="address" label="Dirección:"
                                             value="{{ old('address', $usuario->address ?? '') }}" />
-                                    </div>                        
-                            
+                                    </div>
+
                                 </div>
-                            
+
                                 @can('editar configuracion informacion')
                                     <div class="d-flex justify-content-between">
-                                        <x-adminlte-button class="btn w-100" type="submit" label="Guardar cambios" theme="success"
-                                            icon="fas fa-lg fa-save" />
+                                        <x-adminlte-button class="btn w-100" type="submit" label="Guardar cambios"
+                                            theme="success" icon="fas fa-lg fa-save" />
                                     </div>
                                 @endcan
                             </form>

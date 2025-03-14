@@ -9,8 +9,6 @@
     margin-bottom: 15px;
 }
 
-
-
 .dataTables_wrapper .btn {
     color: #ffffff;
     border-radius: 4px;
@@ -54,6 +52,13 @@
     display: block !important;
 }
 
+.profile-user-img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #ddd;
+}
 
 /* Para estilizar imágenes en tablas listado */
 .img-rounded {
