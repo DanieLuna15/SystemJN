@@ -99,12 +99,11 @@
                         <!-- Perfil -->
                         <div class="tab-pane fade" id="perfil">
                             <h5 class="text-center">Perfil</h5>
-                            <p>Aquí puedes modificar los datos del perfil.</p>
+                            <p>perfil.</p>
                         </div>
 
                         <!-- Seguridad y Privacidad -->
                         <div class="tab-pane fade" id="seguridad">
-                            <h5 class="text-center">Seguridad y Privacidad</h5>
                             <form>
                                 <label for="password_actual">Contraseña Actual</label>
                                 <div class="input-group">
