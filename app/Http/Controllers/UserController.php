@@ -75,14 +75,18 @@ class UserController extends Controller
 
         // Validación de los datos
         $validatedData = $request->validate([
-            'name' => 'required|string|min:3|max:255|unique:users,name,' . ($id ? $id : 'NULL'),
+            'name' => 'required|string|min:3|max:255',
             'last_name' => 'required|string|min:3|max:255',
             'email' => 'required|email|unique:users,email,' . ($id ? $id : 'NULL'),
-            'password' => $id ? 'nullable' : 'required|string|min:8|confirmed', // La contraseña es opcional en edición
             'rol_id' => ['required', Rule::in(Role::pluck('id'))],
             'address' => 'nullable|string|max:255',
-            'ci' => 'required|numeric|min:1000000|max:99999999|unique:users,ci,' . ($id ? $id : 'NULL'),
-            'phone' => 'nullable|numeric|min:10000000|max:99999999',
+            'ci' => [
+                'required',
+                'numeric',
+                'digits_between:6,12', // Reemplaza el rango manual con esta regla
+                Rule::unique('users', 'ci')->ignore($id),
+            ],
+            'phone' => 'nullable|numeric|digits:8', // Asegura que siempre sean 8 dígitos exactos
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
         Log::debug('Datos validados.', $validatedData);

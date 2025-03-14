@@ -22,12 +22,12 @@
             </div>
             <div class="col-lg-8">
                 <div class="row">
-                    <div class="col-md-12 col-lg-12">
+                    <div class="col-md-6 col-lg-6">
                         <!-- Campo Nombre -->
                         <x-adminlte-input name="name" label="Nombre:" value="{{ old('name', $usuario->name ?? '') }}" />
                     </div>
 
-                    <div class="col-md-12 col-lg-12">
+                    <div class="col-md-6 col-lg-6">
                         <!-- Campo Apellido -->
                         <x-adminlte-input name="last_name" label="Apellido:"
                             value="{{ old('last_name', $usuario->last_name ?? '') }}" />
@@ -69,11 +69,17 @@
                         <x-adminlte-select2 id="ministeriosSelect" name="ministerio_id[]" label="Ministerios:"
                             :config="array_merge($select2Config, ['placeholder' => 'Seleccione uno o varios ministerios...'])" multiple>
                             @foreach ($ministerios as $ministerio)
-                                <option value="{{ $ministerio->id }}" {{ in_array($ministerio->id, old('ministerio_id[]', $usuario->ministerios->pluck('id')->toArray() ?? [])) ? 'selected' : '' }}>
+                                <option value="{{ $ministerio->id }}" {{ in_array($ministerio->id, old('ministerio_id', $usuario->ministerios->pluck('id')->toArray() ?? [])) ? 'selected' : '' }}>
                                     {{ $ministerio->nombre }}
                                 </option>
                             @endforeach
                         </x-adminlte-select2>
+                    </div>
+
+                    <div class="col-md-12 col-lg-12">
+                        <!-- Campo Direccion -->
+                        <x-adminlte-input name="address" label="Dirección:"
+                            value="{{ old('address', $usuario->address ?? '') }}" />
                     </div>
 
 
