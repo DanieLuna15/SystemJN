@@ -27,18 +27,14 @@
                             <tbody>
                                 @foreach ($horarios as $horario)
                                     <tr>
-                                        <!-- Ministerio centrado -->
-                                        {{-- <td class="align-middle text-truncate">
-                                            {{ __(strLimit($horario->ministerio->nombre, 20)) }}</td> --}}
+                                        <!-- Ministerios centrado -->
                                         <td class="align-middle text-truncate">
                                             @foreach ($horario->ministerios as $ministerio)
-                                                <span class="badge badge-info">{{ $ministerio->nombre }}</span>
+                                                [<span class="badge badge-info">{{ $ministerio->nombre }}</span>]
                                             @endforeach
                                         </td>
                                         
-
                                         <!-- Día de la Semana centrado -->
-
                                         <td class="text-center align-middle">
                                             @if ($horario->dia_semana == null)
                                                 <small class="badge bg-gradient-warning w-100 h-100">
