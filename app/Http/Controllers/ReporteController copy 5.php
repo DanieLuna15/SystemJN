@@ -122,6 +122,7 @@ class ReporteController extends Controller
 
     public function multa(Request $request)
     {
+        //dd($request->all());
         // Obtener el rango de fechas enviado desde el formulario
         $dateRange = $request->input('date_range', now()->startOfMonth()->format('d-m-Y 00:00:00') . ' - ' . now()->endOfMonth()->format('d-m-Y 23:59:59'));
 
@@ -267,12 +268,6 @@ class ReporteController extends Controller
         ", [$startDate, $endDate, $deptId]);
 
 
-
-        
-        $startDate = '2025-01-01';
-        $endDate   = '2025-02-7';
-        $deptId    = 3;
-
         // Paso 1: Obtener las fechas únicas dentro del rango para los días de interés (jueves=4, viernes=5, domingo=0)
         $datesResult = DB::connection('sqlite')->select("
             SELECT DISTINCT DATE(punch_time) AS fecha, strftime('%w', punch_time) AS dia_semana
@@ -281,7 +276,6 @@ class ReporteController extends Controller
             AND strftime('%w', punch_time) IN ('0', '4', '5')
             ORDER BY fecha ASC
         ", [$startDate, $endDate]);
-
 
         $dayNames = [
             '0' => 'Domingo',
@@ -296,139 +290,228 @@ class ReporteController extends Controller
         $dates = [];
         foreach ($datesResult as $row) {
             $dates[] = [
-                'fecha'      => $row->fecha,
-                'alias'      => 'd_' . str_replace('-', '_', $row->fecha),
-                'dia_semana' => $row->dia_semana,
+                'fecha'         => $row->fecha,
+                'alias'         => 'd_' . str_replace('-', '_', $row->fecha),
+                'dia_semana'    => $row->dia_semana,
                 'dia_semana_lit' => $dayNames[$row->dia_semana]
             ];
         }
 
         // Paso 2: Construir dinámicamente las columnas del SELECT para cada fecha
         $columnsSql = [];
-        $sumColumns = []; // Para construir la suma total de multas
+        $sumColumns = []; // Se utilizará para calcular la suma total de multas (excluyendo los domingos si se desean separar)
 
+        // Recorremos cada fecha obtenida y construimos la columna o columnas según el día
         foreach ($dates as $d) {
             $fecha = $d['fecha'];
             $alias = $d['alias'];
             $dia   = $d['dia_semana']; // '0' (Dom), '4' (Jue), '5' (Vie)
 
-            if ($dia == '5') {
-                // Para viernes: se contempla la excepción del 21 de febrero y la lógica general.
-                // (Para otros viernes se asigna 0; si deseas otro comportamiento, deberás ajustar la lógica)
-                $col = "SUM(
-                    CASE WHEN DATE(marc.punch_time) = '$fecha' THEN (
-                        CASE 
-                            WHEN '$fecha' = '2025-02-21' THEN
-                                CASE 
-                                    WHEN TIME(marc.punch_time) > '22:15:59' THEN 
-                                        CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 22:15:59')) > 1800 
-                                            THEN 20 
-                                            ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 22:15:59')) / 300 AS INTEGER) + 1) * 2)
-                                        END
-                                    ELSE 0
-                                END
-                            ELSE
-                                CASE
-                                    WHEN TIME(marc.punch_time) > '19:30:59' THEN 0
-                                    ELSE 0
-                                END
-                        END
-                    ) ELSE 0 END
+            if ($dia == '4') {
+                // Jueves: Se requiere una marcación entre 17:00 y 21:00; sino, multa de 40 Bs;
+                // Si hay marcación, se calcula la multa en función del retraso a partir de las 19:15:59.
+                $col = "(
+                    CASE 
+                        WHEN SUM(
+                            CASE 
+                                WHEN DATE(marc.punch_time) = '$fecha'
+                                    AND TIME(marc.punch_time) BETWEEN '17:00:00' AND '21:00:00'
+                                THEN 1 ELSE 0 
+                            END
+                        ) = 0 
+                        THEN 40 
+                        ELSE 
+                            SUM(
+                                CASE WHEN DATE(marc.punch_time) = '$fecha' THEN (
+                                    CASE 
+                                        WHEN TIME(marc.punch_time) > '19:15:59' THEN 
+                                            CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 19:15:59')) > 1800 
+                                                THEN 20  
+                                                ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 19:15:59')) / 300 AS INTEGER) + 1) * 2)
+                                            END
+                                        ELSE 0
+                                    END
+                                ) ELSE 0 END
+                            )
+                    END
                 ) AS \"$alias\"";
-            } elseif ($dia == '4') {
-                // Para jueves: si marca después de las 19:15:59 se aplica la multa.
-                $col = "SUM(
-                    CASE WHEN DATE(marc.punch_time) = '$fecha' THEN (
-                        CASE 
-                            WHEN TIME(marc.punch_time) > '19:15:59' THEN 
-                                CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 19:15:59')) > 1800 
-                                    THEN 20 
-                                    ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 19:15:59')) / 300 AS INTEGER) + 1) * 2)
-                                END
-                            ELSE 0
-                        END
-                    ) ELSE 0 END
+                $columnsSql[] = $col;
+                $sumColumns[] = "COALESCE(\"$alias\", 0)";
+            } elseif ($dia == '5') {
+                // Viernes: Regla general para marcaciones entre las 18:00 y 22:00,
+                // con una excepción para la fecha '2025-02-21' donde se evalúa la marcación después de las 22:15:59.
+                $col = "(
+                    CASE 
+                        WHEN '$fecha' != '2025-02-21' THEN 
+                            CASE 
+                                WHEN SUM(
+                                    CASE 
+                                        WHEN DATE(marc.punch_time) = '$fecha'
+                                            AND TIME(marc.punch_time) BETWEEN '18:00:00' AND '22:00:00'
+                                        THEN 1 ELSE 0 
+                                    END
+                                ) = 0 
+                                THEN 40 
+                                ELSE 0 
+                            END
+                        ELSE 
+                            CASE 
+                                WHEN SUM(
+                                    CASE 
+                                        WHEN DATE(marc.punch_time) = '$fecha'
+                                            AND TIME(marc.punch_time) > '22:15:59'
+                                        THEN 1 ELSE 0 
+                                    END
+                                ) = 0 
+                                THEN 40 
+                                ELSE 
+                                    SUM(
+                                        CASE WHEN DATE(marc.punch_time) = '$fecha' THEN 
+                                            CASE 
+                                                WHEN TIME(marc.punch_time) > '22:15:59' THEN 
+                                                    CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 22:15:59')) > 1800 
+                                                        THEN 20 
+                                                        ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 22:15:59')) / 300 AS INTEGER) + 1) * 2)
+                                                    END
+                                                ELSE 0
+                                            END
+                                        ELSE 0 END
+                                    )
+                            END
+                    END
                 ) AS \"$alias\"";
+                $columnsSql[] = $col;
+                $sumColumns[] = "COALESCE(\"$alias\", 0)";
             } elseif ($dia == '0') {
-                // Para domingo: se verifica que el empleado tenga 3 marcaciones en ese día,
-                // y solo entonces se aplica la lógica de multa según distintos intervalos.
-                $col = "SUM(
-                    CASE WHEN DATE(marc.punch_time) = '$fecha'
-                        AND (SELECT COUNT(*) FROM att_punches a2 
-                            WHERE a2.emp_id = marc.emp_id AND DATE(a2.punch_time) = '$fecha') = 3
-                    THEN (
-                        CASE 
-                            WHEN TIME(marc.punch_time) > '07:45:59' AND TIME(marc.punch_time) <= '10:00:00'
-                            THEN CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 07:45:59')) > 1800 
-                                    THEN 20 
-                                    ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 07:45:59')) / 300 AS INTEGER) + 1) * 2)
-                                END
-                            WHEN TIME(marc.punch_time) > '10:45:59' AND TIME(marc.punch_time) <= '13:00:00'
-                            THEN CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 10:45:59')) > 1800 
-                                    THEN 20 
-                                    ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 10:45:59')) / 300 AS INTEGER) + 1) * 2)
-                                END
-                            WHEN TIME(marc.punch_time) > '14:45:59' AND TIME(marc.punch_time) <= '18:00:00'
-                            THEN CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 14:45:59')) > 1800 
-                                    THEN 20 
-                                    ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 14:45:59')) / 300 AS INTEGER) + 1) * 2)
-                                END
-                            ELSE 0
-                        END
-                    ) ELSE 0 END
-                ) AS \"$alias\"";
-            }
+                // Domingo: Se generan tres subcolumnas independientes, una para cada rango de marcación.
 
-            $columnsSql[] = $col;
-            // Para la suma total se usa el alias seguro, no la fecha original
-            $sumColumns[] = "COALESCE(\"$alias\", 0)";
+                // Intervalo 1: De 06:00 a 10:00, con control a partir de las 07:45:59.
+                $interval1 = "(
+                    CASE 
+                        WHEN SUM(
+                            CASE 
+                                WHEN DATE(marc.punch_time) = '$fecha'
+                                    AND TIME(marc.punch_time) BETWEEN '06:00:00' AND '10:00:00'
+                                THEN 1 ELSE 0 
+                            END
+                        ) = 0 
+                        THEN 40 
+                        ELSE 
+                            CASE 
+                                WHEN TIME(marc.punch_time) > '07:45:59' 
+                                    AND TIME(marc.punch_time) <= '10:00:00' 
+                                THEN 
+                                    CASE 
+                                        WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 07:45:59')) > 1800 
+                                            THEN 20
+                                            ELSE (CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 07:45:59')) / 300 AS INTEGER) + 1) * 2
+                                    END
+                                ELSE 0
+                            END
+                    END
+                )";
+
+                // Intervalo 2: De 10:20 a 13:00, con control a partir de las 10:45:59.
+                $interval2 = "(
+                    CASE 
+                        WHEN SUM(
+                            CASE 
+                                WHEN DATE(marc.punch_time) = '$fecha'
+                                    AND TIME(marc.punch_time) BETWEEN '10:20:00' AND '13:00:00'
+                                THEN 1 ELSE 0 
+                            END
+                        ) = 0 
+                        THEN 40 
+                        ELSE 
+                            CASE 
+                                WHEN TIME(marc.punch_time) > '10:45:59' 
+                                    AND TIME(marc.punch_time) <= '13:00:00' 
+                                THEN 
+                                    CASE 
+                                        WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 10:45:59')) > 1800 
+                                            THEN 20
+                                            ELSE (CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 10:45:59')) / 300 AS INTEGER) + 1) * 2
+                                    END
+                                ELSE 0
+                            END
+                    END
+                )";
+
+                // Intervalo 3: De 14:20 a 18:00, con control a partir de las 14:45:59.
+                $interval3 = "(
+                    CASE 
+                        WHEN SUM(
+                            CASE 
+                                WHEN DATE(marc.punch_time) = '$fecha'
+                                    AND TIME(marc.punch_time) BETWEEN '14:20:00' AND '18:00:00'
+                                THEN 1 ELSE 0 
+                            END
+                        ) = 0 
+                        THEN 40 
+                        ELSE 
+                            CASE 
+                                WHEN TIME(marc.punch_time) > '14:45:59' 
+                                    AND TIME(marc.punch_time) <= '18:00:00' 
+                                THEN 
+                                    CASE 
+                                        WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 14:45:59')) > 1800 
+                                            THEN 20
+                                            ELSE (CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 14:45:59')) / 300 AS INTEGER) + 1) * 2
+                                    END
+                                ELSE 0
+                            END
+                    END
+                )";
+
+                // Se agregan las tres columnas, cada una con un alias único
+                $columnsSql[] = "$interval1 AS \"{$alias}_1\"";
+                $columnsSql[] = "$interval2 AS \"{$alias}_2\"";
+                $columnsSql[] = "$interval3 AS \"{$alias}_3\"";
+                // NOTA: Estas columnas no se agregan a $sumColumns si no deseas sumarlas en el total.
+            }
         }
 
+        // Paso 3: Construir la cadena de columnas dinámicas separadas por coma
         $columnsSqlStr = implode(", ", $columnsSql);
 
-        // Construir la parte de la suma total de multas
+        // Paso 4: Construir la parte de la suma total de multas (opcional)
         $totalSql = "";
         if (count($sumColumns) > 0) {
             $totalSql = ", ( " . implode(" + ", array_map(fn($col) => "COALESCE($col, 0)", $sumColumns)) . " ) AS Total_Multas";
         }
 
-        // Paso 3: Armar la consulta SQL final de forma dinámica
+        // Paso 5: Armar la consulta SQL final de forma dinámica
         $sql = "
             WITH primeras_marcaciones_viernes AS (
                 SELECT emp_id, MIN(punch_time) AS punch_time
                 FROM att_punches
-                WHERE strftime('%w', punch_time) = '5' AND TIME(punch_time) >= '19:30:59'
+                WHERE strftime('%w', punch_time) = '5'
+                AND TIME(punch_time) >= '19:30:59'
                 GROUP BY emp_id, DATE(punch_time)
             ),
             multas_calculadas AS (
                 SELECT 
-                    m.emp_firstname, 
-                    m.emp_lastname, 
-                    d.dept_name,
-                    $columnsSqlStr
-                    $totalSql
+                    m.emp_firstname,
+                    m.emp_lastname,
+                    d.dept_name" . (!empty($columnsSqlStr) ? ", $columnsSqlStr" : "") . (!empty($totalSql) ? " $totalSql" : "") . "
                 FROM hr_employee AS m
-                INNER JOIN att_punches AS marc ON m.id = marc.emp_id
-                INNER JOIN hr_department AS d ON m.emp_dept = d.id
-                WHERE marc.punch_time BETWEEN ? AND ? 
-                AND d.id = ? 
+                INNER JOIN att_punches AS marc
+                    ON m.id = marc.emp_id
+                AND marc.punch_time BETWEEN ? AND ?
+                INNER JOIN hr_department AS d
+                    ON m.emp_dept = d.id
+                WHERE d.id = ?
                 GROUP BY m.id, m.emp_firstname, m.emp_lastname, d.dept_name
             )
             SELECT *,
-                (" . implode(" + ", $sumColumns) . ") AS Total_Multas
+                (" . (count($sumColumns) > 0 ? implode(" + ", $sumColumns) : "0") . ") AS Total_Multas
             FROM multas_calculadas
             ORDER BY emp_firstname ASC;
         ";
 
-
-
-        // Paso 4: Ejecutar la consulta dinámica con los parámetros
+        // Paso 6: Ejecutar la consulta con los parámetros necesarios
         $multas_detalle_reporte = DB::connection('sqlite')->select($sql, [$startDate, $endDate, $deptId]);
 
-
-
-        // // Mostrar o retornar el reporte (por ejemplo, con dd)
-        // dd($multas_detalle);
 
 
         // Consulta general con parámetros dinámicos

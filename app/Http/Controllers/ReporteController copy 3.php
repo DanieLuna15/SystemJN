@@ -310,115 +310,70 @@ class ReporteController extends Controller
 
             if ($dia == '5') {
                 // Para viernes: se contempla la excepción del 21 de febrero y la lógica general.
+                // (Para otros viernes se asigna 0; si deseas otro comportamiento, deberás ajustar la lógica)
                 $col = "SUM(
-                    CASE 
-                        WHEN DATE(marc.punch_time) = '$fecha' THEN (
-                            CASE 
-                                WHEN '$fecha' = '2025-02-21' THEN
-                                    CASE 
-                                        WHEN TIME(marc.punch_time) > '22:15:59' THEN 
-                                            CASE 
-                                                WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 22:15:59')) > 1800 
-                                                    THEN 20  -- Multa de 20 Bs si el retraso es mayor a 30 minutos
-                                                    ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 22:15:59')) / 300 AS INTEGER) + 1) * 2)  -- Multa progresiva de 2 Bs por cada 5 minutos de retraso
-                                            END
-                                        ELSE 0  -- No se aplica multa si llega antes de las 22:15:59 en el 21 de febrero
-                                    END
-                                ELSE
-                                    CASE
-                                        WHEN TIME(marc.punch_time) > '19:30:59' THEN 
-                                            0 -- 'ACA DEBERIA PRODUCTO'  
-                                        ELSE 
-                                            0
-                                    END
-                            END
-                        ) ELSE 0
-                    END
+                    CASE WHEN DATE(marc.punch_time) = '$fecha' THEN (
+                        CASE 
+                            WHEN '$fecha' = '2025-02-21' THEN
+                                CASE 
+                                    WHEN TIME(marc.punch_time) > '22:15:59' THEN 
+                                        CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 22:15:59')) > 1800 
+                                            THEN 20 
+                                            ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 22:15:59')) / 300 AS INTEGER) + 1) * 2)
+                                        END
+                                    ELSE 0
+                                END
+                            ELSE
+                                CASE
+                                    WHEN TIME(marc.punch_time) > '19:30:59' THEN 0
+                                    ELSE 0
+                                END
+                        END
+                    ) ELSE 0 END
                 ) AS \"$alias\"";
             } elseif ($dia == '4') {
-                // Para jueves:
-                // - Si hay marcación y es después de las 19:15:59 se calcula la multa según la lógica original.
-                // - Además, se agrega una penalización de 40 Bs si NO hay ninguna marcación en el rango de 17:00:00 a 21:00:00.
-                $col = "(
-                    SUM(
-                        CASE WHEN DATE(marc.punch_time) = '$fecha' THEN (
-                            CASE 
-                                WHEN TIME(marc.punch_time) > '19:15:59' THEN 
-                                    CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 19:15:59')) > 1800 
-                                        THEN 20 
-                                        ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 19:15:59')) / 300 AS INTEGER) + 1) * 2)
-                                    END
-                                ELSE 0
-                            END
-                        ) ELSE 0 END
-                    )
-                    +
-                    CASE WHEN (
-                        SELECT COUNT(*) FROM att_punches a2 
-                        WHERE a2.emp_id = marc.emp_id 
-                          AND DATE(a2.punch_time) = '$fecha'
-                          AND TIME(a2.punch_time) BETWEEN '16:00:00' AND '21:00:00'
-                    ) = 0 THEN 40 ELSE 0 END
+                // Para jueves: si marca después de las 19:15:59 se aplica la multa.
+                $col = "SUM(
+                    CASE WHEN DATE(marc.punch_time) = '$fecha' THEN (
+                        CASE 
+                            WHEN TIME(marc.punch_time) > '19:15:59' THEN 
+                                CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 19:15:59')) > 1800 
+                                    THEN 20 
+                                    ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 19:15:59')) / 300 AS INTEGER) + 1) * 2)
+                                END
+                            ELSE 0
+                        END
+                    ) ELSE 0 END
+                ) AS \"$alias\"";
+            } elseif ($dia == '0') {
+                // Para domingo: se verifica que el empleado tenga 3 marcaciones en ese día,
+                // y solo entonces se aplica la lógica de multa según distintos intervalos.
+                $col = "SUM(
+                    CASE WHEN DATE(marc.punch_time) = '$fecha'
+                        AND (SELECT COUNT(*) FROM att_punches a2 
+                            WHERE a2.emp_id = marc.emp_id AND DATE(a2.punch_time) = '$fecha') = 3
+                    THEN (
+                        CASE 
+                            WHEN TIME(marc.punch_time) > '07:45:59' AND TIME(marc.punch_time) <= '10:00:00'
+                            THEN CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 07:45:59')) > 1800 
+                                    THEN 20 
+                                    ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 07:45:59')) / 300 AS INTEGER) + 1) * 2)
+                                END
+                            WHEN TIME(marc.punch_time) > '10:45:59' AND TIME(marc.punch_time) <= '13:00:00'
+                            THEN CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 10:45:59')) > 1800 
+                                    THEN 20 
+                                    ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 10:45:59')) / 300 AS INTEGER) + 1) * 2)
+                                END
+                            WHEN TIME(marc.punch_time) > '14:45:59' AND TIME(marc.punch_time) <= '18:00:00'
+                            THEN CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 14:45:59')) > 1800 
+                                    THEN 20 
+                                    ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 14:45:59')) / 300 AS INTEGER) + 1) * 2)
+                                END
+                            ELSE 0
+                        END
+                    ) ELSE 0 END
                 ) AS \"$alias\"";
             }
-            elseif ($dia == '0') {
-                $col = "(
-                    (
-                        SUM(
-                            CASE WHEN DATE(marc.punch_time) = '$fecha'
-                                 AND TIME(marc.punch_time) BETWEEN '07:45:59' AND '10:00:00'
-                                 THEN CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 07:45:59')) > 1800 
-                                      THEN 20 
-                                      ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 07:45:59')) / 300 AS INTEGER) + 1) * 2)
-                                 END ELSE 0 END
-                        )
-                        +
-                        CASE WHEN (
-                            SELECT COUNT(*) FROM att_punches a2 
-                            WHERE a2.emp_id = marc.emp_id 
-                              AND DATE(a2.punch_time) = '$fecha'
-                              AND TIME(a2.punch_time) BETWEEN '07:00:00' AND '10:00:00'
-                        ) = 0 THEN 40 ELSE 0 END
-                    )
-                    +
-                    (
-                        SUM(
-                            CASE WHEN DATE(marc.punch_time) = '$fecha'
-                                 AND TIME(marc.punch_time) BETWEEN '10:45:59' AND '13:00:00'
-                                 THEN CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 10:45:59')) > 1800 
-                                      THEN 20 
-                                      ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 10:45:59')) / 300 AS INTEGER) + 1) * 2)
-                                 END ELSE 0 END
-                        )
-                        +
-                        CASE WHEN (
-                            SELECT COUNT(*) FROM att_punches a2 
-                            WHERE a2.emp_id = marc.emp_id 
-                              AND DATE(a2.punch_time) = '$fecha'
-                              AND TIME(a2.punch_time) BETWEEN '10:20:00' AND '13:00:00'
-                        ) = 0 THEN 40 ELSE 0 END
-                    )
-                    +
-                    (
-                        SUM(
-                            CASE WHEN DATE(marc.punch_time) = '$fecha'
-                                 AND TIME(marc.punch_time) BETWEEN '14:45:59' AND '18:00:00'
-                                 THEN CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 14:45:59')) > 1800 
-                                      THEN 20 
-                                      ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 14:45:59')) / 300 AS INTEGER) + 1) * 2)
-                                 END ELSE 0 END
-                        )
-                        +
-                        CASE WHEN (
-                            SELECT COUNT(*) FROM att_punches a2 
-                            WHERE a2.emp_id = marc.emp_id 
-                              AND DATE(a2.punch_time) = '$fecha'
-                              AND TIME(a2.punch_time) BETWEEN '14:20:59' AND '18:00:00'
-                        ) = 0 THEN 40 ELSE 0 END
-                    )
-                ) AS \"$alias\"";
-            }
-            
 
             $columnsSql[] = $col;
             // Para la suma total se usa el alias seguro, no la fecha original
