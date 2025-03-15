@@ -267,8 +267,8 @@ class ReporteController extends Controller
             ORDER BY marc.punch_time ASC;
         ", [$startDate, $endDate, $deptId]);
 
-        $startDate = '2025-02-01'; 
-        $endDate   = '2025-02-27';  
+
+
 
         // Paso 1: Obtener las fechas únicas dentro del rango para los días de interés (jueves=4, viernes=5, domingo=0)
         $datesResult = DB::connection('sqlite')->select("
@@ -380,53 +380,50 @@ class ReporteController extends Controller
             $sumColumns[] = "COALESCE(\"$alias\", 0)";
         }
 
+        // Paso 3: Construir las columnas dinámicas separadas por coma
         $columnsSqlStr = implode(", ", $columnsSql);
 
-        // Construir la parte de la suma total de multas
+        // Paso 4: Construir la parte de la suma total de multas
         $totalSql = "";
         if (count($sumColumns) > 0) {
+            // Generamos la suma de cada columna usando COALESCE para que si es NULL se convierta en 0.
             $totalSql = ", ( " . implode(" + ", array_map(fn($col) => "COALESCE($col, 0)", $sumColumns)) . " ) AS Total_Multas";
         }
 
-        // Paso 3: Armar la consulta SQL final de forma dinámica
+        // Paso 5: Armar la consulta SQL final de forma dinámica
         $sql = "
             WITH primeras_marcaciones_viernes AS (
                 SELECT emp_id, MIN(punch_time) AS punch_time
                 FROM att_punches
-                WHERE strftime('%w', punch_time) = '5' AND TIME(punch_time) >= '19:30:59'
+                WHERE strftime('%w', punch_time) = '5' 
+                AND TIME(punch_time) >= '19:30:59'
                 GROUP BY emp_id, DATE(punch_time)
             ),
             multas_calculadas AS (
                 SELECT 
                     m.emp_firstname, 
                     m.emp_lastname, 
-                    d.dept_name,
-                    $columnsSqlStr
-                    $totalSql
+                    d.dept_name" .
+                    (!empty($columnsSqlStr) ? ", $columnsSqlStr" : "") .
+                    (!empty($totalSql) ? " $totalSql" : "") . "
                 FROM hr_employee AS m
-                INNER JOIN att_punches AS marc ON m.id = marc.emp_id
-                INNER JOIN hr_department AS d ON m.emp_dept = d.id
-                WHERE marc.punch_time BETWEEN ? AND ? 
-                AND d.id = ? 
+                INNER JOIN att_punches AS marc 
+                    ON m.id = marc.emp_id 
+                    AND marc.punch_time BETWEEN ? AND ?
+                INNER JOIN hr_department AS d 
+                    ON m.emp_dept = d.id
+                WHERE d.id = ?
                 GROUP BY m.id, m.emp_firstname, m.emp_lastname, d.dept_name
             )
             SELECT *,
-                (" . implode(" + ", $sumColumns) . ") AS Total_Multas
+                (" . (count($sumColumns) > 0 ? implode(" + ", $sumColumns) : "0") . ") AS Total_Multas
             FROM multas_calculadas
             ORDER BY emp_firstname ASC;
         ";
 
 
-
-        // Paso 4: Ejecutar la consulta dinámica con los parámetros
+        // Paso 6: Ejecutar la consulta con los parámetros necesarios
         $multas_detalle_reporte = DB::connection('sqlite')->select($sql, [$startDate, $endDate, $deptId]);
-
-
-
-        // Mostrar o retornar el reporte (por ejemplo, con dd)
-        // dd($multas_detalle);
-
-
 
 
         // Consulta general con parámetros dinámicos
