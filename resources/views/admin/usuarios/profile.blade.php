@@ -21,7 +21,7 @@
 
                     <ul class="list-group list-group-unbordered mb-3">
                         <li class="list-group-item">
-                            <b>Cargo</b>
+                            <b>Rol</b>
                             <a class="float-right">.........</a>
                         </li>
                         <li class="list-group-item">
@@ -41,7 +41,7 @@
                     <strong><i class="fas-regular fa-mobile-retro"></i> Teléfono</strong>
                     <p class="text-muted">{{ $user->phone }}</p>
                     <hr>
-                    <strong><i class="fas fa-map-marker-alt mr-1"></i> Ubicación</strong>
+                    <strong><i class="fas fa-map-marker-alt mr-1"></i> Dirección</strong>
                     <p class="text-muted">{{ $user->address }}</p>
                     <hr>
                     <strong><i class="fas fa-pencil-alt mr-1"></i> Email</strong>
@@ -60,7 +60,7 @@
                             <a class="nav-link active" href="#general" data-toggle="tab">Información General</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#perfil" data-toggle="tab">Perfil</a>
+                            <a class="nav-link" href="#perfil" data-toggle="tab">Foto de Perfil</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#seguridad" data-toggle="tab">Seguridad y Privacidad</a>

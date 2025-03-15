@@ -267,8 +267,8 @@ class ReporteController extends Controller
             ORDER BY marc.punch_time ASC;
         ", [$startDate, $endDate, $deptId]);
 
-        $startDate = $request->input('start_date', '2025-02-01');  // Si no existe, usa '2025-02-01' como valor por defecto
-        $endDate   = $request->input('end_date', '2025-02-27');   // Si no existe, usa '2025-02-27' como valor por defecto      
+        $startDate = '2025-02-01'; 
+        $endDate   = '2025-02-27';  
 
         // Paso 1: Obtener las fechas únicas dentro del rango para los días de interés (jueves=4, viernes=5, domingo=0)
         $datesResult = DB::connection('sqlite')->select("

@@ -22,6 +22,7 @@ class UserController extends Controller
         $this->middleware('can:crear usuarios')->only(['create', 'store']);
         $this->middleware('can:editar usuarios')->only(['edit', 'update']);
         $this->middleware('can:ver usuario')->only(['show']);
+        $this->middleware('can:ver perfil')->only(['profile']);
         $this->middleware('can:eliminar usuarios')->only(['destroy']);
         $this->middleware('can:cambiar estado usuarios')->only(['status']);
     }
@@ -83,7 +84,7 @@ class UserController extends Controller
             'ci' => [
                 'required',
                 'numeric',
-                'digits_between:6,12', // Reemplaza el rango manual con esta regla
+                'digits_between:6,8', // Reemplaza el rango manual con esta regla
                 Rule::unique('users', 'ci')->ignore($id),
             ],
             'phone' => 'nullable|numeric|digits:8', // Asegura que siempre sean 8 dígitos exactos
@@ -186,8 +187,6 @@ class UserController extends Controller
 
     }
 
-
-
     public function destroy(User $user)
     {
         // try {
@@ -210,16 +209,10 @@ class UserController extends Controller
 
     private function generatePassword($name, $last_name, $ci, $phone)
     {
-        // Primeras letras del nombre y apellido
         $initials = strtolower(substr($name, 0, 1) . substr($last_name, 0, 1));
-
-        // Primeros 3 dígitos del número de carnet
         $ciPart = substr($ci, 0, 3);
+        $phonePart = substr($phone, -4); 
 
-        // Últimos 4 dígitos del número de teléfono
-        $phonePart = substr($phone, -4); // Tomar los últimos 4 dígitos
-
-        // Generar la contraseña: iniciales + 3 primeros dígitos del CI + últimos 4 dígitos del teléfono
         return $initials . $ciPart . $phonePart;
     }
 

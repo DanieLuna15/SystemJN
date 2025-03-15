@@ -21,6 +21,7 @@ class RolesPermissionsSeeder extends Seeder
                 'editar usuarios',
                 'cambiar estado usuarios',
                 'eliminar usuarios',
+                'ver perfil',
                 //------------------------
                 'crear ministerios',
                 'ver ministerios',
@@ -57,11 +58,13 @@ class RolesPermissionsSeeder extends Seeder
                 'ver actividades_servicios',
                 'ver ministerios',
                 'ver horarios_ministerio',
+                'ver perfil',
             ],
             'Miembro' => [
                 'ver dashboard',
                 'ver horarios',
                 'ver actividades_servicios',
+                'ver perfil',
             ],
         ];
 
