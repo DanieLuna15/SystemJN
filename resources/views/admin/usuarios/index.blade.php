@@ -127,8 +127,8 @@
 
                                             @can('ver info_usuario')
                                                 <a href="{{ route('admin.usuarios.info', $usuario) }}"
-                                                    class="btn btn-secondary btn-sm mx-1" title="Ver Info usuarios">
-                                                    <i class="fas fa-list-ul" style="color: #63E6BE;"></i>
+                                                    class="btn btn-primary btn-sm mx-1" title="Ver más información">
+                                                    <i class="fas fa-info"></i>
                                                 </a>
                                             @endcan
                                         </div>

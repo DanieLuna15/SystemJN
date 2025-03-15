@@ -62,6 +62,7 @@
                             </p>
                         </li>
                     </ul>
+
                 </div>
             </div>
         </div>
@@ -85,6 +86,7 @@
                 <div class="card-body">
                     <div class="tab-content">
                         <div class="tab-pane active" id="general">
+
                             <div class="row">
                                 <!-- Campo Nombre -->
                                 <div class="col-md-6 col-lg-6">
@@ -118,7 +120,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Campo ci -->
+                                <!-- Campo Teléfono -->
                                 <div class="col-md-6 col-lg-6">
                                     <div class="form-group">
                                         <label><i class="fas fa-id-card"></i> <strong>CI:</strong></label>
@@ -135,14 +137,18 @@
                                     </div>
                                 </div>
                             </div>
+                        
+                        @can('editar configuracion informacion')
 
-                            @can('editar configuracion informacion')
                                 <a href="{{ route('admin.usuarios.edit', $usuario->id) }}" class="btn btn-success w-100">
                                     <i class="fas fa-edit"></i> Editar información
                                 </a>
-                            @endcan
+ 
+                        @endcan
 
-                            {{-- <form action="{{ route('admin.usuarios.update', $usuario->id) }}" method="POST"
+
+
+                        {{-- <form action="{{ route('admin.usuarios.update', $usuario->id) }}" method="POST"
                             enctype="multipart/form-data">
                             @csrf
                             @method('PUT') <!-- Esto asegura que se use el método PUT -->
@@ -187,13 +193,14 @@
                             </div>
                             @endcan
                         </form> --}}
-                        </div>
-                        <div class="tab-pane" id="asistencia">
-                            <h5 class="text-center">Asistencia y Multas</h5>
-                        </div>
-                        <div class="tab-pane" id="agenda">
-                            <h5 class="text-center">Agenda</h5>
-                            {{-- <form action="{{ route('profile.updatePassword') }}" method="POST">
+                    </div>
+                    <div class="tab-pane" id="asistencia">
+                        <h5 class="text-center">Asistencia y Multas</h5>
+                        <!-- Aquí puedes agregar el formulario para cambiar foto -->
+                    </div>
+                    <div class="tab-pane" id="agenda">
+                        <h5 class="text-center">Agenda</h5>
+                        {{-- <form action="{{ route('profile.updatePassword') }}" method="POST">
                             @csrf
                             @method('PUT')
 
@@ -214,11 +221,11 @@
 
                             <button type="submit" class="btn btn-primary btn-block">Actualizar Contraseña</button>
                         </form> --}}
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 @stop
 
