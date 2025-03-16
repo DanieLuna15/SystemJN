@@ -19,7 +19,7 @@
                                     <th>Apellido</th>
                                     <th>CI</th>
                                     <th>Telefono</th>
-                                    <th>Ministerio</th>
+                                    <th>Ministerio(s)</th>
                                     <th>Rol</th>
                                     <th>Estado</th>
                                     <th>Correo</th>

@@ -13,7 +13,7 @@
                             class="table table-striped table-bordered table-hover table-sm datatable text-center">
                             <thead>
                                 <tr>
-                                    <th style="text-align: center">Ministerio</th>
+                                    <th style="text-align: center">Ministerio(s)</th>
                                     <th style="text-align: center">Día de la Semana</th>
                                     <th style="text-align: center">Fecha</th>
                                     <th style="text-align: center">Actividad o Servicio</th>
@@ -33,7 +33,7 @@
                                                 [<span class="badge badge-info">{{ $ministerio->nombre }}</span>]
                                             @endforeach
                                         </td>
-                                        
+
                                         <!-- Día de la Semana centrado -->
                                         <td class="text-center align-middle">
                                             @if ($horario->dia_semana == null)
