@@ -60,10 +60,14 @@ class RolesPermissionsSeeder extends Seeder
                 'ver horarios_ministerio',
                 'ver perfil',
             ],
-            'Miembro' => [
+            'Servidor' => [
                 'ver dashboard',
                 'ver horarios',
                 'ver actividades_servicios',
+                'ver perfil',
+            ],
+            'Miembro' => [
+                'ver dashboard',
                 'ver perfil',
             ],
         ];

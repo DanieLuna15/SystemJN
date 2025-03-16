@@ -29,13 +29,14 @@
                     <div class="icon">
                         <i class="fas fa-church"></i>
                     </div>
-                    <a href="{{ route('admin.ministerios.index') }}" class="small-box-footer">Más información <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('admin.ministerios.index') }}" class="small-box-footer">Más información <i
+                            class="fas fa-arrow-circle-right"></i></a>
                 </div>
-            </div>            
+            </div>
 
             <!-- Tarjeta Servicios o Actividades -->
             <div class="col-lg-3 col-6">
-                <div class="small-box bg-primary"> 
+                <div class="small-box bg-primary">
                     <div class="inner">
                         <h3>{{ $actividadServicios }}</h3>
                         <p>Act. o Servicios Registrados</p>
@@ -43,25 +44,40 @@
                     <div class="icon">
                         <i class="fas fa-calendar-alt"></i>
                     </div>
-                    <a href="{{ route('admin.actividad_servicios.index') }}" class="small-box-footer">Más información <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('admin.actividad_servicios.index') }}" class="small-box-footer">Más información <i
+                            class="fas fa-arrow-circle-right"></i></a>
                 </div>
-            </div>            
-            
+            </div>
+
             <!-- Tarjeta de Hoararios -->
             <div class="col-lg-3 col-6">
-                <div class="small-box bg-warning"> 
+                <div class="small-box bg-warning">
                     <div class="inner">
                         <h3>{{ $horarios }}</h3>
                         <p>Horarios Registrados</p>
                     </div>
                     <div class="icon">
-                        <i class="fas fa-clock"></i> 
+                        <i class="fas fa-clock"></i>
                     </div>
-                    <a href="{{ route('admin.horarios.index') }}" class="small-box-footer">Más información <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('admin.horarios.index') }}" class="small-box-footer">Más información <i
+                            class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
-            
+
         </div>
+
+
+
+        <!-- Sección del Calendario -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Calendario de Eventos</h3>
+            </div>
+            <div class="card-body">
+                <div id="calendar"></div>
+            </div>
+        </div>
+
 
         <!-- Sección de Gráficos -->
         <div class="row">
@@ -120,16 +136,6 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
-
-        <!-- Sección del Calendario -->
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Calendario de Eventos</h3>
-            </div>
-            <div class="card-body">
-                <div id="calendar"></div>
             </div>
         </div>
     </div>

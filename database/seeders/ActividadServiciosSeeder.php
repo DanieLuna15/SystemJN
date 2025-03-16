@@ -24,7 +24,9 @@ class ActividadServiciosSeeder extends Seeder
             ['nombre' => 'Ensayo Alabanza Reunion Jovenes'],
             ['nombre' => 'Ensayo Pandero'],
             ['nombre' => 'Limpieza Ujieres'],
+            ['nombre' => 'Vigilia'],
             ['nombre' => 'Evangelismo'],
+            ['nombre' => 'Bautismo'],
             ['nombre' => 'Convivencia Recreativa'],
             ['nombre' => 'Deportes y Campamentos'],
             ['nombre' => 'Teatro y Danzas Cristianas'],
@@ -36,7 +38,6 @@ class ActividadServiciosSeeder extends Seeder
             ['nombre' => 'Estudios Bíblicos'],
             ['nombre' => 'Cultos Dominicales'],
             ['nombre' => 'Oración y Ayuno'],
-            ['nombre' => 'Bautismos'],
         ];
 
         foreach ($servicios as $servicio) {
