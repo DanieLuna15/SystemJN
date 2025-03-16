@@ -17,13 +17,10 @@
                             <a class="nav-link active" href="#general" data-toggle="tab" data-section="general">General</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#detallado" data-toggle="tab" data-section="detallado">Detallado</a>
+                            <a class="nav-link" href="#detallado" data-toggle="tab" data-section="detallado">Detalle</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#servicios" data-toggle="tab" data-section="servicios">Servicios</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#servicios" data-toggle="tab" data-section="servicios">Reunion de Lideres</a>
                         </li>
                     </ul>
                 </div>
@@ -105,7 +102,7 @@
                                     <div class="table-responsive">
                                         <table id="reporte-asistencias-table"
                                             class="table table-striped table-bordered table-hover table-sm datatable text-center">
-                                            
+
                                             <thead>
 
                                                 <tr>

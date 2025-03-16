@@ -17,6 +17,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 class MultasExport implements
     FromCollection,
@@ -29,11 +30,15 @@ class MultasExport implements
     WithEvents
 {
     protected $multas_detalle;
-    private $loopIndex = 0; // Contador para la columna N°
+    protected $dates;       // Declarar la propiedad $dates
+    protected $pageTitle;
+    protected $loopIndex = 0;
 
-    public function __construct($multas_detalle)
+    public function __construct($multas_detalle,$dates, $pageTitle)
     {
         $this->multas_detalle = $multas_detalle;
+        $this->dates = $dates;
+        $this->pageTitle = $pageTitle;
     }
 
     /**
@@ -49,16 +54,23 @@ class MultasExport implements
      */
     public function headings(): array
     {
-        return [
+        $headings = [
             'N°',
-            'Nombre',
-            'Apellido',
-            'Departamento',
-            'Fecha',
-            'Hora',
-            'Día',
-            'Multa (Bs)',
+            'Integrantes', // Se une nombre y apellido en una sola columna
+            'Ministerio'
         ];
+
+        foreach ($this->dates as $date) {
+            $headings[] = $date['dia_semana_lit'] . ' (' . $date['fecha'] . ')';
+        }
+
+        $headings[] = 'Total Multas';
+        $headings[] = 'Total a Pagar';
+        $headings[] = 'Puntualidad';
+        $headings[] = 'Pagos';
+        $headings[] = 'Observaciones';
+
+        return $headings;
     }
 
     /**
@@ -66,26 +78,55 @@ class MultasExport implements
      */
     public function map($row): array
     {
-        $this->loopIndex++; // Incrementar el contador en cada iteración
+        $this->loopIndex++;
 
-        return [
-            $this->loopIndex,              // N° consecutivo
-            $row->emp_firstname ?? '',     // Nombre
-            $row->emp_lastname ?? '',      // Apellido
-            $row->dept_name ?? '',         // Departamento
-            $row->punch_date ?? '',        // Fecha de Marcación
-            $row->punch_hour ?? '',        // Hora de Marcación
-            $row->dia_semana ?? '',        // Día de la Semana
-            $row->multa_bs ?? '',          // Multa en Bs
+        // Concatenar Nombre y Apellido
+        $nombreCompleto = trim(($row->emp_firstname ?? '') . ' ' . ($row->emp_lastname ?? ''));
+
+        $rowData = [
+            $this->loopIndex,
+            $nombreCompleto, // Se usa la nueva columna "Nombre Completo"
+            $row->dept_name ?? ''
         ];
+
+        foreach ($this->dates as $date) {
+            $alias = $date['alias'];
+            $value = (int)($row->{$alias} ?? 0);
+            $rowData[] = $value === 0 ? "0" : $value;
+        }
+
+        // Agregar las columnas adicionales asegurando que tengan valores por defecto
+        $totalMultas = (int)($row->Total_Multas ?? 0);
+        $totalPagar = (int)($row->Total_Pagar ?? 0);
+        $puntualidad = $row->Puntualidad ?? '';
+        $pagos = $row->Pagos ?? '';
+        $observaciones = $row->Observaciones ?? '';
+
+        // Asegurar que los valores numéricos se muestren correctamente
+        $rowData[] = $totalMultas === 0 ? "0" : $totalMultas;
+        $rowData[] = $totalPagar === 0 ? "0" : $totalPagar;
+        $rowData[] = $puntualidad;
+        $rowData[] = $pagos;
+        $rowData[] = $observaciones;
+
+        return $rowData;
     }
+
 
     /**
      * Estilos personalizados.
      */
     public function styles(Worksheet $sheet)
     {
-        $sheet->getStyle('A4:H4')->applyFromArray([
+        // Determinar cuántas columnas hay
+        $lastColumnIndex = count($this->headings()); // Total de columnas
+        $lastColumn = Coordinate::stringFromColumnIndex($lastColumnIndex); // Convertir a letra de columna
+
+        // Estilos para las celdas del encabezado
+        $range = "A4:{$lastColumn}4"; // Ajusta dinámicamente el rango para el encabezado
+
+        // Aplicar estilos generales para el encabezado
+        $sheet->getStyle($range)->applyFromArray([
             'font' => [
                 'bold' => true,
                 'size' => 12,
@@ -106,11 +147,36 @@ class MultasExport implements
             ],
         ]);
 
-        // Estilo para centrar el texto de la columna N°
+        // Centrar la columna N° (Columna de índice)
         $sheet->getStyle('A')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+        // Estilo para las fechas dinámicas en la cabecera, ponerlas en vertical
+        $dateStartColumn = 3; // El índice de la primera columna de las fechas (A es 1, B es 2, C es 3)
+        $dateEndColumn = $lastColumnIndex - 1; // Para obtener la última columna de fechas dinámicas
+        for ($i = $dateStartColumn; $i <= $dateEndColumn; $i++) {
+            $columnLetter = Coordinate::stringFromColumnIndex($i);
+            $sheet->getStyle("{$columnLetter}4")->getAlignment()->setTextRotation(90); // Rotar el texto 90 grados para vertical
+        }
+
+        // Aplicar color de fondo amarillo claro a la columna de Total Multas
+        $totalMultasColumn = $lastColumnIndex - 4; // Total Multas está 4 columnas antes de la última columna
+        $totalMultasColumnLetter = Coordinate::stringFromColumnIndex($totalMultasColumn);
+        $totalMultasRange = "{$totalMultasColumnLetter}5:{$totalMultasColumnLetter}" . (count($this->multas_detalle) + 4); // Rango de la columna Total Multas
+
+        $sheet->getStyle($totalMultasRange)->applyFromArray([
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => ['argb' => 'FFFF99'], // Color de relleno amarillo claro
+            ],
+        ]);
 
         return [];
     }
+
+
+
+
+
 
     /**
      * Configuración de título y diseño del encabezado.
@@ -118,10 +184,18 @@ class MultasExport implements
     public static function afterSheet(AfterSheet $event)
     {
         $sheet = $event->sheet->getDelegate();
+        $exportInstance = $event->getConcernable();
+
+        // Recuperar el título desde el evento o usar un valor por defecto
+        $pageTitle = $exportInstance->pageTitle ?? 'Registro de Multas';
+
+        $lastColumnIndex = count($exportInstance->headings());
+        $lastColumn = Coordinate::stringFromColumnIndex($lastColumnIndex); // Última columna dinámica
+        $mergeRange = "A1:{$lastColumn}3"; // Rango de combinación de celdas
 
         // Estilo del título
-        $sheet->setCellValue('A1', 'Registro de Multas');
-        $sheet->mergeCells('A1:H3');
+        $sheet->setCellValue('A1', $pageTitle);
+        $sheet->mergeCells($mergeRange);
         $sheet->getStyle('A1')->applyFromArray([
             'font' => [
                 'bold' => true,
@@ -144,12 +218,28 @@ class MultasExport implements
         $drawing->setName('Logo');
         $drawing->setDescription('Logo');
         $drawing->setPath(public_path('vendor/adminlte/dist/img/logo.jpg')); // Asegúrate de que la ruta sea válida.
-        $drawing->setHeight(50); // Ajusta el tamaño del logo.
-        $drawing->setCoordinates('A1'); // Posición del logo.
-        $drawing->setOffsetX(10);
-        $drawing->setOffsetY(10);
+        $drawing->setHeight(50);
+        $drawing->setCoordinates('A1');
+        $drawing->setOffsetX(5);
+        $drawing->setOffsetY(5);
         $drawing->setWorksheet($sheet);
+
+        // Aplicar bordes a todo el contenido
+        $lastRow = count($exportInstance->collection()) + 4; // El número de filas con datos, considerando las filas de encabezado
+        $range = "A4:{$lastColumn}{$lastRow}"; // Rango de celdas con los datos
+
+        // Aplicar bordes a las celdas
+        $sheet->getStyle($range)->applyFromArray([
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                ],
+            ],
+        ]);
     }
+
+
+
 
     /**
      * Registrar eventos personalizados.
