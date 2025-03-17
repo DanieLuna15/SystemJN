@@ -9,15 +9,16 @@
                     <!-- Imagen de perfil -->
                     <label for="profile_image_input" class="d-block text-center">
                         <img id="profileImagePreview" class="profile-user-img img-fluid img-circle mx-auto d-block"
-                            src="{{ asset($user->profile_image ?? 'images/default-dark.png') }}"
+                            src="{{ asset($usuario->profile_image ?? 'images/default-dark.png') }}"
                             style="width: 180px; height: 180px; object-fit: cover; cursor: pointer;">
                     </label>
                     <input type="file" name="profile_image" id="profile_image_input" style="display: none;"
-                        accept="image/*" onchange="document.getElementById('profileImagePreview').src = window.URL.createObjectURL(this.files[0])">
+                        accept="image/*"
+                        onchange="document.getElementById('profileImagePreview').src = window.URL.createObjectURL(this.files[0])">
 
                     <!-- Datos del usuario -->
 
-                    <h3 class="text-center">{{ $user->name }} {{ $user->last_name }}</h3>
+                    <h3 class="text-center">{{ $usuario->name }} {{ $usuario->last_name }}</h3>
 
                     <ul class="list-group list-group-unbordered mb-3">
                         <li class="list-group-item">
@@ -39,16 +40,16 @@
                 </div>
                 <div class="card-body">
                     <strong><i class="fas-regular fa-mobile-retro"></i> Teléfono</strong>
-                    <p class="text-muted">{{ $user->phone }}</p>
+                    <p class="text-muted">{{ $usuario->phone }}</p>
                     <hr>
                     <strong><i class="fas fa-map-marker-alt mr-1"></i> Dirección</strong>
-                    <p class="text-muted">{{ $user->address }}</p>
+                    <p class="text-muted">{{ $usuario->address }}</p>
                     <hr>
                     <strong><i class="fas fa-pencil-alt mr-1"></i> Email</strong>
-                    <p class="text-muted">{{ $user->email }}</p>
+                    <p class="text-muted">{{ $usuario->email }}</p>
                     <hr>
                     <strong><i class="far fa-file-alt mr-1"></i> Carnet de Identidad</strong>
-                    <p class="text-muted">{{ $user->ci }}</p>
+                    <p class="text-muted">{{ $usuario->ci }}</p>
                 </div>
             </div>
         </div>
@@ -71,11 +72,13 @@
                     <div class="tab-content">
                         <!-- Información General -->
                         <div class="tab-pane fade show active" id="general">
+
+                            {{-- encerrar todo esto en un form --}}
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="name">Nombre:</label>
-                                        <input id="name" name="name" value="{{ old('name', $user->name) }}"
+                                        <input id="name" name="name" value="{{ old('name', $usuario->name) }}"
                                             class="form-control">
                                     </div>
                                 </div>
@@ -83,31 +86,39 @@
                                     <div class="form-group">
                                         <label for="last_name">Apellido:</label>
                                         <input id="last_name" name="last_name"
-                                            value="{{ old('last_name', $user->last_name) }}" class="form-control">
+                                            value="{{ old('last_name', $usuario->last_name) }}" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="ci">CI:</label>
-                                        <input id="ci" name="ci" value="{{ old('ci', $user->ci) }}"
+                                        <input id="ci" name="ci" value="{{ old('ci', $usuario->ci) }}"
                                             class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="email">Correo:</label>
-                                        <input id="email" name="email" value="{{ old('email', $user->email) }}"
+                                        <input id="email" name="email" value="{{ old('email', $usuario->email) }}"
                                             class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="phone">Teléfono</Table>:</label>
-                                        <input id="phone" name="phone" value="{{ old('phone', $user->phone) }}"
+                                        <input id="phone" name="phone" value="{{ old('phone', $usuario->phone) }}"
                                             class="form-control">
                                     </div>
                                 </div>
+
                             </div>
+                            <!-- Botones de Acción -->
+                            <div class="d-flex justify-content-between">
+                                <x-adminlte-button class="btn w-100" type="submit" label="Guardar cambios" theme="success"
+                                    icon="fas fa-lg fa-save" />
+                            </div>
+                            {{-- encerrar todo esto en un form --}}
+
                         </div>
 
                         <!-- Perfil -->
@@ -121,8 +132,8 @@
                             <form>
                                 <label for="password_actual">Contraseña Actual</label>
                                 <div class="input-group">
-                                    <input type="password" id="password_actual" name="password_actual" class="form-control"
-                                        placeholder="Ingrese contraseña actual" required>
+                                    <input type="password" id="password_actual" name="password_actual"
+                                        class="form-control" placeholder="Ingrese contraseña actual" required>
                                     <div class="input-group-append">
                                         <button class="btn btn-primary" type="button" id="toggleButton_actual"
                                             onclick="togglePassword('password_actual', 'eyeIcon_actual')">
@@ -217,17 +228,17 @@
     {{-- {{-- <div class="tab-pane" id="contacto"> --}}
     <!-- Sección de información de contacto -->
     {{-- <h5 class="text-center">Información de Contacto</h5>
-<p>Teléfono: {{ $user->phone }}</p>
-<p>Dirección: {{ $user->address }}</p>
-<p>Ciudad: {{ $user->city }}</p>
+<p>Teléfono: {{ $usuario->phone }}</p>
+<p>Dirección: {{ $usuario->address }}</p>
+<p>Ciudad: {{ $usuario->city }}</p>
 </div> --}}
 
     {{-- <div class="tab-pane" id="seguridad">
                                             <!-- Sección de seguridad y privacidad -->
                                             <h5 class="text-center">Seguridad y Privacidad</h5>
                                             <p>Contraseña: ********</p>
-                                            <p>Último inicio de sesión: {{ $user->last_login }}</p>
-                                            <p>Estado de cuenta: {{ $user->status }}</p>
+                                            <p>Último inicio de sesión: {{ $usuario->last_login }}</p>
+                                            <p>Estado de cuenta: {{ $usuario->status }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -288,7 +299,7 @@
                                                     <label for="profile_image_input">
                                                         <img id="profileImagePreview"
                                                             class="profile-user-img img-fluid img-circle"
-                                                            src="{{ asset($user->profile_image ?? 'images/default-dark.png') }}"
+                                                            src="{{ asset($usuario->profile_image ?? 'images/default-dark.png') }}"
                                                             alt="Imagen de perfil"
                                                             style="width: 180px; height: 180px; object-fit: cover; cursor: pointer;">
                                                     </label>

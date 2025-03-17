@@ -84,7 +84,7 @@ class UserController extends Controller
             'ci' => [
                 'required',
                 'numeric',
-                'digits_between:6,8', // Reemplaza el rango manual con esta regla
+                'digits_between:5,10', // Reemplaza el rango manual con esta regla
                 Rule::unique('users', 'ci')->ignore($id),
             ],
             'phone' => 'nullable|numeric|digits:8', // Asegura que siempre sean 8 dígitos exactos
@@ -175,6 +175,12 @@ class UserController extends Controller
                 'email' => 'required|email|unique:users,email,' . $id,
                 'phone' => 'nullable|numeric|min:10000000|max:99999999',
                 'address' => 'nullable|string|max:255',
+                'ci' => [
+                    'required',
+                    'numeric',
+                    'digits_between:5,10', // Reemplaza el rango manual con esta regla 
+                    Rule::unique('users', 'ci')->ignore($id),
+                ],
             ]);
         } else {
             return redirect()->back()->with('error', 'Formulario no válido.');
@@ -226,7 +232,7 @@ class UserController extends Controller
     public function profile()
     {
         $pageTitle = 'Mi perfil';
-        $user = auth()->user();
-        return view('admin.usuarios.profile', compact('pageTitle', 'user'));
+        $usuario = auth()->user();
+        return view('admin.usuarios.profile', compact('pageTitle', 'usuario'));
     }
 }

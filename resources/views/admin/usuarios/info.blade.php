@@ -61,6 +61,22 @@
                                 @endif
                             </p>
                         </li>
+                        <li class="list-group-item text-center">
+                            <b><i class="fas fa-church"></i> Ministerios Liderados:</b>
+                            <p>
+                                @if ($usuario->ministeriosLiderados->isNotEmpty())
+                                    @foreach ($usuario->ministeriosLiderados as $ministerio)
+                                        <span class="badge badge-info">
+                                            <i class="fas fa-users"></i> {{ $ministerio->nombre }}
+                                        </span>
+                                    @endforeach
+                                @else
+                                    <span class="text-muted">
+                                        <i class="fas fa-minus"></i> Sin ministerios liderados
+                                    </span>
+                                @endif
+                            </p>
+                        </li>
                     </ul>
                 </div>
             </div>

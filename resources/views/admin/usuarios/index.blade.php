@@ -57,7 +57,7 @@
                                             @if ($usuario->phone)
                                                 {{ $usuario->phone }}
                                             @else
-                                                <span class="text-muted">Sin datos</span>
+                                                <span class="text-muted">No disponible</span>
                                             @endif
                                         </td>
 
