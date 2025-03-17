@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ministerio;
 use App\Models\Horario;
+use App\Models\User;
 use App\Models\ActividadServicio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -30,7 +31,8 @@ class HomeController extends Controller
     {
         $ministerios= Ministerio::where('estado', Status::ACTIVE)->count();
         $horarios = Horario::where('estado', Status::ACTIVE)->count();
+        $usuarios = User::where('estado', Status::ACTIVE)->count();
         $actividadServicios = ActividadServicio::where('estado', Status::ACTIVE)->count();
-        return view('home', compact('ministerios', 'horarios', 'actividadServicios'));
+        return view('home', compact('ministerios', 'horarios', 'actividadServicios', 'usuarios'));
     }
 }

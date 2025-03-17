@@ -334,6 +334,13 @@ return [
                     'icon' => 'fas fa-hand-holding-heart',
                     'classes' => 'btn btn-outline-success btn-sm text-left',
                     //'can'  => 'generar reportes',
+                ],
+                [
+                    'text' => 'Importar Archivo DB',
+                    'url'  => 'admin/reportes/archivoDB',
+                    'icon' => 'fas fa-database',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
+                    //'can'  => 'generar reportes',
                 ]
             ],
         ],

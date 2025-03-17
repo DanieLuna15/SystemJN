@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Horario;
+use App\Models\ImportacionAsistencia;
 use Illuminate\Http\Request;
 use App\Exports\MultasExport;
 use Illuminate\Support\Facades\DB;
@@ -46,8 +47,8 @@ class ReporteController extends Controller
         $dates = [];
         foreach ($datesResult as $row) {
             $dates[] = [
-                'fecha'      => $row->fecha,
-                'alias'      => 'd_' . str_replace('-', '_', $row->fecha),
+                'fecha' => $row->fecha,
+                'alias' => 'd_' . str_replace('-', '_', $row->fecha),
                 'dia_semana' => $row->dia_semana,
                 'dia_semana_lit' => $dayNames[$row->dia_semana]
             ];
@@ -60,7 +61,7 @@ class ReporteController extends Controller
         foreach ($dates as $d) {
             $fecha = $d['fecha'];
             $alias = $d['alias'];
-            $dia   = $d['dia_semana']; // '0' (Dom), '4' (Jue), '5' (Vie)
+            $dia = $d['dia_semana']; // '0' (Dom), '4' (Jue), '5' (Vie)
 
             if ($dia == '5') {
                 // Para viernes: se contempla la excepción del 21 de febrero y la lógica general.
@@ -114,8 +115,7 @@ class ReporteController extends Controller
                           AND TIME(a2.punch_time) BETWEEN '16:00:00' AND '21:00:00'
                     ) = 0 THEN 40 ELSE 0 END
                 ) AS \"$alias\"";
-            }
-            elseif ($dia == '0') {
+            } elseif ($dia == '0') {
                 $col = "(
                     (
                         SUM(
@@ -203,8 +203,8 @@ class ReporteController extends Controller
                     m.emp_firstname,
                     m.emp_lastname,
                     d.dept_name" .
-                    (!empty($columnsSqlStr) ? ", $columnsSqlStr" : "") .
-                    (!empty($totalSql) ? " $totalSql" : "") . "
+            (!empty($columnsSqlStr) ? ", $columnsSqlStr" : "") .
+            (!empty($totalSql) ? " $totalSql" : "") . "
                 FROM hr_employee AS m
                 INNER JOIN att_punches AS marc
                     ON m.id = marc.emp_id
@@ -229,7 +229,7 @@ class ReporteController extends Controller
             . ' - '
             . Carbon::parse($endDate)->translatedFormat('d M')
             . ')';
-         // Construir el nombre del archivo con las fechas de inicio y fin
+        // Construir el nombre del archivo con las fechas de inicio y fin
         $fileName = 'reporte_multas_' . Carbon::parse($startDate)->format('Y-m-d') . '_a_' . Carbon::parse($endDate)->format('Y-m-d') . '.xlsx';
 
         // Exportar los resultados a Excel con el nombre dinámico del archivo
@@ -408,8 +408,8 @@ class ReporteController extends Controller
         $dates = [];
         foreach ($datesResult as $row) {
             $dates[] = [
-                'fecha'      => $row->fecha,
-                'alias'      => 'd_' . str_replace('-', '_', $row->fecha),
+                'fecha' => $row->fecha,
+                'alias' => 'd_' . str_replace('-', '_', $row->fecha),
                 'dia_semana' => $row->dia_semana,
                 'dia_semana_lit' => $dayNames[$row->dia_semana]
             ];
@@ -422,7 +422,7 @@ class ReporteController extends Controller
         foreach ($dates as $d) {
             $fecha = $d['fecha'];
             $alias = $d['alias'];
-            $dia   = $d['dia_semana']; // '0' (Dom), '4' (Jue), '5' (Vie)
+            $dia = $d['dia_semana']; // '0' (Dom), '4' (Jue), '5' (Vie)
 
             if ($dia == '5') {
                 // Para viernes: se contempla la excepción del 21 de febrero y la lógica general.
@@ -476,8 +476,7 @@ class ReporteController extends Controller
                           AND TIME(a2.punch_time) BETWEEN '16:00:00' AND '21:00:00'
                     ) = 0 THEN 40 ELSE 0 END
                 ) AS \"$alias\"";
-            }
-            elseif ($dia == '0') {
+            } elseif ($dia == '0') {
                 $col = "(
                     (
                         SUM(
@@ -565,8 +564,8 @@ class ReporteController extends Controller
                     m.emp_firstname,
                     m.emp_lastname,
                     d.dept_name" .
-                    (!empty($columnsSqlStr) ? ", $columnsSqlStr" : "") .
-                    (!empty($totalSql) ? " $totalSql" : "") . "
+            (!empty($columnsSqlStr) ? ", $columnsSqlStr" : "") .
+            (!empty($totalSql) ? " $totalSql" : "") . "
                 FROM hr_employee AS m
                 INNER JOIN att_punches AS marc
                     ON m.id = marc.emp_id
@@ -728,4 +727,71 @@ class ReporteController extends Controller
         $pageTitle = 'Reporte de fidelización';
         return view('admin.reportes.fidelizacion', compact('pageTitle'));
     }
+
+    public function archivoDB(Request $request)
+    {
+        $pageTitle = 'Importación de Archivo DB (SQLite)';
+
+        try {
+            if ($request->isMethod('post')) {
+                // Validar la solicitud
+                $validatedData = $request->validate([
+                    'archivo' => [
+                        'required',
+                        'file',
+                        function ($attribute, $value, $fail) {
+                            if ($value->getClientOriginalExtension() !== 'db') {
+                                $fail('El archivo debe tener la extensión .db.');
+                            }
+                        },
+                        'max:10240', // 10 MB
+                    ],
+                ]);
+
+                if ($request->hasFile('archivo')) {
+                    $archivo = $request->file('archivo');
+
+                    // Definir la ruta en la carpeta `database`
+                    $nombreArchivo = $archivo->getClientOriginalName(); // Nombre original
+                    $ruta = base_path('database/' . $nombreArchivo); // Ruta completa
+
+                    // Mover el archivo a la carpeta `database`
+                    $archivo->move(base_path('database/'), $nombreArchivo);
+
+                    // Guardar la información en la tabla de importaciones
+                    ImportacionAsistencia::create([
+                        'archivo' => $nombreArchivo,
+                        'ruta' => $ruta,
+                        'usuario_id' => auth()->id(), // Usuario autenticado
+                        'estado' => 'procesado', // Cambia según la lógica (pendiente, fallido, etc.)
+                    ]);
+
+                    return response()->json([
+                        'success' => "Archivo DB importado correctamente.",
+                    ], 200);
+                }
+
+                return response()->json(['error' => 'Archivo no encontrado en la solicitud.'], 400);
+            }
+
+            // Recuperar los datos de la última importación
+            $ultimaImportacion = ImportacionAsistencia::latest('created_at')->first();
+
+            // Si no es una solicitud POST, devolver la vista con los datos
+            return view('admin.reportes.archivoDB', compact('pageTitle', 'ultimaImportacion'));
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Manejar errores de validación
+            return response()->json([
+                'error' => 'Error de validación.',
+                'details' => $e->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            // Manejar cualquier otro error
+            return response()->json([
+                'error' => 'Ocurrió un error inesperado.',
+                'details' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
 }

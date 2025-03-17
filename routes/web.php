@@ -70,8 +70,8 @@ Route::middleware('auth')->group(function () {
         Route::match(['get', 'post'], '/multa', 'multa')->name('multa');
         Route::match(['get', 'post'], '/asistencia', 'asistencia')->name('asistencia');
         Route::match(['get', 'post'], '/fidelizacion', 'fidelizacion')->name('fidelizacion');
-
         Route::get('/exportar-reporte', 'exportarReporte')->name('exportar');
+        Route::match(['get', 'post'], '/archivoDB', 'archivoDB')->name('archivoDB');
     });
 
     // 📌 **Grupo de rutas para Usuarios**
