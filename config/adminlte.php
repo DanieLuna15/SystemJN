@@ -336,7 +336,7 @@ return [
                     //'can'  => 'generar reportes',
                 ],
                 [
-                    'text' => 'Importar Archivo DB',
+                    'text' => 'Importar datos',
                     'url'  => 'admin/reportes/archivoDB',
                     'icon' => 'fas fa-database',
                     'classes' => 'btn btn-outline-success btn-sm text-left',
@@ -646,18 +646,18 @@ return [
             'files' => [
                 [
                     'type' => 'js',
-                    'asset' => false,
-                    'location' => '//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js',
+                    'asset' => true,
+                    'location' => 'vendor/datatable/datatables.js',
                 ],
                 [
                     'type' => 'js',
-                    'asset' => false,
-                    'location' => '//cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js',
+                    'asset' => true,
+                    'location' => 'vendor/datatable/datatables.bootstrap4.js',
                 ],
                 [
                     'type' => 'css',
-                    'asset' => false,
-                    'location' => '//cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css',
+                    'asset' => true,
+                    'location' => 'vendor/datatable/datatables.css',
                 ],
             ],
         ],
@@ -692,13 +692,18 @@ return [
                 ],
             ],
         ],
-        'Sweetalert2' => [
+       'Sweetalert2' => [
             'active' => true,
             'files' => [
                 [
                     'type' => 'js',
                     'asset' => true,
-                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@11',
+                    'location' => 'vendor/sweetalert2/sweetalert2.all.min.js',  // Local path to SweetAlert2 JS
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/sweetalert2/sweetalert2.min.css',  // Local path to SweetAlert2 CSS
                 ],
             ],
         ],
@@ -734,6 +739,21 @@ return [
                     'type' => 'css',
                     'asset' => true,
                     'location' => 'vendor/daterangepicker/daterangepicker.css',
+                ],
+            ],
+        ],
+        'Dropzone' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/dropzone/dropzone.min.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/dropzone/dropzone.min.css',
                 ],
             ],
         ],

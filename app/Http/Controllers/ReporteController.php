@@ -730,7 +730,7 @@ class ReporteController extends Controller
 
     public function archivoDB(Request $request)
     {
-        $pageTitle = 'Importación de Archivo DB (SQLite)';
+        $pageTitle = 'Importar Información';
 
         try {
             if ($request->isMethod('post')) {
