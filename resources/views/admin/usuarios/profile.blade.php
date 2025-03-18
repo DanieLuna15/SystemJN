@@ -1,57 +1,121 @@
 @extends('adminlte::page')
-@section('title', $pageTitle)
+
+
+
 
 @section('content')
     <div class="row">
         <div class="col-md-3">
+            <!-- Imagen y Datos del Usuario -->
             <div class="card card-primary card-outline">
                 <div class="card-body box-profile">
-                    <!-- Imagen de perfil -->
                     <label for="profile_image_input" class="d-block text-center">
                         <img id="profileImagePreview" class="profile-user-img img-fluid img-circle mx-auto d-block"
                             src="{{ asset($usuario->profile_image ?? 'images/default-dark.png') }}"
-                            style="width: 180px; height: 180px; object-fit: cover; cursor: pointer;">
+                            style="width: 150px; height: 150px; object-fit: cover; cursor: pointer;">
                     </label>
                     <input type="file" name="profile_image" id="profile_image_input" style="display: none;"
                         accept="image/*"
                         onchange="document.getElementById('profileImagePreview').src = window.URL.createObjectURL(this.files[0])">
 
-                    <!-- Datos del usuario -->
-
-                    <h3 class="text-center">{{ $usuario->name }} {{ $usuario->last_name }}</h3>
-
                     <ul class="list-group list-group-unbordered mb-3">
-                        <li class="list-group-item">
-                            <b>Rol</b>
-                            <a class="float-right">.........</a>
-                        </li>
-                        <li class="list-group-item">
-                            <b>Ministerio</b>
-                            <a class="float-right">............</a>
-                        </li>
-                    </ul>
+                        <form action="{{ route('admin.usuarios.profile', $usuario->id) }}" method="POST"
+                            enctype="multipart/form-data">
+                            @csrf
+                            @method('PUT')
+                            <!-- Nombre completo -->
+                            <li class="list-group-item text-center">
+                                <b><i class="fas fa-user"></i> {{ $usuario->name . ' ' . $usuario->last_name }}</b>
+                            </li>
+                            <!-- Rol del usuario -->
+                            <li class="list-group-item text-center">
+                                <b><i class="fas fa-user-shield"></i> Rol:</b>
+                                <p>
+                                    @if ($usuario->roles->isNotEmpty())
+                                        @foreach ($usuario->roles as $role)
+                                            @if ($role->id == 1)
+                                                <span class="badge bg-gradient-primary">
+                                                    <i class="fas fa-crown"></i> {{ ucfirst($role->name) }}
+                                                </span>
+                                            @elseif ($role->id == 2)
+                                                <span class="badge bg-gradient-success">
+                                                    <i class="fas fa-star"></i> {{ ucfirst($role->name) }}
+                                                </span>
+                                            @else
+                                                <span class="badge bg-gradient-info">
+                                                    <i class="fas fa-user-tie"></i> {{ ucfirst($role->name) }}
+                                                </span>
+                                            @endif
+                                        @endforeach
+                                    @else
+                                        <span class="badge bg-gradient-secondary">
+                                            <i class="fas fa-minus"></i> Sin rol asignado
+                                        </span>
+                                    @endif
+                                </p>
+                            </li>
+                            <!-- Ministerios del usuario -->
+                            <li class="list-group-item text-center">
+                                <b><i class="fas fa-church"></i> Ministerios:</b>
+                                <p>
+                                    @if ($usuario->ministerios->isNotEmpty())
+                                        @foreach ($usuario->ministerios as $ministerio)
+                                            <span class="badge badge-info">
+                                                <i class="fas fa-users"></i> {{ $ministerio->nombre }}
+                                            </span>
+                                        @endforeach
+                                    @else
+                                        <span class="text-muted">
+                                            <i class="fas fa-minus"></i> Sin ministerios asignados
+                                        </span>
+                                    @endif
+                                </p>
+                            </li>
+                            <li class="list-group-item text-center">
+                                <b><i class="fas fa-church"></i> Ministerios Liderados:</b>
+                                <p>
+                                    @if ($usuario->ministeriosLiderados->isNotEmpty())
+                                        @foreach ($usuario->ministeriosLiderados as $ministerio)
+                                            <span class="badge badge-info">
+                                                <i class="fas fa-users"></i> {{ $ministerio->nombre }}
+                                            </span>
+                                        @endforeach
+                                    @else
+                                        <span class="text-muted">
+                                            <i class="fas fa-minus"></i> Sin ministerios liderados
+                                        </span>
+                                    @endif
+                                </p>
 
+                            </li>
+
+                        </form>
+                    </ul>
                 </div>
             </div>
+
+            <!--SOBRE MI-->
 
             <div class="card card-primary mt-3">
                 <div class="card-header">
                     <h3 class="card-title">Sobre mi</h3>
                 </div>
                 <div class="card-body">
-                    <strong><i class="fas-regular fa-mobile-retro"></i> Teléfono</strong>
-                    <p class="text-muted">{{ $usuario->phone }}</p>
-                    <hr>
-                    <strong><i class="fas fa-map-marker-alt mr-1"></i> Dirección</strong>
-                    <p class="text-muted">{{ $usuario->address }}</p>
-                    <hr>
-                    <strong><i class="fas fa-pencil-alt mr-1"></i> Email</strong>
-                    <p class="text-muted">{{ $usuario->email }}</p>
-                    <hr>
-                    <strong><i class="far fa-file-alt mr-1"></i> Carnet de Identidad</strong>
-                    <p class="text-muted">{{ $usuario->ci }}</p>
+                    <div>
+                        @foreach ([
+            'phone' => ['icon' => 'fas fa-mobile-retro', 'label' => 'Teléfono'],
+            'address' => ['icon' => 'fas fa-map-marker-alt mr-1', 'label' => 'Dirección'],
+            'email' => ['icon' => 'fas fa-pencil-alt mr-1', 'label' => 'Email'],
+            'ci' => ['icon' => 'far fa-file-alt mr-1', 'label' => 'Carnet de Identidad'],
+        ] as $field => $data)
+                            <strong><i class="{{ $data['icon'] }}"></i> {{ $data['label'] }}</strong>
+                            <p class="text-muted">{{ $usuario->$field ?? 'No disponible' }}</p>
+                            <hr>
+                        @endforeach
+                    </div>
                 </div>
             </div>
+
         </div>
         <div class="col-md-9">
             <div class="card card-primary card-outline">
@@ -72,59 +136,46 @@
                     <div class="tab-content">
                         <!-- Información General -->
                         <div class="tab-pane fade show active" id="general">
+                            <form action="{{ route('admin.usuarios.update', $usuario->id) }}" method="POST"
+                                enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" name="form_type" value="secundario">
+                                <div class="row">
+                                    @foreach ([
+            'name' => 'Nombre',
+            'last_name' => 'Apellido',
+            'ci' => 'CI',
+            'email' => 'Email',
+            'phone' => 'Teléfono',
+        ] as $field => $label)
+                                        <div class="col-md-6">
+                                            <x-adminlte-input name="{{ $field }}" label="{{ $label }}:"
+                                                value="{{ old($field, $usuario->$field ?? 'No disponible') }}" />
+                                        </div>
+                                    @endforeach
 
-                            {{-- encerrar todo esto en un form --}}
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="name">Nombre:</label>
-                                        <input id="name" name="name" value="{{ old('name', $usuario->name) }}"
-                                            class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="last_name">Apellido:</label>
-                                        <input id="last_name" name="last_name"
-                                            value="{{ old('last_name', $usuario->last_name) }}" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="ci">CI:</label>
-                                        <input id="ci" name="ci" value="{{ old('ci', $usuario->ci) }}"
-                                            class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="email">Correo:</label>
-                                        <input id="email" name="email" value="{{ old('email', $usuario->email) }}"
-                                            class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="phone">Teléfono</Table>:</label>
-                                        <input id="phone" name="phone" value="{{ old('phone', $usuario->phone) }}"
-                                            class="form-control">
+                                    <!-- Dirección al final -->
+                                    <div class="col-md-12">
+                                        <x-adminlte-textarea name="address" label="Dirección:" rows=3>
+                                            {{ old('address', $usuario->address ?? 'No disponible') }}
+                                        </x-adminlte-textarea>
                                     </div>
                                 </div>
 
-                            </div>
-                            <!-- Botones de Acción -->
-                            <div class="d-flex justify-content-between">
-                                <x-adminlte-button class="btn w-100" type="submit" label="Guardar cambios" theme="success"
-                                    icon="fas fa-lg fa-save" />
-                            </div>
-                            {{-- encerrar todo esto en un form --}}
 
+                                <div class="d-flex justify-content-between mt-3">
+                                    <x-adminlte-button class="btn w-100" type="submit"
+                                        label="{{ isset($usuario->id) ? 'Guardar cambios' : 'Guardar' }}" theme="success"
+                                        icon="fas fa-lg fa-save" />
+                                </div>
+                            </form>
                         </div>
 
-                        <!-- Perfil -->
+                        <!-- Foto de Perfil -->
                         <div class="tab-pane fade" id="perfil">
                             <h5 class="text-center">Perfil</h5>
-                            <p>perfil.</p>
+                            <p>Perfil de usuario aquí...</p>
                         </div>
 
                         <!-- Seguridad y Privacidad -->
@@ -132,8 +183,8 @@
                             <form>
                                 <label for="password_actual">Contraseña Actual</label>
                                 <div class="input-group">
-                                    <input type="password" id="password_actual" name="password_actual"
-                                        class="form-control" placeholder="Ingrese contraseña actual" required>
+                                    <input type="password" id="password_actual" name="password_actual" class="form-control"
+                                        placeholder="Ingrese contraseña actual" required>
                                     <div class="input-group-append">
                                         <button class="btn btn-primary" type="button" id="toggleButton_actual"
                                             onclick="togglePassword('password_actual', 'eyeIcon_actual')">
@@ -164,43 +215,40 @@
                                             <i id="eyeIcon_confirmation" class="fa fa-eye"></i>
                                         </button>
                                     </div>
-
                                 </div>
                             </form>
-
                             <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1cm;">Actualizar
                                 Contraseña</button>
                         </div>
-
-                        <script>
-                            function togglePassword(inputId, iconId) {
-                                let passwordInput = document.getElementById(inputId);
-                                let eyeIcon = document.getElementById(iconId);
-                                let toggleButton = document.getElementById('toggleButton_' + inputId);
-
-                                // cambio para el ojito
-                                if (passwordInput.type === "password") {
-                                    passwordInput.type = "text";
-                                    eyeIcon.classList.remove("fa-eye");
-                                    eyeIcon.classList.add("fa-eye-slash");
-                                } else {
-                                    passwordInput.type = "password";
-                                    eyeIcon.classList.remove("fa-eye-slash");
-                                    eyeIcon.classList.add("fa-eye");
-                                }
-                            }
-                        </script>
-
                     </div>
                 </div>
             </div>
         </div>
-    @stop
+    </div>
+@stop
 
+@push('css')
+@endpush
 
-    @push('css')
-    @endpush
-    {{-- <form action="{{ route('profile.updatePassword') }}" method="POST">
+<script>
+    function togglePassword(inputId, iconId) {
+        let passwordInput = document.getElementById(inputId);
+        let eyeIcon = document.getElementById(iconId);
+        let toggleButton = document.getElementById('toggleButton_' + inputId);
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            eyeIcon.classList.remove("fa-eye");
+            eyeIcon.classList.add("fa-eye-slash");
+        } else {
+            passwordInput.type = "password";
+            eyeIcon.classList.remove("fa-eye-slash");
+            eyeIcon.classList.add("fa-eye");
+        }
+    }
+</script>
+
+{{-- <form action="{{ route('profile.updatePassword') }}" method="POST">
                             @csrf
                             @method('PUT')
 
@@ -225,15 +273,15 @@
 
 
 
-    {{-- {{-- <div class="tab-pane" id="contacto"> --}}
-    <!-- Sección de información de contacto -->
-    {{-- <h5 class="text-center">Información de Contacto</h5>
+{{-- {{-- <div class="tab-pane" id="contacto"> --}}
+<!-- Sección de información de contacto -->
+{{-- <h5 class="text-center">Información de Contacto</h5>
 <p>Teléfono: {{ $usuario->phone }}</p>
 <p>Dirección: {{ $usuario->address }}</p>
 <p>Ciudad: {{ $usuario->city }}</p>
 </div> --}}
 
-    {{-- <div class="tab-pane" id="seguridad">
+{{-- <div class="tab-pane" id="seguridad">
                                             <!-- Sección de seguridad y privacidad -->
                                             <h5 class="text-center">Seguridad y Privacidad</h5>
                                             <p>Contraseña: ********</p>
@@ -245,9 +293,9 @@
                                 <div class="card-body">
                                     <div class="tab-content">
                                         <div class="tab-pane fade show active" id="general"> --}}
-    {{-- <h5 class="text-center">Información General</h5> --}}
-    <!-- Sección de información general del perfil -->
-    {{-- <div class="tab-pane fade show active" id="general">
+{{-- <h5 class="text-center">Información General</h5> --}}
+<!-- Sección de información general del perfil -->
+{{-- <div class="tab-pane fade show active" id="general">
                                                 <h5 class="text-center">Información General</h5>
 
                                             </div>
@@ -289,7 +337,7 @@
                                             </div>
                                         </div> --}}
 
-    {{-- <!-- Columna de Foto de Perfil -->
+{{-- <!-- Columna de Foto de Perfil -->
                                         <div class="col-md-4">
                                             <div class="card card-primary card-outline">
                                                 <div class="card-header p-2">

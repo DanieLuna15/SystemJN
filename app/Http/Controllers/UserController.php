@@ -178,7 +178,7 @@ class UserController extends Controller
                 'ci' => [
                     'required',
                     'numeric',
-                    'digits_between:5,10', // Reemplaza el rango manual con esta regla 
+                    'digits_between:5,10', // Reemplaza el rango manual con esta regla
                     Rule::unique('users', 'ci')->ignore($id),
                 ],
             ]);
@@ -189,7 +189,7 @@ class UserController extends Controller
         $usuario->fill($validatedData);
         $usuario->save();
 
-        return redirect()->route('admin.usuarios.info', ['usuario' => $usuario->id])->with('success', 'Usuario actualizado correctamente.');
+        return redirect()->route('admin.usuarios.profile', ['usuario' => $usuario->id])->with('success', 'Usuario actualizado correctamente.');
 
     }
 
