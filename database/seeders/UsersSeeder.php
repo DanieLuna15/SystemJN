@@ -12,48 +12,73 @@ class UsersSeeder extends Seeder
     {
         $users = [
             [
-                'name' => 'Usuario Administrador',
-                'last_name' => 'Lopez',
-                'email' => 'pastor@example.com',
-                'password' => Hash::make('password123'),
-                'role' => 'Pastor/Admin',
-                'address' => 'Calle Ficticia 123, Ciudad',
-                'ci' => '1234567',
-                'profile_image' => null,
-            ],
-            [
-                'name' => 'Usuario Líder',
-                'last_name' => 'Gómez',
-                'email' => 'lider@example.com',
-                'password' => Hash::make('password123'),
-                'role' => 'Líder',
-                'address' => 'Calle Lider 456, Ciudad',
-                'ci' => '8765432',
-                'profile_image' => null,
-            ],
-            [
-                'name' => 'Usuario Servidor',
-                'last_name' => 'Martinez',
-                'email' => 'servidor@example.com',
-                'password' => Hash::make('password123'),
+                'name' => 'Emils',
+                'last_name' => 'Callisaya',
+                'email' => 'emils@example.com',
                 'role' => 'Servidor',
                 'address' => 'Calle Servidores 789, Ciudad',
-                'ci' => '1122334',
-                'profile_image' => null,
+                'ci' => '13312958',
+                'phone' => '74781231'
             ],
             [
-                'name' => 'Usuario Miembro',
-                'last_name' => 'Vargas',
-                'email' => 'miembro@example.com',
-                'password' => Hash::make('password123'),
-                'role' => 'Miembro',
-                'address' => 'Calle Miembros 789, Ciudad',
-                'ci' => '12344551',
-                'profile_image' => null,
+                'name' => 'Ariana',
+                'last_name' => 'Porce',
+                'email' => 'ariana@example.com',
+                'role' => 'Servidor',
+                'address' => 'Calle Servidores 789, Ciudad',
+                'ci' => '13959831',
+                'phone' => '74781232'
+            ],
+            [
+                'name' => 'Kevin',
+                'last_name' => 'Condori',
+                'email' => 'kevin@example.com',
+                'role' => 'Servidor',
+                'address' => 'Calle Servidores 789, Ciudad',
+                'ci' => '13692223',
+                'phone' => '74781233'
+            ],
+            [
+                'name' => 'César',
+                'last_name' => 'Yujra',
+                'email' => 'cesar@example.com',
+                'role' => 'Servidor',
+                'address' => 'Calle Servidores 789, Ciudad',
+                'ci' => '7031339',
+                'phone' => '74781234'
+            ],
+            [
+                'name' => 'Silvia',
+                'last_name' => 'Mamani',
+                'email' => 'silvia@example.com',
+                'role' => 'Servidor',
+                'address' => 'Calle Servidores 789, Ciudad',
+                'ci' => '12544603',
+                'phone' => '74781235'
+            ],
+            [
+                'name' => 'Jazmin',
+                'last_name' => 'Mejia',
+                'email' => 'jaz@example.com',
+                'role' => 'Servidor',
+                'address' => 'Calle Servidores 789, Ciudad',
+                'ci' => '13675884',
+                'phone' => '74781236'
+            ],
+            [
+                'name' => 'Rafael',
+                'last_name' => 'Chambilla',
+                'email' => 'rafael@example.com',
+                'role' => 'Servidor',
+                'address' => 'Calle Servidores 789, Ciudad',
+                'ci' => '10080310',
+                'phone' => '74781237'
             ],
         ];
 
         foreach ($users as $userData) {
+            $generatedPassword = generatePassword($userData['name'], $userData['last_name'], $userData['ci'], $userData['phone']);
+
             $user = User::firstOrCreate(
                 ['email' => $userData['email']],
                 [
@@ -61,8 +86,7 @@ class UsersSeeder extends Seeder
                     'last_name' => $userData['last_name'],
                     'address' => $userData['address'],
                     'ci' => $userData['ci'],
-                    'profile_image' => $userData['profile_image'],
-                    'password' => $userData['password'],
+                    'password' => Hash::make($generatedPassword),
                 ]
             );
 
@@ -72,6 +96,3 @@ class UsersSeeder extends Seeder
         }
     }
 }
-
-
-

@@ -33,6 +33,16 @@ class HomeController extends Controller
         $horarios = Horario::where('estado', Status::ACTIVE)->count();
         $usuarios = User::where('estado', Status::ACTIVE)->count();
         $actividadServicios = ActividadServicio::where('estado', Status::ACTIVE)->count();
+
+        $punches = DB::connection('sqlite')
+            ->table('att_punches as ap')
+            ->join('hr_employee as he', 'ap.emp_id', '=', 'he.id')
+            ->where('he.emp_pin', '12544603')
+            ->select('he.emp_pin', 'ap.punch_time')
+            ->get();
+        //DD($punches);
+
+        
         return view('home', compact('ministerios', 'horarios', 'actividadServicios', 'usuarios'));
     }
 }

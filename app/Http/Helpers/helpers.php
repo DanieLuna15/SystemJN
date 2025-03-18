@@ -104,3 +104,13 @@ function uploadFile($file, $directory = 'uploads')
     // Devolvemos la ruta relativa al archivo 
     return $directory . '/' . $filename;
 }
+
+
+function generatePassword($name, $last_name, $ci, $phone)
+{
+    $initials = strtolower(substr($name, 0, 1) . substr($last_name, 0, 1));
+    $ciPart = substr($ci, 0, 3);
+    $phonePart = substr($phone, -4); 
+
+    return $initials . $ciPart . $phonePart;
+}

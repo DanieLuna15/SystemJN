@@ -15,7 +15,8 @@
                     <div class="icon">
                         <i class="fas fa-users"></i>
                     </div>
-                    <a href="{{ route('admin.usuarios.index') }}" class="small-box-footer">Más información <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('admin.usuarios.index') }}" class="small-box-footer">Más información <i
+                            class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
 
@@ -198,5 +199,14 @@
             });
             calendar.render();
         });
+    </script>
+
+    <script>
+        Swal.fire({
+            title: "¡Éxito!",
+            text: "Bienvenido!",
+            icon: "success",
+            confirmButtonText: "OK"
+        })
     </script>
 @endsection

@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
         // Llamar a los seeders individuales
         $this->call([
             RolesPermissionsSeeder::class,
+            UsersDefaultSeeder::class,
             UsersSeeder::class,
             ConfiguracionSeeder::class,
             ActividadServiciosSeeder::class,

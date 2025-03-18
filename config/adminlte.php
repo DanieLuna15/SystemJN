@@ -698,12 +698,12 @@ return [
                 [
                     'type' => 'js',
                     'asset' => true,
-                    'location' => 'vendor/sweetalert2/sweetalert2.all.min.js',  // Local path to SweetAlert2 JS
+                    'location' => 'vendor/sweetalert2/sweetalert2.all.min.js', 
                 ],
                 [
                     'type' => 'css',
                     'asset' => true,
-                    'location' => 'vendor/sweetalert2/sweetalert2.min.css',  // Local path to SweetAlert2 CSS
+                    'location' => 'vendor/sweetalert2/sweetalert2.min.css',
                 ],
             ],
         ],

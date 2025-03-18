@@ -128,7 +128,7 @@ class UserController extends Controller
                 Log::info('Usuario actualizado.', ['user_id' => $usuario->id]);
             } else {
                 // Crear nuevo usuario
-                $password = $this->generatePassword($request->name, $request->last_name, $request->ci, $request->phone);
+                $password = generatePassword($request->name, $request->last_name, $request->ci, $request->phone);
                 $data['password'] = bcrypt($password);
                 $usuario = User::create($data);
                 $message = 'Usuario creado correctamente.';
@@ -213,14 +213,6 @@ class UserController extends Controller
         return User::changeStatus($id, 'estado');
     }
 
-    private function generatePassword($name, $last_name, $ci, $phone)
-    {
-        $initials = strtolower(substr($name, 0, 1) . substr($last_name, 0, 1));
-        $ciPart = substr($ci, 0, 3);
-        $phonePart = substr($phone, -4); 
-
-        return $initials . $ciPart . $phonePart;
-    }
 
     public function info(User $usuario)
     {
