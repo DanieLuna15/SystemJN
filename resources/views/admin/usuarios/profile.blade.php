@@ -19,77 +19,73 @@
                         onchange="document.getElementById('profileImagePreview').src = window.URL.createObjectURL(this.files[0])">
 
                     <ul class="list-group list-group-unbordered mb-3">
-                        <form action="{{ route('admin.usuarios.profile', $usuario->id) }}" method="POST"
-                            enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
-                            <!-- Nombre completo -->
-                            <li class="list-group-item text-center">
-                                <b><i class="fas fa-user"></i> {{ $usuario->name . ' ' . $usuario->last_name }}</b>
-                            </li>
-                            <!-- Rol del usuario -->
-                            <li class="list-group-item text-center">
-                                <b><i class="fas fa-user-shield"></i> Rol:</b>
-                                <p>
-                                    @if ($usuario->roles->isNotEmpty())
-                                        @foreach ($usuario->roles as $role)
-                                            @if ($role->id == 1)
-                                                <span class="badge bg-gradient-primary">
-                                                    <i class="fas fa-crown"></i> {{ ucfirst($role->name) }}
-                                                </span>
-                                            @elseif ($role->id == 2)
-                                                <span class="badge bg-gradient-success">
-                                                    <i class="fas fa-star"></i> {{ ucfirst($role->name) }}
-                                                </span>
-                                            @else
-                                                <span class="badge bg-gradient-info">
-                                                    <i class="fas fa-user-tie"></i> {{ ucfirst($role->name) }}
-                                                </span>
-                                            @endif
-                                        @endforeach
-                                    @else
-                                        <span class="badge bg-gradient-secondary">
-                                            <i class="fas fa-minus"></i> Sin rol asignado
-                                        </span>
-                                    @endif
-                                </p>
-                            </li>
-                            <!-- Ministerios del usuario -->
-                            <li class="list-group-item text-center">
-                                <b><i class="fas fa-church"></i> Ministerios:</b>
-                                <p>
-                                    @if ($usuario->ministerios->isNotEmpty())
-                                        @foreach ($usuario->ministerios as $ministerio)
-                                            <span class="badge badge-info">
-                                                <i class="fas fa-users"></i> {{ $ministerio->nombre }}
+                        <!-- Nombre completo -->
+                        <li class="list-group-item text-center">
+                            <b><i class="fas fa-user"></i> {{ $usuario->name . ' ' . $usuario->last_name }}</b>
+                        </li>
+                        <!-- Rol del usuario -->
+                        <li class="list-group-item text-center">
+                            <b><i class="fas fa-user-shield"></i> Rol:</b>
+                            <p>
+                                @if ($usuario->roles->isNotEmpty())
+                                    @foreach ($usuario->roles as $role)
+                                        @if ($role->id == 1)
+                                            <span class="badge bg-gradient-primary">
+                                                <i class="fas fa-crown"></i> {{ ucfirst($role->name) }}
                                             </span>
-                                        @endforeach
-                                    @else
-                                        <span class="text-muted">
-                                            <i class="fas fa-minus"></i> Sin ministerios asignados
-                                        </span>
-                                    @endif
-                                </p>
-                            </li>
-                            <li class="list-group-item text-center">
-                                <b><i class="fas fa-church"></i> Ministerios Liderados:</b>
-                                <p>
-                                    @if ($usuario->ministeriosLiderados->isNotEmpty())
-                                        @foreach ($usuario->ministeriosLiderados as $ministerio)
-                                            <span class="badge badge-info">
-                                                <i class="fas fa-users"></i> {{ $ministerio->nombre }}
+                                        @elseif ($role->id == 2)
+                                            <span class="badge bg-gradient-success">
+                                                <i class="fas fa-star"></i> {{ ucfirst($role->name) }}
                                             </span>
-                                        @endforeach
-                                    @else
-                                        <span class="text-muted">
-                                            <i class="fas fa-minus"></i> Sin ministerios liderados
+                                        @else
+                                            <span class="badge bg-gradient-info">
+                                                <i class="fas fa-user-tie"></i> {{ ucfirst($role->name) }}
+                                            </span>
+                                        @endif
+                                    @endforeach
+                                @else
+                                    <span class="badge bg-gradient-secondary">
+                                        <i class="fas fa-minus"></i> Sin rol asignado
+                                    </span>
+                                @endif
+                            </p>
+                        </li>
+                        <!-- Ministerios del usuario -->
+                        <li class="list-group-item text-center">
+                            <b><i class="fas fa-church"></i> Ministerios:</b>
+                            <p>
+                                @if ($usuario->ministerios->isNotEmpty())
+                                    @foreach ($usuario->ministerios as $ministerio)
+                                        <span class="badge badge-info">
+                                            <i class="fas fa-users"></i> {{ $ministerio->nombre }}
                                         </span>
-                                    @endif
-                                </p>
+                                    @endforeach
+                                @else
+                                    <span class="text-muted">
+                                        <i class="fas fa-minus"></i> Sin ministerios asignados
+                                    </span>
+                                @endif
+                            </p>
+                        </li>
+                        <li class="list-group-item text-center">
+                            <b><i class="fas fa-church"></i> Ministerios Liderados:</b>
+                            <p>
+                                @if ($usuario->ministeriosLiderados->isNotEmpty())
+                                    @foreach ($usuario->ministeriosLiderados as $ministerio)
+                                        <span class="badge badge-info">
+                                            <i class="fas fa-users"></i> {{ $ministerio->nombre }}
+                                        </span>
+                                    @endforeach
+                                @else
+                                    <span class="text-muted">
+                                        <i class="fas fa-minus"></i> Sin ministerios liderados
+                                    </span>
+                                @endif
+                            </p>
 
-                            </li>
+                        </li>
 
-                        </form>
+
                     </ul>
                 </div>
             </div>
@@ -103,7 +99,7 @@
                 <div class="card-body">
                     <div>
                         @foreach ([
-            'phone' => ['icon' => 'fas fa-mobile-retro', 'label' => 'Teléfono'],
+            'phone' => ['icon' => 'fas fa-phone', 'label' => 'Teléfono'],
             'address' => ['icon' => 'fas fa-map-marker-alt mr-1', 'label' => 'Dirección'],
             'email' => ['icon' => 'fas fa-pencil-alt mr-1', 'label' => 'Email'],
             'ci' => ['icon' => 'far fa-file-alt mr-1', 'label' => 'Carnet de Identidad'],
@@ -247,113 +243,3 @@
         }
     }
 </script>
-
-{{-- <form action="{{ route('profile.updatePassword') }}" method="POST">
-                            @csrf
-                            @method('PUT')
-
-                            <div class="form-group">
-                                <label for="password_actual">Contraseña Actual</label>
-                                <input type="password" name="password_actual" class="form-control" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="password_nueva">Nueva Contraseña</label>
-                                <input type="password" name="password_nueva" class="form-control" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="password_confirm">Confirmar Nueva Contraseña</label>
-                                <input type="password" name="password_confirm" class="form-control" required>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary btn-block">Actualizar Contraseña</button>
-                        </form> --}}
-
-
-
-
-{{-- {{-- <div class="tab-pane" id="contacto"> --}}
-<!-- Sección de información de contacto -->
-{{-- <h5 class="text-center">Información de Contacto</h5>
-<p>Teléfono: {{ $usuario->phone }}</p>
-<p>Dirección: {{ $usuario->address }}</p>
-<p>Ciudad: {{ $usuario->city }}</p>
-</div> --}}
-
-{{-- <div class="tab-pane" id="seguridad">
-                                            <!-- Sección de seguridad y privacidad -->
-                                            <h5 class="text-center">Seguridad y Privacidad</h5>
-                                            <p>Contraseña: ********</p>
-                                            <p>Último inicio de sesión: {{ $usuario->last_login }}</p>
-                                            <p>Estado de cuenta: {{ $usuario->status }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <div class="tab-content">
-                                        <div class="tab-pane fade show active" id="general"> --}}
-{{-- <h5 class="text-center">Información General</h5> --}}
-<!-- Sección de información general del perfil -->
-{{-- <div class="tab-pane fade show active" id="general">
-                                                <h5 class="text-center">Información General</h5>
-
-                                            </div>
-                                        </div>
-
-                                        <!-- Sección de contraseña -->
-                                        <div class="tab-pane fade" id="contraseña">
-                                            <h5 class="text-center">Contraseña</h5>
-                                            <div class="row">
-                                                <div class="col-md-12 col-lg-12">
-                                                    <div class="form-group">
-                                                        <label for="password">Contraseña actual:</label>
-                                                        <div class="input-group">
-                                                            <input id="password" name="password" type="password"
-                                                                class="form-control">
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-12 col-lg-12">
-                                                    <div class="form-group">
-                                                        <label for="new_password">Nueva contraseña:</label>
-                                                        <div class="input-group">
-                                                            <input id="new_password" name="new_password" type="password"
-                                                                class="form-control">
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-12 col-lg-12">
-                                                    <div class="form-group">
-                                                        <label for="confirm_password">Confirmar contraseña:</label>
-                                                        <div class="input-group">
-                                                            <input id="confirm_password" name="confirm_password"
-                                                                type="password" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div> --}}
-
-{{-- <!-- Columna de Foto de Perfil -->
-                                        <div class="col-md-4">
-                                            <div class="card card-primary card-outline">
-                                                <div class="card-header p-2">
-                                                    <h5 class="text-center">Foto de Perfil</h5>
-                                                </div>
-                                                <div class="card-body text-center">
-                                                    <label for="profile_image_input">
-                                                        <img id="profileImagePreview"
-                                                            class="profile-user-img img-fluid img-circle"
-                                                            src="{{ asset($usuario->profile_image ?? 'images/default-dark.png') }}"
-                                                            alt="Imagen de perfil"
-                                                            style="width: 180px; height: 180px; object-fit: cover; cursor: pointer;">
-                                                    </label>
-                                                    <input type="file" name="profile_image" id="profile_image_input"
-                                                        style="display: none;" accept="image/*"
-                                                        onchange="document.getElementById('profileImagePreview').src = window.URL.createObjectURL(this.files[0])">
-                                                </div>
-                                            </div>
-                                        </div> --}}

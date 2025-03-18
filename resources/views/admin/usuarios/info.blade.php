@@ -157,79 +157,13 @@
                                     <i class="fas fa-edit"></i> Editar información
                                 </a>
                             @endcan
-
-                            {{-- <form action="{{ route('admin.usuarios.update', $usuario->id) }}" method="POST"
-                            enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT') <!-- Esto asegura que se use el método PUT -->
-                            <input type="hidden" name="form_type" value="secundario">
-                            <div class="row">
-
-                                <div class="col-md-6 col-lg-6">
-                                    <!-- Campo Nombre -->
-                                    <x-adminlte-input name="name" label="Nombre:"
-                                        value="{{ old('name', $usuario->name ?? '') }}" />
-                                </div>
-                                <div class="col-md-6 col-lg-6">
-                                    <!-- Campo Apellido -->
-                                    <x-adminlte-input name="last_name" label="Apellido:"
-                                        value="{{ old('last_name', $usuario->last_name ?? '') }}" />
-                                </div>
-
-                                <div class="col-md-6 col-lg-6">
-                                    <!-- Campo Email -->
-                                    <x-adminlte-input name="email" label="Correo:"
-                                        value="{{ old('email', $usuario->email ?? '') }}" />
-                                </div>
-
-                                <div class="col-md-6 col-lg-6">
-                                    <!-- Campo Telefono -->
-                                    <x-adminlte-input name="phone" label="Telefono:"
-                                        value="{{ old('phone', $usuario->phone ?? '') }}" />
-                                </div>
-
-                                <div class="col-md-12 col-lg-12">
-                                    <!-- Campo Direccion -->
-                                    <x-adminlte-input name="address" label="Dirección:"
-                                        value="{{ old('address', $usuario->address ?? '') }}" />
-                                </div>
-
-                            </div>
-
-                            @can('editar configuracion informacion')
-                            <div class="d-flex justify-content-between">
-                                <x-adminlte-button class="btn w-100" type="submit" label="Guardar cambios"
-                                    theme="success" icon="fas fa-lg fa-save" />
-                            </div>
-                            @endcan
-                        </form> --}}
                         </div>
                         <div class="tab-pane" id="asistencia">
                             <h5 class="text-center">Asistencia y Multas</h5>
                         </div>
                         <div class="tab-pane" id="agenda">
                             <h5 class="text-center">Agenda</h5>
-                            {{-- <form action="{{ route('profile.updatePassword') }}" method="POST">
-                            @csrf
-                            @method('PUT')
-
-                            <div class="form-group">
-                                <label for="password_actual">Contraseña Actual</label>
-                                <input type="password" name="password_actual" class="form-control" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="password_nueva">Nueva Contraseña</label>
-                                <input type="password" name="password_nueva" class="form-control" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="password_confirm">Confirmar Nueva Contraseña</label>
-                                <input type="password" name="password_confirm" class="form-control" required>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary btn-block">Actualizar Contraseña</button>
-                        </form> --}}
+                           
                         </div>
                     </div>
                 </div>
