@@ -13,14 +13,12 @@ return new class extends Migration
     {
         Schema::create('asistencias', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('miembro_id');
+            $table->string('ci');
             $table->date('fecha');
-            $table->time('hora_ingreso');
-            $table->boolean('tarde')->default(0);
-            $table->decimal('multa', 8, 2)->default(0);
+            $table->time('hora_marcacion');
             $table->timestamps();
-    
-            // $table->foreign('miembro_id')->references('id')->on('miembros')->onDelete('cascade');
+        
+            $table->foreign('ci')->references('ci')->on('users')->onDelete('cascade');
         });
     }
 

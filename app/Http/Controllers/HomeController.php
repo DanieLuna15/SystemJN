@@ -40,7 +40,7 @@ class HomeController extends Controller
             ->where('he.emp_pin', '12544603')
             ->select('he.emp_pin', 'ap.punch_time')
             ->get();
-        //DD($punches);
+        DD($punches);
 
         
         return view('home', compact('ministerios', 'horarios', 'actividadServicios', 'usuarios'));

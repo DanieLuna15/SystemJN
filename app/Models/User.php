@@ -43,7 +43,10 @@ class User extends Authenticatable
         'estado'        // Nuevo campo
     ];
     
-
+    public function asistencias()
+    {
+        return $this->hasMany(Asistencia::class, 'ci', 'ci');
+    }
 
     /**
      * The attributes that should be hidden for serialization.

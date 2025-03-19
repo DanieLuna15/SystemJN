@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Horario;
-use App\Models\ImportacionAsistencia;
+use App\Models\Asistencia;
 use Illuminate\Http\Request;
 use App\Exports\MultasExport;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\ImportacionAsistencia;
 
 class ReporteController extends Controller
 {
@@ -728,12 +731,110 @@ class ReporteController extends Controller
         return view('admin.reportes.fidelizacion', compact('pageTitle'));
     }
 
+    // public function archivoDB(Request $request)
+    // {
+    //     $pageTitle = 'Importar Información';
+
+    //     try {
+    //         if ($request->isMethod('post')) {
+    //             // Validar la solicitud
+    //             $validatedData = $request->validate([
+    //                 'archivo' => [
+    //                     'required',
+    //                     'file',
+    //                     function ($attribute, $value, $fail) {
+    //                         if ($value->getClientOriginalExtension() !== 'db') {
+    //                             $fail('El archivo debe tener la extensión .db.');
+    //                         }
+    //                     },
+    //                     'max:10240', // 10 MB
+    //                 ],
+    //             ]);
+
+    //             if ($request->hasFile('archivo')) {
+    //                 $archivo = $request->file('archivo');
+
+    //                 // Definir la ruta en la carpeta `database`
+    //                 $nombreArchivo = $archivo->getClientOriginalName(); // Nombre original
+    //                 $ruta = base_path('database/' . $nombreArchivo); // Ruta completa
+
+    //                 // Mover el archivo a la carpeta `database`
+    //                 $archivo->move(base_path('database/'), $nombreArchivo);
+
+    //                 // Obtener todos los usuarios registrados con CI válido
+    //                 $usuarios = User::whereNotNull('ci')->pluck('id', 'ci');
+
+    //                 // Consultar los registros de asistencias del archivo .db
+    //                 $punches = DB::connection('sqlite')
+    //                     ->table('att_punches as ap')
+    //                     ->join('hr_employee as he', 'ap.emp_id', '=', 'he.id')
+    //                     ->select('he.emp_pin as ci', 'ap.punch_time')
+    //                     ->whereIn('he.emp_pin', $usuarios->keys()) // Filtrar por CI registrado en usuarios
+    //                     ->get();
+
+    //                 foreach ($punches as $registro) {
+    //                     $ci = $registro->ci;
+    //                     $punchTime = $registro->punch_time;
+
+    //                     // Separar fecha y hora
+    //                     $fecha = date('Y-m-d', strtotime($punchTime));
+    //                     $hora = date('H:i:s', strtotime($punchTime));
+
+    //                     // Registrar asistencia en la tabla "asistencias"
+    //                     Asistencia::create([
+    //                         'ci' => $ci,
+    //                         'fecha' => $fecha,
+    //                         'hora_marcacion' => $hora,
+    //                     ]);
+    //                 }
+
+    //                 // Guardar la información en la tabla de importaciones
+    //                 ImportacionAsistencia::create([
+    //                     'archivo' => $nombreArchivo,
+    //                     'ruta' => $ruta,
+    //                     'usuario_id' => auth()->id(), // Usuario autenticado
+    //                     'estado' => 'procesado', // Cambia según la lógica (pendiente, fallido, etc.)
+    //                 ]);
+
+    //                 return response()->json([
+    //                     'success' => "Archivo DB importado correctamente.",
+    //                 ], 200);
+    //             }
+
+    //             return response()->json(['error' => 'Archivo no encontrado en la solicitud.'], 400);
+    //         }
+
+    //         // Recuperar los datos de la última importación
+    //         $ultimaImportacion = ImportacionAsistencia::latest('created_at')->first();
+
+    //         // Si no es una solicitud POST, devolver la vista con los datos
+    //         return view('admin.reportes.archivoDB', compact('pageTitle', 'ultimaImportacion'));
+    //     } catch (\Illuminate\Validation\ValidationException $e) {
+    //         // Manejar errores de validación
+    //         return response()->json([
+    //             'error' => 'Error de validación.',
+    //             'details' => $e->errors(),
+    //         ], 422);
+    //     } catch (\Exception $e) {
+    //         // Manejar cualquier otro error
+    //         return response()->json([
+    //             'error' => 'Ocurrió un error inesperado.',
+    //             'details' => $e->getMessage(),
+    //         ], 500);
+    //     }
+    // }
+
+
     public function archivoDB(Request $request)
     {
         $pageTitle = 'Importar Información';
 
         try {
+            Log::info('Iniciando el proceso de importación.');
+
             if ($request->isMethod('post')) {
+                Log::info('Solicitud POST recibida.');
+
                 // Validar la solicitud
                 $validatedData = $request->validate([
                     'archivo' => [
@@ -748,8 +849,11 @@ class ReporteController extends Controller
                     ],
                 ]);
 
+                Log::info('Validación de archivo exitosa.');
+
                 if ($request->hasFile('archivo')) {
                     $archivo = $request->file('archivo');
+                    Log::info('Archivo recibido: ' . $archivo->getClientOriginalName());
 
                     // Definir la ruta en la carpeta `database`
                     $nombreArchivo = $archivo->getClientOriginalName(); // Nombre original
@@ -757,6 +861,38 @@ class ReporteController extends Controller
 
                     // Mover el archivo a la carpeta `database`
                     $archivo->move(base_path('database/'), $nombreArchivo);
+                    Log::info('Archivo movido a la ruta: ' . $ruta);
+
+                    // Obtener todos los usuarios registrados con CI válido
+                    $usuarios = User::whereNotNull('ci')->pluck('id', 'ci');
+                    Log::info('Usuarios con CI válido encontrados: ' . $usuarios->count());
+
+                    // Consultar los registros de asistencias del archivo .db
+                    $punches = DB::connection('sqlite')
+                        ->table('att_punches as ap')
+                        ->join('hr_employee as he', 'ap.emp_id', '=', 'he.id')
+                        ->select('he.emp_pin as ci', 'ap.punch_time')
+                        ->whereIn('he.emp_pin', $usuarios->keys()) // Filtrar por CI registrado en usuarios
+                        ->get();
+
+                    Log::info('Registros de asistencia consultados: ' . $punches->count());
+
+                    foreach ($punches as $registro) {
+                        $ci = $registro->ci;
+                        $punchTime = $registro->punch_time;
+
+                        // Separar fecha y hora
+                        $fecha = date('Y-m-d', strtotime($punchTime));
+                        $hora = date('H:i:s', strtotime($punchTime));
+
+                        // Registrar asistencia en la tabla "asistencias"
+                        Asistencia::create([
+                            'ci' => $ci,
+                            'fecha' => $fecha,
+                            'hora_marcacion' => $hora,
+                        ]);
+                        Log::info("Asistencia registrada para CI: {$ci}, Fecha: {$fecha}, Hora: {$hora}");
+                    }
 
                     // Guardar la información en la tabla de importaciones
                     ImportacionAsistencia::create([
@@ -765,6 +901,7 @@ class ReporteController extends Controller
                         'usuario_id' => auth()->id(), // Usuario autenticado
                         'estado' => 'procesado', // Cambia según la lógica (pendiente, fallido, etc.)
                     ]);
+                    Log::info('Información de importación guardada.');
 
                     return response()->json([
                         'success' => "Archivo DB importado correctamente.",
@@ -781,17 +918,20 @@ class ReporteController extends Controller
             return view('admin.reportes.archivoDB', compact('pageTitle', 'ultimaImportacion'));
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Manejar errores de validación
+            Log::error('Error de validación: ' . json_encode($e->errors()));
+
             return response()->json([
                 'error' => 'Error de validación.',
                 'details' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             // Manejar cualquier otro error
+            Log::error('Error inesperado: ' . $e->getMessage());
+
             return response()->json([
                 'error' => 'Ocurrió un error inesperado.',
                 'details' => $e->getMessage(),
             ], 500);
         }
     }
-
 }
