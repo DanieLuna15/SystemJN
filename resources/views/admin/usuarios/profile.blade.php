@@ -14,10 +14,8 @@
                             src="{{ asset($usuario->profile_image ?? 'images/default-dark.png') }}"
                             style="width: 150px; height: 150px; object-fit: cover; cursor: pointer;">
                     </label>
-                    <input type="file" name="profile_image" id="profile_image_input" style="display: none;"
-                        accept="image/*"
+                    <input type="file" name="imagen" id="profile_image_input" style="display: none;" accept="image/*"
                         onchange="document.getElementById('profileImagePreview').src = window.URL.createObjectURL(this.files[0])">
-
                     <ul class="list-group list-group-unbordered mb-3">
                         <!-- Nombre completo -->
                         <li class="list-group-item text-center">
@@ -170,17 +168,26 @@
 
                         <!-- Foto de Perfil -->
                         <div class="tab-pane fade" id="perfil">
-                            <h5 class="text-center">Perfil</h5>
-                            <p>Perfil de usuario aquí...</p>
+                            <form action="{{ route('admin.usuarios.updateImage', $usuario->id) }}" method="POST"
+                                enctype="multipart/form-data">
+                                @csrf
+                                <x-image-upload label="Imagen de perfil" name="imagen" alt="Imagen de perfil del usuario"
+                                    :image="$usuario->profile_image ?? null" :id="'imagen_perfil'" />
+                                <input type="hidden" name="remove_imagen" id="removeImagenInput_imagen_perfil"
+                                    value="0">
+                                <div class="d-flex justify-content-between mt-3">
+                                    <x-adminlte-button class="btn w-100" type="submit" label="Guardar imagen"
+                                        theme="success" icon="fas fa-lg fa-save" />
+                                </div>
+                            </form>
                         </div>
-
                         <!-- Seguridad y Privacidad -->
                         <div class="tab-pane fade" id="seguridad">
                             <form>
                                 <label for="password_actual">Contraseña Actual</label>
                                 <div class="input-group">
-                                    <input type="password" id="password_actual" name="password_actual" class="form-control"
-                                        placeholder="Ingrese contraseña actual" required>
+                                    <input type="password" id="password_actual" name="password_actual"
+                                        class="form-control" placeholder="Ingrese contraseña actual" required>
                                     <div class="input-group-append">
                                         <button class="btn btn-primary" type="button" id="toggleButton_actual"
                                             onclick="togglePassword('password_actual', 'eyeIcon_actual')">

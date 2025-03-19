@@ -227,4 +227,33 @@ class UserController extends Controller
         $usuario = auth()->user();
         return view('admin.usuarios.profile', compact('pageTitle', 'usuario'));
     }
+
+    public function updateImage(Request $request,$id)
+    {
+
+        // Validar que se haya enviado una imagen o que se quiera eliminar
+        $request->validate([
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+        // 🔹 Obtener la configuración existente
+        $user = User::findOrFail($id);
+        if ($request->input('remove_imagen') == '1') {
+            deleteFile($user->profile_image);
+            $user->profile_image = null;
+        }
+         // 🔹 Subir nuevas imágenes si se adjuntaron
+         if (isset($validatedData['profile_image'])) {
+            deleteFile($user->profile_image);
+            $user->profile_image = uploadFile($validatedData[''], 'uploads/usuarios');
+        }
+
+        // Guardar cambios en el usuario
+        $user->save();
+        Log::info('Perfil de usuario actualizado con la nueva imagen.', ['user_id' => $user->id, 'final_image' => $user->profile_image]);
+
+        return redirect()->route('admin.usuarios.profile')->with('success', 'Imagen de perfil actualizada correctamente');
+    }
+
+
+
 }
