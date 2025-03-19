@@ -87,7 +87,7 @@ class UserController extends Controller
                 'digits_between:5,10', // Reemplaza el rango manual con esta regla
                 Rule::unique('users', 'ci')->ignore($id),
             ],
-            'phone' => 'nullable|numeric|digits:8', // Asegura que siempre sean 8 dígitos exactos
+            'phone' => 'nullable|numeric|digits:8|unique:users,phone,' . ($id ? $id : 'NULL'), // Asegura que siempre sean 8 dígitos exactos
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
         Log::debug('Datos validados.', $validatedData);
@@ -173,7 +173,7 @@ class UserController extends Controller
                 'name' => 'required|string|min:3|max:255|unique:users,name,' . $id,
                 'last_name' => 'required|string|min:3|max:255',
                 'email' => 'required|email|unique:users,email,' . $id,
-                'phone' => 'nullable|numeric|min:10000000|max:99999999',
+                'phone' => 'nullable|numeric|digits:8|unique:users,phone,' . ($id ? $id : 'NULL'),
                 'address' => 'nullable|string|max:255',
                 'ci' => [
                     'required',
