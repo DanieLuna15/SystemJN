@@ -337,10 +337,9 @@ return [
                 ],
                 [
                     'text' => 'Importar datos',
-                    'url'  => 'admin/reportes/archivoDB',
+                    'url'  => 'admin/imports/archivoDB',
                     'icon' => 'fas fa-database',
                     'classes' => 'btn btn-outline-success btn-sm text-left',
-                    //'can'  => 'generar reportes',
                 ]
             ],
         ],

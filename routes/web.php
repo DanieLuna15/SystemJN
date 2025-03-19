@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ImportController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\MinisterioController;
@@ -71,7 +72,6 @@ Route::middleware('auth')->group(function () {
         Route::match(['get', 'post'], '/asistencia', 'asistencia')->name('asistencia');
         Route::match(['get', 'post'], '/fidelizacion', 'fidelizacion')->name('fidelizacion');
         Route::get('/exportar-reporte', 'exportarReporte')->name('exportar');
-        Route::match(['get', 'post'], '/archivoDB', 'archivoDB')->name('archivoDB');
     });
 
     // 📌 **Grupo de rutas para Usuarios**
@@ -85,5 +85,10 @@ Route::middleware('auth')->group(function () {
         Route::put('/{usuario}', 'update')->name('update'); // Ruta específica para update
         Route::put('/{usuario}/imagen', 'updateImage')->name('updateImage');
         Route::resource('/', UserController::class)->except(['store'])->parameters(['' => 'usuario']);
+    });
+
+    // 📌 **Grupo de rutas para Import**
+    Route::prefix('admin/imports')->name('admin.imports.')->controller(ImportController::class)->group(function () {
+        Route::match(['get', 'post'], '/archivoDB', 'archivoDB')->name('archivoDB');
     });
 });

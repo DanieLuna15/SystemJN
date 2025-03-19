@@ -15,7 +15,7 @@
 
         <div class="card-body">
             <!-- Formulario Dropzone -->
-            <form action="{{ route('admin.reportes.archivoDB') }}" method="POST"
+            <form action="{{ route('admin.imports.archivoDB') }}" method="POST"
                 class="dropzone rounded border p-3 bg-light" id="archivoDB-dropzone" enctype="multipart/form-data">
                 @csrf
             </form>
@@ -46,8 +46,10 @@
                                 </li>
                                 <li class="list-group-item">
                                     <strong>Usuario:</strong>
-                                    <span
-                                        class="text-success">{{ $ultimaImportacion->usuario->name ?? 'No disponible' }}</span>
+                                    <span class="text-success">
+                                        {{ $ultimaImportacion->usuario->name ?? 'No disponible' }}
+                                        {{ $ultimaImportacion->usuario->last_name ?? 'No disponible' }}
+                                    </span>
                                 </li>
                                 <li class="list-group-item">
                                     <strong>Estado:</strong>
@@ -88,7 +90,7 @@
     <script>
         Dropzone.options.archivoDBDropzone = {
             paramName: "archivo", // Nombre del archivo enviado al servidor
-            maxFilesize: 6, // Tamaño máximo permitido (en MB)
+            maxFilesize: 10, // Tamaño máximo permitido (en MB)
             acceptedFiles: ".db", // Solo se aceptan archivos .db
             dictDefaultMessage: "Arrastra tu archivo aquí o haz clic para seleccionar",
             autoProcessQueue: true, // Habilita la subida automática
@@ -97,13 +99,22 @@
             },
             init: function() {
                 this.on("success", function(file, response) {
+                    let mensaje = "¡Archivo importado con éxito!";
+
+                    if (response.nuevas_asistencias > 0) {
+                        mensaje =
+                            `Se registraron ${response.nuevas_asistencias} nuevas asistencias.`;
+                    } else {
+                        mensaje = "No se encontraron nuevas asistencias.";
+                    }
+
                     Swal.fire({
                         title: "¡Éxito!",
-                        text: "¡Archivo importado con éxito!",
+                        text: mensaje,
                         icon: "success",
                         confirmButtonText: "OK"
                     }).then(() => {
-                        location.reload(); // Recargar la página para mostrar la nueva importación
+                        location.reload(); 
                     });
                 });
 
