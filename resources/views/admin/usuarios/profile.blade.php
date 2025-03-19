@@ -109,7 +109,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
         <div class="col-md-9">
             <div class="card card-primary card-outline">
@@ -137,12 +136,12 @@
                                 <input type="hidden" name="form_type" value="secundario">
                                 <div class="row">
                                     @foreach ([
-            'name' => 'Nombre',
-            'last_name' => 'Apellido',
-            'ci' => 'CI',
-            'email' => 'Email',
-            'phone' => 'Teléfono',
-        ] as $field => $label)
+                                        'name' => 'Nombre',
+                                        'last_name' => 'Apellido',
+                                        'ci' => 'CI',
+                                        'email' => 'Email',
+                                        'phone' => 'Teléfono',
+                                    ] as $field => $label)
                                         <div class="col-md-6">
                                             <x-adminlte-input name="{{ $field }}" label="{{ $label }}:"
                                                 value="{{ old($field, $usuario->$field ?? 'No disponible') }}" />
@@ -171,10 +170,15 @@
                             <form action="{{ route('admin.usuarios.updateImage', $usuario->id) }}" method="POST"
                                 enctype="multipart/form-data">
                                 @csrf
-                                <x-image-upload label="Imagen de perfil" name="imagen" alt="Imagen de perfil del usuario"
-                                    :image="$usuario->profile_image ?? null" :id="'imagen_perfil'" />
+                                @method('PUT') <!-- Corregido: para que acepte el método PUT -->
+
+                                <x-image-upload label="Imagen de perfil" name="profile_image"
+                                    alt="Imagen de perfil del usuario" :image="$usuario->profile_image ?? null" :id="'imagen_perfil'" />
+                                <!-- Cambié a "profile_image" -->
+
                                 <input type="hidden" name="remove_imagen" id="removeImagenInput_imagen_perfil"
                                     value="0">
+
                                 <div class="d-flex justify-content-between mt-3">
                                     <x-adminlte-button class="btn w-100" type="submit" label="Guardar imagen"
                                         theme="success" icon="fas fa-lg fa-save" />
@@ -219,9 +223,12 @@
                                         </button>
                                     </div>
                                 </div>
+
+                                <button type="submit" class="btn btn-primary btn-block"
+                                    style="margin-top: 1cm;">Actualizar
+                                    Contraseña</button>
                             </form>
-                            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1cm;">Actualizar
-                                Contraseña</button>
+
                         </div>
                     </div>
                 </div>

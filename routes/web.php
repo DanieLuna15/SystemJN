@@ -83,7 +83,7 @@ Route::middleware('auth')->group(function () {
         Route::patch('/status/{id}', 'status')->name('status');
         Route::get('/{usuario}/info', 'info')->name('info');
         Route::put('/{usuario}', 'update')->name('update'); // Ruta específica para update
-        Route::post('/{usuario}','updateImage', 'updateImage')->name('updateImage');
+        Route::put('/{usuario}/imagen', 'updateImage')->name('updateImage');
         Route::resource('/', UserController::class)->except(['store'])->parameters(['' => 'usuario']);
     });
 });

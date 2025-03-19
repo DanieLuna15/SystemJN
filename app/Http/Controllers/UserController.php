@@ -190,7 +190,6 @@ class UserController extends Controller
         $usuario->save();
 
         return redirect()->route('admin.usuarios.profile', ['usuario' => $usuario->id])->with('success', 'Usuario actualizado correctamente.');
-
     }
 
     public function destroy(User $user)
@@ -228,32 +227,32 @@ class UserController extends Controller
         return view('admin.usuarios.profile', compact('pageTitle', 'usuario'));
     }
 
-    public function updateImage(Request $request,$id)
+    public function updateImage(Request $request, $id)
     {
-
-        // Validar que se haya enviado una imagen o que se quiera eliminar
         $request->validate([
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-        // 🔹 Obtener la configuración existente
+    
         $user = User::findOrFail($id);
-        if ($request->input('remove_imagen') == '1') {
+    
+        // Eliminar imagen manualmente si se solicita
+        if ($request->input('remove_imagen') == '1' && $user->profile_image) {
             deleteFile($user->profile_image);
             $user->profile_image = null;
         }
-         // 🔹 Subir nuevas imágenes si se adjuntaron
-         if (isset($validatedData['profile_image'])) {
-            deleteFile($user->profile_image);
-            $user->profile_image = uploadFile($validatedData[''], 'uploads/usuarios');
+    
+        // Subir nueva imagen si se adjunta
+        if ($request->hasFile('profile_image')) {
+            if ($user->profile_image) {
+                deleteFile($user->profile_image); // Eliminar la anterior si existe
+            }
+            $user->profile_image = uploadFile($request->file('profile_image'), 'uploads/usuarios');
         }
-
-        // Guardar cambios en el usuario
+    
         $user->save();
-        Log::info('Perfil de usuario actualizado con la nueva imagen.', ['user_id' => $user->id, 'final_image' => $user->profile_image]);
-
-        return redirect()->route('admin.usuarios.profile')->with('success', 'Imagen de perfil actualizada correctamente');
+    
+        return redirect()->route('admin.usuarios.profile')
+            ->with('success', 'Imagen de perfil actualizada correctamente');
     }
-
-
-
+    
 }
