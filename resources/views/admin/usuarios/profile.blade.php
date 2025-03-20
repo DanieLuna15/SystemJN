@@ -144,17 +144,14 @@
 
                                     <!-- Dirección al final -->
                                     <div class="col-md-12">
-                                        <x-adminlte-textarea name="address" label="Dirección:" rows=3>
-                                            {{ old('address', $usuario->address ?? 'No disponible') }}
-                                        </x-adminlte-textarea>
+                                        <x-adminlte-textarea name="address" label="Dirección:" rows=3
+                                            placeholder="Ingrese la dirección del usuario">{{ old('address', $usuario->address) }}</x-adminlte-textarea>
                                     </div>
                                 </div>
 
-
                                 <div class="d-flex justify-content-between mt-3">
-                                    <x-adminlte-button class="btn w-100" type="submit"
-                                        label="{{ isset($usuario->id) ? 'Guardar cambios' : 'Guardar' }}" theme="success"
-                                        icon="fas fa-lg fa-save" />
+                                    <x-adminlte-button class="btn w-100" type="submit" label="Guardar cambios"
+                                        theme="success" icon="fas fa-lg fa-save" />
                                 </div>
                             </form>
                         </div>
@@ -183,61 +180,48 @@
                             <form method="POST" action="{{ route('admin.usuarios.updatePassword', auth()->id()) }}">
                                 @csrf
                                 @method('PUT')
-
-                                <label for="password_actual">Contraseña Actual</label>
-                                <div class="input-group">
-                                    <input type="password" id="password_actual" name="password_actual"
-                                        class="form-control" placeholder="Ingrese contraseña actual" required>
-                                    <div class="input-group-append">
-                                        <button class="btn btn-primary" type="button"
-                                            onclick="togglePassword('password_actual', 'eyeIcon_actual')">
-                                            <i id="eyeIcon_actual" class="fa fa-eye"></i>
-                                        </button>
-                                    </div>
+                                <div class="col-md-12 col-lg-12">
+                                    <x-adminlte-input name="password_actual" label="Contraseña Actual:" type="password"
+                                        placeholder="Ingrese contraseña actual" required fgroup-class="input-group">
+                                        <x-slot name="appendSlot">
+                                            <button class="btn btn-primary" type="button"
+                                                onclick="togglePassword('password_actual', 'eyeIcon_actual')">
+                                                <i id="eyeIcon_actual" class="fa fa-eye"></i>
+                                            </button>
+                                        </x-slot>
+                                    </x-adminlte-input>
                                 </div>
-                                @error('password_actual')
-                                    <p style="color: red;">{{ $message }}</p>
-                                @enderror
-
-                                <label for="password">Nueva Contraseña</label>
-                                <div class="input-group">
-                                    <input type="password" id="password" name="password" class="form-control"
-                                        placeholder="Ingrese su nueva contraseña" required>
-                                    <div class="input-group-append">
-                                        <button class="btn btn-primary" type="button"
-                                            onclick="togglePassword('password', 'eyeIcon_new')">
-                                            <i id="eyeIcon_new" class="fa fa-eye"></i>
-                                        </button>
-                                    </div>
+                                <div class="col-md-12 col-lg-12">
+                                    <x-adminlte-input name="password" label="Nueva Contraseña:" type="password"
+                                        placeholder="Ingrese su nueva contraseña" required fgroup-class="input-group">
+                                        <x-slot name="appendSlot">
+                                            <button class="btn btn-primary" type="button"
+                                                onclick="togglePassword('password', 'eyeIcon_new')">
+                                                <i id="eyeIcon_new" class="fa fa-eye"></i>
+                                            </button>
+                                        </x-slot>
+                                    </x-adminlte-input>
                                 </div>
-                                @error('password')
-                                    <p style="color: red;">{{ $message }}</p>
-                                @enderror
-
-                                <label for="password_confirmation">Confirmar Nueva Contraseña</label>
-                                <div class="input-group">
-                                    <input type="password" id="password_confirmation" name="password_confirmation"
-                                        class="form-control" placeholder="Confirme su nueva contraseña" required>
-                                    <div class="input-group-append">
-                                        <button class="btn btn-primary" type="button"
-                                            onclick="togglePassword('password_confirmation', 'eyeIcon_confirmation')">
-                                            <i id="eyeIcon_confirmation" class="fa fa-eye"></i>
-                                        </button>
-                                    </div>
+                                <div class="col-md-12 col-lg-12">
+                                    <x-adminlte-input name="password_confirmation" label="Confirmar Nueva Contraseña:"
+                                        type="password" placeholder="Confirme su nueva contraseña" required
+                                        fgroup-class="input-group">
+                                        <x-slot name="appendSlot">
+                                            <button class="btn btn-primary" type="button"
+                                                onclick="togglePassword('password_confirmation', 'eyeIcon_confirmation')">
+                                                <i id="eyeIcon_confirmation" class="fa fa-eye"></i>
+                                            </button>
+                                        </x-slot>
+                                    </x-adminlte-input>
                                 </div>
-                                @error('password_confirmation')
-                                    <p style="color: red;">{{ $message }}</p>
-                                @enderror
 
-                                <button type="submit" class="btn btn-primary btn-block"
-                                    style="margin-top: 1cm;">Actualizar Contraseña</button>
+                                <div class="d-flex justify-content-between mt-3">
+                                    <x-adminlte-button class="btn w-100" type="submit" label="Actuaizar contraseña"
+                                        theme="success" icon="fas fa-lg fa-save" />
+                                </div>
                             </form>
-
-
                         </div>
-
                     </div>
-
                 </div>
             </div>
         </div>
