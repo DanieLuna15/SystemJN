@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\Status;
 use Carbon\Carbon;
 use App\Models\Horario;
+use App\Models\Ministerio;
 use Illuminate\Http\Request;
 use App\Exports\MultasExport;
 use Illuminate\Support\Facades\DB;
@@ -725,5 +727,25 @@ class ReporteController extends Controller
     {
         $pageTitle = 'Reporte de fidelización';
         return view('admin.reportes.fidelizacion', compact('pageTitle'));
+    }
+
+    public function obtenerHorariosPorMinisterio($ministerioId, $startDate, $endDate)
+    {
+
+        // Obtener los horarios activos según el filtro de tipo y rango de fechas
+        $horarios = Ministerio::findOrFail($ministerioId)
+            ->horarios()
+            ->where('estado', Status::ACTIVE) // Filtrar solo horarios activos
+            ->where(function ($query) use ($startDate, $endDate) {
+                $query->where('tipo', 1) // Todos los de tipo 1
+                    ->orWhere(function ($query) use ($startDate, $endDate) {
+                        $query->where('tipo', 0) // Solo los de tipo 0 dentro del rango de fechas
+                            ->whereBetween('fecha', [$startDate, $endDate]);
+                    });
+            })
+            ->orderByDesc('id') // Ordenar por ID descendente
+            ->get();
+
+        return $horarios;
     }
 }
