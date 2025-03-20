@@ -84,6 +84,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/{usuario}/info', 'info')->name('info');
         Route::put('/{usuario}', 'update')->name('update'); // Ruta específica para update
         Route::put('/{usuario}/imagen', 'updateImage')->name('updateImage');
+        Route::put('/{usuario}/password', 'updatePassword')->name('updatePassword');
         Route::resource('/', UserController::class)->except(['store'])->parameters(['' => 'usuario']);
     });
 

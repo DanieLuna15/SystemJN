@@ -11,6 +11,9 @@ use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+
 
 
 class UserController extends Controller
@@ -232,15 +235,15 @@ class UserController extends Controller
         $request->validate([
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-    
+
         $user = User::findOrFail($id);
-    
+
         // Eliminar imagen manualmente si se solicita
         if ($request->input('remove_imagen') == '1' && $user->profile_image) {
             deleteFile($user->profile_image);
             $user->profile_image = null;
         }
-    
+
         // Subir nueva imagen si se adjunta
         if ($request->hasFile('profile_image')) {
             if ($user->profile_image) {
@@ -248,11 +251,35 @@ class UserController extends Controller
             }
             $user->profile_image = uploadFile($request->file('profile_image'), 'uploads/usuarios');
         }
-    
+
         $user->save();
-    
+
         return redirect()->route('admin.usuarios.profile')
             ->with('success', 'Imagen de perfil actualizada correctamente');
     }
-    
+
+    public function updatePassword(Request $request, $usuario)
+{
+    $user = User::findOrFail($usuario);
+
+    $request->validate([
+        'password_actual' => ['required'],
+        'password' => ['required', 'string', 'min:8', 'confirmed'],
+    ]);
+
+    if (!Hash::check($request->password_actual, $user->password)) {
+        return back()->withErrors(['password_actual' => 'La contraseña actual no es correcta.']);
+    }
+
+    $user->update([
+        'password' => Hash::make($request->password),
+    ]);
+
+    return back()->with('success', 'Contraseña actualizada correctamente.');
+}
+
+
+
+
+
 }

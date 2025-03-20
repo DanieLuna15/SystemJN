@@ -1,21 +1,17 @@
 @extends('adminlte::page')
-
-
-
+@section('title', $pageTitle)
 
 @section('content')
     <div class="row">
         <div class="col-md-3">
-            <!-- Imagen y Datos del Usuario -->
             <div class="card card-primary card-outline">
-                <div class="card-body box-profile">
-                    <label for="profile_image_input" class="d-block text-center">
-                        <img id="profileImagePreview" class="profile-user-img img-fluid img-circle mx-auto d-block"
-                            src="{{ asset($usuario->profile_image ?? 'images/default-dark.png') }}"
-                            style="width: 150px; height: 150px; object-fit: cover; cursor: pointer;">
-                    </label>
-                    <input type="file" name="imagen" id="profile_image_input" style="display: none;" accept="image/*"
-                        onchange="document.getElementById('profileImagePreview').src = window.URL.createObjectURL(this.files[0])">
+                <div class="card-body box-profile text-center">
+                    <!-- Imagen de perfil -->
+                    <div class="text-center">
+                        <img class="profile-user-img img-fluid img-circle"
+                            src="{{ asset($usuario->profile_image ?? 'images/default-dark.png') }}" alt="Foto de perfil">
+                    </div>
+                    <!-- Datos del usuario -->
                     <ul class="list-group list-group-unbordered mb-3">
                         <!-- Nombre completo -->
                         <li class="list-group-item text-center">
@@ -80,14 +76,10 @@
                                     </span>
                                 @endif
                             </p>
-
                         </li>
-
-
                     </ul>
                 </div>
             </div>
-
             <!--SOBRE MI-->
 
             <div class="card card-primary mt-3">
@@ -129,6 +121,8 @@
                     <div class="tab-content">
                         <!-- Información General -->
                         <div class="tab-pane fade show active" id="general">
+
+                            <!-- Campo Datos Personales -->
                             <form action="{{ route('admin.usuarios.update', $usuario->id) }}" method="POST"
                                 enctype="multipart/form-data">
                                 @csrf
@@ -136,12 +130,12 @@
                                 <input type="hidden" name="form_type" value="secundario">
                                 <div class="row">
                                     @foreach ([
-                                        'name' => 'Nombre',
-                                        'last_name' => 'Apellido',
-                                        'ci' => 'CI',
-                                        'email' => 'Email',
-                                        'phone' => 'Teléfono',
-                                    ] as $field => $label)
+            'name' => 'Nombre',
+            'last_name' => 'Apellido',
+            'ci' => 'CI',
+            'email' => 'Email',
+            'phone' => 'Teléfono',
+        ] as $field => $label)
                                         <div class="col-md-6">
                                             <x-adminlte-input name="{{ $field }}" label="{{ $label }}:"
                                                 value="{{ old($field, $usuario->$field ?? 'No disponible') }}" />
@@ -164,7 +158,6 @@
                                 </div>
                             </form>
                         </div>
-
                         <!-- Foto de Perfil -->
                         <div class="tab-pane fade" id="perfil">
                             <form action="{{ route('admin.usuarios.updateImage', $usuario->id) }}" method="POST"
@@ -187,73 +180,86 @@
                         </div>
                         <!-- Seguridad y Privacidad -->
                         <div class="tab-pane fade" id="seguridad">
-                            <form>
+                            <form method="POST" action="{{ route('admin.usuarios.updatePassword', auth()->id()) }}">
+                                @csrf
+                                @method('PUT')
+
                                 <label for="password_actual">Contraseña Actual</label>
                                 <div class="input-group">
                                     <input type="password" id="password_actual" name="password_actual"
                                         class="form-control" placeholder="Ingrese contraseña actual" required>
                                     <div class="input-group-append">
-                                        <button class="btn btn-primary" type="button" id="toggleButton_actual"
+                                        <button class="btn btn-primary" type="button"
                                             onclick="togglePassword('password_actual', 'eyeIcon_actual')">
                                             <i id="eyeIcon_actual" class="fa fa-eye"></i>
                                         </button>
                                     </div>
                                 </div>
+                                @error('password_actual')
+                                    <p style="color: red;">{{ $message }}</p>
+                                @enderror
 
                                 <label for="password">Nueva Contraseña</label>
                                 <div class="input-group">
                                     <input type="password" id="password" name="password" class="form-control"
                                         placeholder="Ingrese su nueva contraseña" required>
                                     <div class="input-group-append">
-                                        <button class="btn btn-primary" type="button" id="toggleButton_new"
+                                        <button class="btn btn-primary" type="button"
                                             onclick="togglePassword('password', 'eyeIcon_new')">
                                             <i id="eyeIcon_new" class="fa fa-eye"></i>
                                         </button>
                                     </div>
                                 </div>
+                                @error('password')
+                                    <p style="color: red;">{{ $message }}</p>
+                                @enderror
 
                                 <label for="password_confirmation">Confirmar Nueva Contraseña</label>
                                 <div class="input-group">
                                     <input type="password" id="password_confirmation" name="password_confirmation"
-                                        class="form-control" placeholder="Ingrese contraseña actual" required>
+                                        class="form-control" placeholder="Confirme su nueva contraseña" required>
                                     <div class="input-group-append">
-                                        <button class="btn btn-primary" type="button" id="toggleButton_confirmation"
+                                        <button class="btn btn-primary" type="button"
                                             onclick="togglePassword('password_confirmation', 'eyeIcon_confirmation')">
                                             <i id="eyeIcon_confirmation" class="fa fa-eye"></i>
                                         </button>
                                     </div>
                                 </div>
+                                @error('password_confirmation')
+                                    <p style="color: red;">{{ $message }}</p>
+                                @enderror
 
                                 <button type="submit" class="btn btn-primary btn-block"
-                                    style="margin-top: 1cm;">Actualizar
-                                    Contraseña</button>
+                                    style="margin-top: 1cm;">Actualizar Contraseña</button>
                             </form>
 
+
                         </div>
+
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
+    </div>
 @stop
+@push('js')
+    <script>
+        function togglePassword(inputId, iconId) {
+            let passwordInput = document.getElementById(inputId);
+            let eyeIcon = document.getElementById(iconId);
+            let toggleButton = document.getElementById('toggleButton_' + inputId);
 
-@push('css')
-@endpush
-
-<script>
-    function togglePassword(inputId, iconId) {
-        let passwordInput = document.getElementById(inputId);
-        let eyeIcon = document.getElementById(iconId);
-        let toggleButton = document.getElementById('toggleButton_' + inputId);
-
-        if (passwordInput.type === "password") {
-            passwordInput.type = "text";
-            eyeIcon.classList.remove("fa-eye");
-            eyeIcon.classList.add("fa-eye-slash");
-        } else {
-            passwordInput.type = "password";
-            eyeIcon.classList.remove("fa-eye-slash");
-            eyeIcon.classList.add("fa-eye");
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
         }
-    }
-</script>
+    </script>
+@endpush
