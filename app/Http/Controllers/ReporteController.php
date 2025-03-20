@@ -264,6 +264,9 @@ class ReporteController extends Controller
         // Consulta a la tabla hr_employee en la conexión SQLite
         $ministerios = DB::connection('sqlite')->table('hr_department')->get();
 
+       
+        // $horarios = $this->obtenerHorariosPorMinisterio(1, $startDate, $endDate);
+        // dd($horarios->toArray());
 
         $act_eventuales = Horario::where('tipo', 0)
             ->whereBetween('fecha', [$startDate, $endDate])
@@ -395,6 +398,8 @@ class ReporteController extends Controller
             AND strftime('%w', punch_time) IN ('0', '4', '5')
             ORDER BY fecha ASC
         ", [$startDate, $endDate]);
+
+        //DD($datesResult);
 
         $dayNames = [
             '0' => 'Domingo',

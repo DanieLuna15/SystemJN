@@ -53,7 +53,7 @@ class LoginController extends Controller
             Auth::logout(); // Cierra la sesión si el usuario está inactivo
 
             return redirect()->route('login')->withErrors([
-                'estado' => 'Tu cuenta está inactiva. Por favor, contacta al Administrador.',
+                'estado' => 'Tu cuenta está inhabilitada. Por favor, contacta al Administrador.',
             ]);
         }
 
