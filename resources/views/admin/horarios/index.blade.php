@@ -36,7 +36,7 @@
 
                                         <!-- Día de la Semana centrado -->
                                         <td class="text-center align-middle">
-                                            @if ($horario->dia_semana == null)
+                                            @if ($horario->dia_semana == '')
                                                 <small class="badge bg-gradient-warning w-100 h-100">
                                                     Sin datos
                                                 </small>

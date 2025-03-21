@@ -87,7 +87,7 @@ class HorarioController extends Controller
             'hora_registro' => ['required', 'date_format:H:i:s'],
             'hora_multa' => 'required|date_format:H:i:s|after:hora_registro',
             'tipo' => 'required|integer|min:0|max:1',
-            'dia_semana' => $request->tipo == 1 ? 'required|integer|min:1|max:7' : 'nullable',
+            'dia_semana' => $request->tipo == 1 ? 'required|integer|min:0|max:6' : 'nullable',
             'fecha' => $request->tipo == 0 ? 'required|date|after_or_equal:today' : 'nullable',
         ];
 

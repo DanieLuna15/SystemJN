@@ -54,7 +54,7 @@
                     <label>Día de la Semana:</label>
                     <x-adminlte-select2 name="dia_semana" class="form-control">
                         <option value="" selected disabled>Seleccione un día</option>
-                        @foreach ([1 => 'Lunes', 2 => 'Martes', 3 => 'Miércoles', 4 => 'Jueves', 5 => 'Viernes', 6 => 'Sábado', 7 => 'Domingo'] as $key => $day)
+                        @foreach ([1 => 'Lunes', 2 => 'Martes', 3 => 'Miércoles', 4 => 'Jueves', 5 => 'Viernes', 6 => 'Sábado', 0 => 'Domingo'] as $key => $day)
                             <option value="{{ $key }}" {{ old('dia_semana', $horario->dia_semana ?? '') == $key ? 'selected' : '' }}>
                                 {{ $day }}
                             </option>

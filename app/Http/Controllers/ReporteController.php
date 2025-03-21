@@ -264,9 +264,9 @@ class ReporteController extends Controller
         // Consulta a la tabla hr_employee en la conexión SQLite
         $ministerios = DB::connection('sqlite')->table('hr_department')->get();
 
-       
-        // $horarios = $this->obtenerHorariosPorMinisterio(1, $startDate, $endDate);
-        // dd($horarios->toArray());
+
+        $horarios = $this->obtenerHorariosPorMinisterio2(1, $startDate, $endDate);
+        dd($horarios);
 
         $act_eventuales = Horario::where('tipo', 0)
             ->whereBetween('fecha', [$startDate, $endDate])
@@ -736,7 +736,6 @@ class ReporteController extends Controller
 
     public function obtenerHorariosPorMinisterio($ministerioId, $startDate, $endDate)
     {
-
         // Obtener los horarios activos según el filtro de tipo y rango de fechas
         $horarios = Ministerio::findOrFail($ministerioId)
             ->horarios()
@@ -753,4 +752,53 @@ class ReporteController extends Controller
 
         return $horarios;
     }
+
+
+
+
+    // public function obtenerHorariosPorMinisterio2($ministerioId, $startDate, $endDate)
+    // {
+    //     $start = Carbon::parse($startDate);
+    //     $end = Carbon::parse($endDate);
+    
+    //     // Obtener los horarios activos
+    //     $horarios = Ministerio::findOrFail($ministerioId)
+    //         ->horarios()
+    //         ->where('estado', Status::ACTIVE)
+    //         ->get();
+    
+    //     $resultados = collect(); // Colección vacía
+    
+    //     foreach ($horarios as $horario) {
+    //         $diaSemana = Carbon::parse($horario->fecha)->dayOfWeek; // Obtener el día de la semana
+    
+    //         if ($horario->tipo == 1) { // Si es "fijo"
+    //             $fechaActual = $start->copy();
+    //             while ($fechaActual <= $end) {
+    //                 if ($fechaActual->dayOfWeek == $diaSemana) {
+    //                     $resultados->push((object) [
+    //                         'fecha' => $fechaActual->toDateString(),
+    //                         'dia_semana' => $diaSemana,
+    //                         'tipo' => 'fijo'
+    //                     ]);
+    //                 }
+    //                 $fechaActual->addDay();
+    //             }
+    //         } else { // Si es "eventual"
+    //             if ($horario->fecha >= $startDate && $horario->fecha <= $endDate) {
+    //                 $resultados->push((object) [
+    //                     'fecha' => $horario->fecha,
+    //                     'dia_semana' => $diaSemana,
+    //                     'tipo' => 'eventual'
+    //                 ]);
+    //             }
+    //         }
+    //     }
+    
+    //     // Eliminar fechas duplicadas y ordenar
+    //     $resultados = $resultados->unique('fecha')->sortBy('fecha')->values();
+    
+    //     return $resultados;
+    // }
+    
 }

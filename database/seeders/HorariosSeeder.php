@@ -12,9 +12,9 @@ class HorariosSeeder extends Seeder
     {
         $horarios = collect([
             ['dia_semana' => 4, 'hora_registro' => '16:00:00', 'hora_multa' => '19:15:00', 'actividad_servicio_id' => 1],
-            ['dia_semana' => 7, 'hora_registro' => '07:00:00', 'hora_multa' => '07:45:00', 'actividad_servicio_id' => 2],
-            ['dia_semana' => 7, 'hora_registro' => '10:20:00', 'hora_multa' => '10:45:00', 'actividad_servicio_id' => 3],
-            ['dia_semana' => 7, 'hora_registro' => '15:00:00', 'hora_multa' => '15:45:00', 'actividad_servicio_id' => 4],
+            ['dia_semana' => 0, 'hora_registro' => '07:00:00', 'hora_multa' => '07:45:00', 'actividad_servicio_id' => 2],
+            ['dia_semana' => 0, 'hora_registro' => '10:20:00', 'hora_multa' => '10:45:00', 'actividad_servicio_id' => 3],
+            ['dia_semana' => 0, 'hora_registro' => '15:00:00', 'hora_multa' => '15:45:00', 'actividad_servicio_id' => 4],
             ['dia_semana' => 5, 'hora_registro' => '19:00:00', 'hora_multa' => '19:30:00', 'actividad_servicio_id' => 5],
             ['dia_semana' => 6, 'hora_registro' => '12:00:00', 'hora_multa' => '14:00:00', 'actividad_servicio_id' => 10],
             ['dia_semana' => 6, 'hora_registro' => '14:00:00', 'hora_multa' => '15:00:00', 'actividad_servicio_id' => 9],
