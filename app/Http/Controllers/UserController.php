@@ -28,6 +28,10 @@ class UserController extends Controller
         $this->middleware('can:ver perfil')->only(['profile']);
         $this->middleware('can:eliminar usuarios')->only(['destroy']);
         $this->middleware('can:cambiar estado usuarios')->only(['status']);
+        $this->middleware('can:editar perfil_informacion')->only(['update']);
+        $this->middleware('can:editar perfil_imagen')->only(['profile']);
+        $this->middleware('can:editar perfil_contraseña')->only(['updatePassword']);
+
     }
 
     public function index()
@@ -228,7 +232,7 @@ class UserController extends Controller
         $pageTitle = 'Mi perfil';
         $usuario = auth()->user();
         return view('admin.usuarios.profile', compact('pageTitle', 'usuario'));
-    }
+     }
 
     public function updateImage(Request $request, $id)
     {

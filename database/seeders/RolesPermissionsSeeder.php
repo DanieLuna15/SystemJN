@@ -22,6 +22,9 @@ class RolesPermissionsSeeder extends Seeder
                 'cambiar estado usuarios',
                 'eliminar usuarios',
                 'ver perfil',
+                'editar perfil_informacion',
+                'editar perfil_imagen',
+                'editar perfil_contraseña',
                 //------------------------
                 'crear ministerios',
                 'ver ministerios',
