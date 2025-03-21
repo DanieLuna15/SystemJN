@@ -760,18 +760,18 @@ class ReporteController extends Controller
     // {
     //     $start = Carbon::parse($startDate);
     //     $end = Carbon::parse($endDate);
-    
+
     //     // Obtener los horarios activos
     //     $horarios = Ministerio::findOrFail($ministerioId)
     //         ->horarios()
     //         ->where('estado', Status::ACTIVE)
     //         ->get();
-    
+
     //     $resultados = collect(); // Colección vacía
-    
+
     //     foreach ($horarios as $horario) {
     //         $diaSemana = Carbon::parse($horario->fecha)->dayOfWeek; // Obtener el día de la semana
-    
+
     //         if ($horario->tipo == 1) { // Si es "fijo"
     //             $fechaActual = $start->copy();
     //             while ($fechaActual <= $end) {
@@ -794,11 +794,72 @@ class ReporteController extends Controller
     //             }
     //         }
     //     }
-    
+
     //     // Eliminar fechas duplicadas y ordenar
     //     $resultados = $resultados->unique('fecha')->sortBy('fecha')->values();
-    
+
     //     return $resultados;
     // }
-    
+
+
+    public function obtenerHorariosPorMinisterio2($ministerioId, $startDate, $endDate)
+    {
+        // Mapear días de la semana (Domingo = 0, Lunes = 1, ..., Sábado = 6)
+        $dayMapping = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+        // Obtener horarios activos con actividadServicio en una sola consulta
+        $horarios = Ministerio::findOrFail($ministerioId)
+            ->horarios()
+            ->where('estado', Status::ACTIVE)
+            ->with('actividadServicio:id,nombre')
+            ->get();
+
+        $resultados = [];
+        $fechaActual = new \DateTime($startDate);
+        $fechaFin = new \DateTime($endDate);
+
+        // Recorrer todas las fechas en el rango
+        while ($fechaActual <= $fechaFin) {
+            $diaIndice = $fechaActual->format('w');
+            $fechaString = $fechaActual->format('Y-m-d');
+
+            // Filtrar horarios fijos para este día de la semana
+            $horariosFijos = $horarios->where('tipo', 1)->where('dia_semana', $diaIndice);
+
+            if ($horariosFijos->isNotEmpty()) {
+                $resultados[$fechaString] = (object)[
+                    'fecha' => $fechaString,
+                    'dia_semana' => $dayMapping[$diaIndice],
+                    'actividades' => $horariosFijos->map(fn($h) => (object)[
+                        'tipo' => 'fijo',
+                        'nombre_actividad' => $h->actividadServicio->nombre ?? null
+                    ])->values()->toArray()
+                ];
+            }
+
+            $fechaActual->modify('+1 day');
+        }
+
+        // Agregar horarios eventuales
+        $horariosEventuales = $horarios->where('tipo', 0)->whereNotNull('fecha');
+        foreach ($horariosEventuales as $horario) {
+            $fechaString = (new \DateTime($horario->fecha))->format('Y-m-d');
+            $diaIndice = (new \DateTime($horario->fecha))->format('w');
+
+            if (!isset($resultados[$fechaString])) {
+                $resultados[$fechaString] = (object)[
+                    'fecha' => $fechaString,
+                    'dia_semana' => $dayMapping[$diaIndice] ?? null,
+                    'actividades' => []
+                ];
+            }
+
+            $resultados[$fechaString]->actividades[] = (object)[
+                'tipo' => 'eventual',
+                'nombre_actividad' => $horario->actividadServicio->nombre ?? null
+            ];
+        }
+
+        return array_values($resultados);
+    }
 }

@@ -39,23 +39,6 @@
                     </div>
 
                     <div class="col-md-12 col-lg-12">
-                        <!-- Campo Multa por Retraso -->
-                        <x-adminlte-input name="multa_incremento" label="Sancion por Retraso (Bs):" type="number"
-                            step="0.01" value="{{ old('multa_incremento', $ministerio->multa_incremento ?? '') }}">
-                            <x-slot name="prependSlot">
-                                <div class="input-group-text">
-                                    <b>Bs.</b>
-                                </div>
-                            </x-slot>
-                            <x-slot name="bottomSlot">
-                                <span class="text-sm text-gray">
-                                    [Este es el monto de multa acumulativa.]
-                                </span>
-                            </x-slot>
-                        </x-adminlte-input>
-                    </div>
-
-                    <div class="col-md-12 col-lg-12">
                         <!-- Campo Líderes -->
                         <x-adminlte-select2 id="usuariosSelect" name="user_id[]" label="Líderes"
                             :config="array_merge($select2Config, ['placeholder' => 'Seleccione uno o varios líderes...'])" multiple>

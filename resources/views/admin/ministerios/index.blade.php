@@ -16,7 +16,6 @@
                                 <tr>
                                     <th class="no-export">Imagen</th>
                                     <th>Nombre</th>
-                                    <th>Monto Sancion (Bs)</th>
                                     <th>Estado</th>
                                     <th>Categoría</th>
                                     <th>Líderes</th>
@@ -40,10 +39,6 @@
                                         <td class="align-middle text-truncate" style="max-width: 100px;">
                                             {{ __(strLimit($ministerio->nombre, 30)) }}
                                         </td>
-
-                                        <!-- Monto sanción centrado -->
-                                        <td class="align-middle">{{ $ministerio->multa_incremento }} Bs.</td>
-
                                         <!-- Estado centrado -->
                                         <td class="align-middle">
                                             <div class="d-flex justify-content-center">

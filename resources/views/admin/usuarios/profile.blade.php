@@ -80,7 +80,6 @@
                     </ul>
                 </div>
             </div>
-            <!--SOBRE MI-->
 
             <div class="card card-primary mt-3">
                 <div class="card-header">
@@ -89,11 +88,11 @@
                 <div class="card-body">
                     <div>
                         @foreach ([
-            'phone' => ['icon' => 'fas fa-phone', 'label' => 'Teléfono'],
-            'address' => ['icon' => 'fas fa-map-marker-alt mr-1', 'label' => 'Dirección'],
-            'email' => ['icon' => 'fas fa-pencil-alt mr-1', 'label' => 'Email'],
-            'ci' => ['icon' => 'far fa-file-alt mr-1', 'label' => 'Carnet de Identidad'],
-        ] as $field => $data)
+                            'phone' => ['icon' => 'fas fa-phone', 'label' => 'Teléfono'],
+                            'address' => ['icon' => 'fas fa-map-marker-alt mr-1', 'label' => 'Dirección'],
+                            'email' => ['icon' => 'fas fa-pencil-alt mr-1', 'label' => 'Email'],
+                            'ci' => ['icon' => 'far fa-file-alt mr-1', 'label' => 'Carnet de Identidad'],
+                        ] as $field => $data)
                             <strong><i class="{{ $data['icon'] }}"></i> {{ $data['label'] }}</strong>
                             <p class="text-muted">{{ $usuario->$field ?? 'No disponible' }}</p>
                             <hr>
@@ -101,81 +100,74 @@
                     </div>
                 </div>
             </div>
+            
         </div>
         <div class="col-md-9">
             <div class="card card-primary card-outline">
                 <div class="card-header p-2">
                     <ul class="nav nav-pills">
-
                         <li class="nav-item">
                             <a class="nav-link active" href="#general" data-toggle="tab">Información General</a>
                         </li>
-
                         <li class="nav-item">
                             <a class="nav-link" href="#perfil" data-toggle="tab">Foto de Perfil</a>
                         </li>
-
                         <li class="nav-item">
                             <a class="nav-link" href="#seguridad" data-toggle="tab">Seguridad y Privacidad</a>
                         </li>
-
-
                     </ul>
                 </div>
                 <div class="card-body">
                     <div class="tab-content">
-                        <!-- Información General -->
                         <div class="tab-pane fade show active" id="general">
-
-                            <!-- Campo Datos Personales -->
                             <form action="{{ route('admin.usuarios.update', $usuario->id) }}" method="POST"
                                 enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
                                 <input type="hidden" name="form_type" value="secundario">
+
                                 <div class="row">
                                     @foreach ([
-            'name' => 'Nombre',
-            'last_name' => 'Apellido',
-            'ci' => 'CI',
-            'email' => 'Email',
-            'phone' => 'Teléfono',
-        ] as $field => $label)
+                                        'name' => 'Nombre',
+                                        'last_name' => 'Apellido',
+                                        'ci' => 'CI',
+                                        'email' => 'Email',
+                                        'phone' => 'Teléfono',
+                                    ] as $field => $label)
                                         <div class="col-md-6">
                                             <x-adminlte-input name="{{ $field }}" label="{{ $label }}:"
-                                                value="{{ old($field, $usuario->$field ?? '') }}" />
+                                                value="{{ old($field, $usuario->$field) }}"
+                                                placeholder="Ingrese su {{ strtolower($label) }}" />
                                         </div>
                                     @endforeach
 
-
-                                    <!-- Dirección al final -->
                                     <div class="col-md-12">
-                                        <x-adminlte-textarea name="address" label="Dirección:" rows=3
-                                            placeholder="Ingrese la dirección del usuario">{{ old('address', $usuario->address) }}</x-adminlte-textarea>
+                                        <x-adminlte-textarea name="address" label="Dirección:" rows="3"
+                                            placeholder="Ingrese su dirección">{{ old('address', $usuario->address) }}</x-adminlte-textarea>
                                     </div>
                                 </div>
+
                                 @can('editar perfil_informacion')
                                     <div class="d-flex justify-content-between mt-3">
                                         <x-adminlte-button class="btn w-100" type="submit" label="Guardar cambios"
-                                            theme="success" icon="fas fa-lg fa-save" />
+                                            theme="success" icon="fas fa-lg fa-save" block />
                                     </div>
                                 @endcan
                             </form>
                         </div>
+
                         <!-- Foto de Perfil -->
                         <div class="tab-pane fade" id="perfil">
                             <form action="{{ route('admin.usuarios.updateImage', $usuario->id) }}" method="POST"
                                 enctype="multipart/form-data">
                                 @csrf
-                                @method('PUT') <!-- Corregido: para que acepte el método PUT -->
+                                @method('PUT')
 
                                 <x-image-upload label="Imagen de perfil" name="profile_image"
                                     alt="Imagen de perfil del usuario" :image="$usuario->profile_image ?? null" :id="'imagen_perfil'" />
-                                <!-- Cambié a "profile_image" -->
-                                @can('editar perfil_imagen')
-                                    <input type="hidden" name="remove_imagen" id="removeImagenInput_imagen_perfil"
-                                        value="0">
-                                @endcan
+
+                                <input type="hidden" name="remove_imagen" id="removeImagenInput_imagen_perfil"
+                                    value="0">
                                 @can('editar perfil_imagen')
                                     <div class="d-flex justify-content-between mt-3">
                                         <x-adminlte-button class="btn w-100" type="submit" label="Guardar imagen"
@@ -191,45 +183,39 @@
                                 @method('PUT')
                                 <div class="col-md-12 col-lg-12">
                                     <x-adminlte-input name="password_actual" label="Contraseña Actual:" type="password"
-                                        placeholder="Ingrese contraseña actual" required fgroup-class="input-group">
+                                        placeholder="Ingrese su contraseña actual" required fgroup-class="input-group">
                                         <x-slot name="appendSlot">
-                                            @can('editar perfil_contraseña')
-                                                <button class="btn btn-primary" type="button"
-                                                    onclick="togglePassword('password_actual', 'eyeIcon_actual')">
-                                                    <i id="eyeIcon_actual" class="fa fa-eye"></i>
-                                                </button>
-                                            @endcan
+                                            <button class="btn btn-primary" type="button"
+                                                onclick="togglePassword('password_actual', 'eyeIcon_actual')">
+                                                <i id="eyeIcon_actual" class="fa fa-eye"></i>
+                                            </button>
                                         </x-slot>
                                     </x-adminlte-input>
 
                                 </div>
                                 <div class="col-md-12 col-lg-12">
-                                    @can('editar perfil_contraseña')
-                                        <x-adminlte-input name="password" label="Nueva Contraseña:" type="password"
-                                            placeholder="Ingrese su nueva contraseña" required fgroup-class="input-group">
-                                            <x-slot name="appendSlot">
-                                                <button class="btn btn-primary" type="button"
-                                                    onclick="togglePassword('password', 'eyeIcon_new')">
-                                                    <i id="eyeIcon_new" class="fa fa-eye"></i>
-                                                </button>
-                                            </x-slot>
-                                        </x-adminlte-input>
-                                    @endcan
+                                    <x-adminlte-input name="password" label="Nueva Contraseña:" type="password"
+                                        placeholder="Ingrese su nueva contraseña" required fgroup-class="input-group">
+                                        <x-slot name="appendSlot">
+                                            <button class="btn btn-primary" type="button"
+                                                onclick="togglePassword('password', 'eyeIcon_new')">
+                                                <i id="eyeIcon_new" class="fa fa-eye"></i>
+                                            </button>
+                                        </x-slot>
+                                    </x-adminlte-input>
                                 </div>
                                 <div class="col-md-12 col-lg-12">
-                                    @can('editar perfil_contraseña')
-                                        <x-adminlte-input name="password_confirmation" label="Confirmar Nueva Contraseña:"
-                                            type="password" placeholder="Confirme su nueva contraseña" required
-                                            fgroup-class="input-group">
-                                            <x-slot name="appendSlot">
+                                    <x-adminlte-input name="password_confirmation" label="Confirmar Nueva Contraseña:"
+                                        type="password" placeholder="Confirme su nueva contraseña" required
+                                        fgroup-class="input-group">
+                                        <x-slot name="appendSlot">
 
-                                                <button class="btn btn-primary" type="button"
-                                                    onclick="togglePassword('password_confirmation', 'eyeIcon_confirmation')">
-                                                    <i id="eyeIcon_confirmation" class="fa fa-eye"></i>
-                                                </button>
-                                            </x-slot>
-                                        </x-adminlte-input>
-                                    @endcan
+                                            <button class="btn btn-primary" type="button"
+                                                onclick="togglePassword('password_confirmation', 'eyeIcon_confirmation')">
+                                                <i id="eyeIcon_confirmation" class="fa fa-eye"></i>
+                                            </button>
+                                        </x-slot>
+                                    </x-adminlte-input>
                                 </div>
                                 @can('editar perfil_contraseña')
                                     <div class="d-flex justify-content-between mt-3">
