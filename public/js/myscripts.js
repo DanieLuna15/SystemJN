@@ -14,4 +14,34 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+
+
+    // Función toggle para mostrar/ocultar la contraseña
+    function togglePassword(inputId, iconElement) {
+        let passwordInput = document.getElementById(inputId);
+        let eyeIcon = iconElement;
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            eyeIcon.classList.remove("fa-eye");
+            eyeIcon.classList.add("fa-eye-slash");
+        } else {
+            passwordInput.type = "password";
+            eyeIcon.classList.remove("fa-eye-slash");
+            eyeIcon.classList.add("fa-eye");
+        }
+    }
+
+    // Para los botones con data-toggle="password"
+    document.querySelectorAll("[data-toggle='password']").forEach(function (element) {
+        element.addEventListener("click", function () {
+            togglePassword(this.dataset.target, this.querySelector("span"));
+        });
+    });
+
+    // Para la función global que usa iconos específicos
+    window.togglePassword = function (inputId, iconId) {
+        togglePassword(inputId, document.getElementById(iconId));
+    };
 });

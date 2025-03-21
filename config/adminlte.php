@@ -299,6 +299,7 @@ return [
     */
 
     'menu' => [
+
         ['header' => 'ADMINISTRACIÓN'],
 
         [

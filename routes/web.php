@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\MinisterioController;
@@ -86,6 +87,14 @@ Route::middleware('auth')->group(function () {
         Route::put('/{usuario}/image', 'updateImage')->name('updateImage');
         Route::put('/{usuario}/password', 'updatePassword')->name('updatePassword');
         Route::resource('/', UserController::class)->except(['store'])->parameters(['' => 'usuario']);
+    });
+
+    // 📌 **Grupo de rutas para Perfil**
+    Route::prefix('admin/perfil')->name('admin.perfil.')->controller(PerfilController::class)->group(function () {
+        Route::put('/{usuario}', 'update')->name('update');
+        Route::put('/{usuario}/image', 'updateImage')->name('updateImage');
+        Route::put('/{usuario}/password', 'updatePassword')->name('updatePassword');
+        Route::resource('/', PerfilController::class)->except(['store'])->parameters(['' => 'usuario']);
     });
 
     // 📌 **Grupo de rutas para Import**
