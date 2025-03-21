@@ -13,20 +13,16 @@ class Horario extends Model
     use HasFactory, GlobalStatus;
 
     protected $table = 'horarios';
-    protected $fillable = ['ministerio_id','actividad_servicio_id', 'dia_semana', 'hora_registro', 'hora_multa', 'estado', 'tipo', 'fecha'];
+    protected $fillable = ['ministerio_id','actividad_servicio_id', 'dia_semana', 'hora_registro', 'hora_multa', 'hora_limite', 'estado', 'tipo', 'fecha'];
     protected $primaryKey = 'id';
     public $timestamps = true;
 
     protected $casts = [
         'hora_registro' => 'string',
         'hora_multa' => 'string',
+        'hora_limite' => 'string',
     ];
 
-    // Relación con Ministerio
-    // public function ministerio()
-    // {
-    //     return $this->belongsTo(Ministerio::class, 'ministerio_id', 'id');
-    // }
     public function ministerios()
     {
         return $this->belongsToMany(Ministerio::class, 'horario_ministerio')->withTimestamps();

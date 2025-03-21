@@ -19,6 +19,7 @@
                                     <th style="text-align: center">Actividad o Servicio</th>
                                     <th style="text-align: center">Hora de Inicio</th>
                                     <th style="text-align: center">Hora Multa</th>
+                                    <th style="text-align: center">Hora Límite</th>
                                     <th style="text-align: center">Tipo</th>
                                     <th style="text-align: center">Estado</th>
                                     <th class="no-export" style="text-align: center">Acciones</th>
@@ -66,6 +67,10 @@
 
                                         <!-- Hora Multa centrada -->
                                         <td class="text-center">{{ $horario->hora_multa }}</td>
+
+                                        <!-- Hora Limite centrada -->
+                                        <td class="text-center">{{ $horario->hora_limite }}</td>
+
 
                                         <!-- Tipo centrado -->
                                         <td class="text-center align-middle">

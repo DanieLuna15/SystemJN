@@ -71,7 +71,8 @@ class HorarioController extends Controller
         // 📌 Asegurar que el formato sea correcto antes de validar
         $request->merge([
             'hora_registro' => !empty($request->hora_registro) ? date('H:i:s', strtotime($request->hora_registro)) : null,
-            'hora_multa' => !empty($request->hora_multa) ? date('H:i:s', strtotime($request->hora_multa)) : null
+            'hora_multa' => !empty($request->hora_multa) ? date('H:i:s', strtotime($request->hora_multa)) : null,
+            'hora_limite' => !empty($request->hora_limite) ? date('H:i:s', strtotime($request->hora_limite)) : null, // Agregar hora_limite
         ]);
 
         if ($request->tipo == 1) { // Si es tipo fijo
@@ -86,6 +87,7 @@ class HorarioController extends Controller
             'actividad_servicio_id' => 'required|exists:actividad_servicios,id',
             'hora_registro' => ['required', 'date_format:H:i:s'],
             'hora_multa' => 'required|date_format:H:i:s|after:hora_registro',
+            'hora_limite' => 'required|date_format:H:i:s|after:hora_multa', // Validación para hora_limite
             'tipo' => 'required|integer|min:0|max:1',
             'dia_semana' => $request->tipo == 1 ? 'required|integer|min:0|max:6' : 'nullable',
             'fecha' => $request->tipo == 0 ? 'required|date|after_or_equal:today' : 'nullable',

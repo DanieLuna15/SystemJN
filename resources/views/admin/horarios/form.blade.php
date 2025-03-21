@@ -75,7 +75,7 @@
                 </x-adminlte-input>
             </div>
 
-            <div class="col-md-6 col-lg-6">
+            <div class="col-md-4 col-lg-4">
                 <x-adminlte-input type="time" name="hora_registro" label="Hora de Registro:"
                     value="{{ old('hora_registro', $horario->hora_registro ?? '') }}" step="1">
                     <x-slot name="prependSlot">
@@ -92,7 +92,7 @@
                 </x-adminlte-input>
             </div>
 
-            <div class="col-md-6 col-lg-6">
+            <div class="col-md-4 col-lg-4">
                 <x-adminlte-input type="time" name="hora_multa" label="Hora de Multa:"
                     value="{{ old('hora_multa', $horario->hora_multa ?? '') }}" step="1">
                     <x-slot name="prependSlot">
@@ -107,6 +107,23 @@
                     </x-slot>
                 </x-adminlte-input>
             </div>
+
+            <div class="col-md-4 col-lg-4">
+                <x-adminlte-input type="time" name="hora_limite" label="Hora Límite:"
+                    value="{{ old('hora_limite', $horario->hora_limite ?? '') }}" step="1">
+                    <x-slot name="prependSlot">
+                        <div class="input-group-text">
+                            <i class="far fa-clock"></i>
+                        </div>
+                    </x-slot>
+                    <x-slot name="bottomSlot">
+                        <span class="text-sm text-gray">
+                            [La hora límite para marcar la asistencia. (Formato:24hrs.)]
+                        </span>
+                    </x-slot>
+                </x-adminlte-input>
+            </div>
+            
         </div>
 
         <!-- Botones de Acción -->
