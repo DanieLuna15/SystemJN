@@ -18,6 +18,12 @@ class Ministerio extends Model
     protected $primaryKey = 'id';
     public $timestamps = true;
 
+
+    public function reglasMultas()
+    {
+        return $this->belongsToMany(ReglaMulta::class, 'regla_multa_ministerio', 'ministerio_id', 'regla_multa_id');
+    }
+
     public function horarios()
     {
         return $this->belongsToMany(Horario::class, 'horario_ministerio')->withTimestamps();
