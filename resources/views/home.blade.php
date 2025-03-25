@@ -201,12 +201,16 @@
         });
     </script>
 
-    <script>
-        Swal.fire({
-            title: "¡Éxito!",
-            text: "Bienvenido!",
-            icon: "success",
-            confirmButtonText: "OK"
-        })
-    </script>
+
+    @if(session()->has('welcome_message'))
+        <script>
+            Swal.fire({
+                title: "¡Bienvenido!",
+                text: "Bienvenido,{{ Auth::user()->name }}  {{ Auth::user()->last_name }}!",
+                icon: "success",
+                confirmButtonText: "OK"
+            });
+        </script>
+        {{ session()->forget('welcome_message') }}
+    @endif
 @endsection

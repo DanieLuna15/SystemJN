@@ -87,19 +87,43 @@ class PerfilController extends Controller
     {
         $user = User::findOrFail($usuario);
 
+        // Definición de mensajes personalizados
+        $messages = [
+            'password_actual.required' => 'El campo de contraseña actual es obligatorio.',
+            'password.required'       => 'El campo de nueva contraseña es obligatorio.',
+            'password.string'         => 'La nueva contraseña debe ser una cadena de texto.',
+            'password.min'            => 'La nueva contraseña debe tener al menos 8 caracteres.',
+            'password.confirmed'      => 'La confirmación de la nueva contraseña no coincide.',
+            // Un solo mensaje para todas las reglas regex; si deseas mensajes distintos para cada regex, tendrás que usar validaciones personalizadas.
+            'password.regex'          => 'La nueva contraseña debe contener al menos una letra minúscula, una mayúscula, un número y un carácter especial.',
+        ];
+
+        // Validación del request
         $request->validate([
             'password_actual' => ['required'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+            'password' => [
+                'required',
+                'string',
+                'min:8', // Mínimo 8 caracteres
+                'confirmed', // Debe coincidir con password_confirmation
+                'regex:/[a-z]/', // Al menos una letra minúscula
+                'regex:/[A-Z]/', // Al menos una letra mayúscula
+                'regex:/[0-9]/', // Al menos un número
+                'regex:/[@$!%*?&]/' // Al menos un carácter especial
+            ],
+        ], $messages);
 
+        // Verificar que la contraseña actual ingresada coincide
         if (!Hash::check($request->password_actual, $user->password)) {
             return back()->withErrors(['password_actual' => 'La contraseña actual no es correcta.']);
         }
 
+        // Actualización de la contraseña
         $user->update([
             'password' => Hash::make($request->password),
         ]);
 
         return back()->with('success', 'Contraseña actualizada correctamente.');
     }
+
 }

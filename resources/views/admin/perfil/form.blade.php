@@ -1,4 +1,4 @@
-<form action="{{ route('admin.perfil.update', $usuario->id) }}" method="POST"
+ <form action="{{ route('admin.perfil.update', $usuario->id) }}" method="POST"
     enctype="multipart/form-data">
     @csrf
     @method('PUT')

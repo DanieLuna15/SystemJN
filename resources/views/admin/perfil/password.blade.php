@@ -39,7 +39,7 @@
     </div>
     @can('editar perfil_contraseña')
         <div class="d-flex justify-content-between mt-3">
-            <x-adminlte-button class="btn w-100" type="submit" label="Actuaizar contraseña"
+            <x-adminlte-button class="btn w-100" type="submit" label="Actualizar contraseña"
                 theme="success" icon="fas fa-lg fa-save" />
         </div>
     @endcan

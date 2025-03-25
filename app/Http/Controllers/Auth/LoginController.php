@@ -47,6 +47,7 @@ class LoginController extends Controller
      * @param  mixed  $user
      * @return \Illuminate\Http\RedirectResponse
      */
+
     protected function authenticated(Request $request, $user)
     {
         if ($user->estado != Status::ACTIVE) {
@@ -56,8 +57,9 @@ class LoginController extends Controller
                 'estado' => 'Tu cuenta está inhabilitada. Por favor, contacta al Administrador.',
             ]);
         }
-
+session()->put('welcome_message', true);
         // Si el usuario está activo, continúa con el flujo normal
+        session()->put('welcome_message', true); // Agrega la variable de sesión aquí
         return redirect()->intended($this->redirectTo);
     }
 }
