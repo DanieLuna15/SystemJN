@@ -63,8 +63,8 @@
                                         <td class="align-middle text-truncate">
                                             @if ($ministerio->lideres->isNotEmpty())
                                                 @foreach ($ministerio->lideres as $lider)
-                                                    [<span class="badge badge-info">{{ __(strLimit($lider->name, 5)) }}
-                                                        {{ __(strLimit($lider->last_name, 5)) }}</span>]
+                                                    [<span class="badge badge-info">{{ __(strLimit($lider->name, 10)) }}
+                                                        {{ __(strLimit($lider->last_name, 10)) }}</span>]
                                                 @endforeach
                                             @else
                                                 <span class="text-muted">Sin líderes asignados</span>

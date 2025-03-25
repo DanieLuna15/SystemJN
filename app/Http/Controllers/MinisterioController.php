@@ -51,80 +51,126 @@ class MinisterioController extends Controller
     public function create()
     {
         $pageTitle = 'Nuevo Ministerio';
-        // Obtener usuarios que no están asociados a ningún ministerio
-        $lideres = User::whereDoesntHave('ministeriosLiderados')->get();
+        $lideres = User::role('Líder') // Filtra solo usuarios con el rol de "Líder"
+            ->whereDoesntHave('ministeriosLiderados') // Aquellos que no tienen ministerios liderados
+            ->get();
+
         return view('admin.ministerios.create', compact('pageTitle', 'lideres'));
     }
 
     public function edit(Ministerio $ministerio)
     {
         $pageTitle = 'Edición de Ministerio: ' . $ministerio->nombre;
-        // Recuperar usuarios ó (Líderes) que no están asociados a ningún ministerio
-        // o que están asociados al ministerio actual
-        $lideres = User::whereDoesntHave('ministeriosLiderados')
+        $lideres = User::role('Líder') // Filtrar usuarios con el rol de "Líder"
+            ->whereDoesntHave('ministeriosLiderados') // Que no lideren ningún ministerio
             ->orWhereHas('ministeriosLiderados', function ($query) use ($ministerio) {
-                $query->where('ministerios.id', $ministerio->id);
-            })->get();
+                $query->where('ministerios.id', $ministerio->id); // Que lideren el ministerio actual
+            })
+            ->get();
+
         return view('admin.ministerios.edit', compact('ministerio', 'pageTitle', 'lideres'));
     }
 
     public function store(Request $request, $id = null)
     {
-        // Validación de datos
-        $request->validate([
-            'user_id' => 'required|array',
-            'user_id.*' => 'exists:users,id',
+        // Validar los datos de entrada
+        $rules = [
+            'user_id' => 'required|array', // Requerido como un array
+            'user_id.*' => [
+                'exists:users,id', // Validar que los usuarios existan en la tabla `users`
+                function ($attribute, $value, $fail) use ($id) {
+                    // Validar que los usuarios tengan el rol "Líder"
+                    if ($id) {
+                        // Si es edición, validar según los líderes asociados al ministerio actual o libres
+                        $ministerio = Ministerio::findOrFail($id);
+                        $lideresPermitidos = User::role('Líder')
+                            ->whereDoesntHave('ministeriosLiderados')
+                            ->orWhereHas('ministeriosLiderados', function ($query) use ($ministerio) {
+                                $query->where('ministerios.id', $ministerio->id);
+                            })
+                            ->pluck('id')
+                            ->toArray();
+    
+                        if (!in_array($value, $lideresPermitidos)) {
+                            $fail("El usuario seleccionado ($value) no está permitido como líder en este ministerio.");
+                        }
+                    } else {
+                        // Validar solo líderes no asociados a ministerios en la creación
+                        $liderLibre = User::role('Líder')
+                            ->whereDoesntHave('ministeriosLiderados')
+                            ->where('id', $value)
+                            ->exists();
+    
+                        if (!$liderLibre) {
+                            $fail("El usuario seleccionado ($value) ya está liderando otro ministerio.");
+                        }
+                    }
+                }
+            ],
             'nombre' => 'required|string|min:3|max:255|unique:ministerios,nombre,' . ($id ? $id : 'NULL') . '|regex:/^[\p{L}\s]+$/u',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'tipo' => 'required|integer|min:0|max:1',
-        ]);
+        ];
 
-        // Recoger los datos
+        $messages = [
+            'user_id.required' => 'Debe seleccionar al menos un Líder.',
+            'user_id.*.exists' => 'Uno o más Líderes seleccionados no son válidos.',
+        ];
+    
+        // Validar los datos
+        $validatedData = $request->validate($rules, $messages);
+    
+        // Recoger los datos excluyendo `_token` y `remove_logo`
         $data = $request->except('_token', 'remove_logo');
+    
         try {
             if ($id) {
                 // 📌 Si se trata de una edición, buscar el ministerio y actualizarlo
                 $ministerio = Ministerio::findOrFail($id);
-
+    
                 // Sincronizar los líderes seleccionados
                 $ministerio->lideres()->sync($request->user_id);
-
+    
                 // Eliminar logo si el usuario lo desea
                 if ($request->input('remove_logo') == '1') {
-                    deleteFile($ministerio->logo);  // Eliminar el logo anterior
+                    deleteFile($ministerio->logo); // Eliminar el logo anterior
                     $data['logo'] = null;
                 }
-
+    
                 // Subir el nuevo logo si se ha proporcionado uno
                 if ($request->hasFile('logo')) {
-                    deleteFile($ministerio->logo);  // Eliminar el logo anterior
+                    deleteFile($ministerio->logo); // Eliminar el logo anterior
                     $data['logo'] = uploadFile($request->file('logo'), 'uploads/ministerios');
                 }
-
+    
                 // Actualizar los datos del ministerio
                 $ministerio->update($data);
-
+    
                 $message = 'Ministerio actualizado correctamente.';
             } else {
                 // Crear el ministerio
                 $ministerio = Ministerio::create($data);
-
-                // Sincronizar los líderes seleccionados
+    
+                // Asociar los líderes seleccionados
                 $ministerio->lideres()->attach($request->user_id);
-
+    
                 // Subir el nuevo logo si se ha proporcionado uno
                 if ($request->hasFile('logo')) {
                     $data['logo'] = uploadFile($request->file('logo'), 'uploads/ministerios');
                     $ministerio->update(['logo' => $data['logo']]);
                 }
-
+    
                 $message = 'Ministerio creado correctamente.';
             }
+    
+            // Redirigir con mensaje de éxito
             return redirect()->route('admin.ministerios.index')->with('success', $message);
         } catch (\Exception $e) {
-            return redirect()->route('admin.ministerios.index')->with('error', 'Hubo un error en la operación.');
+            // Capturar errores y redirigir con mensaje de error
+            return redirect()->route('admin.ministerios.index')->with('error', 'Hubo un error en la operación: ' . $e->getMessage());
         }
     }
+    
 
     public function status($id)
     {

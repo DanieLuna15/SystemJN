@@ -44,7 +44,7 @@
                             :config="array_merge($select2Config, ['placeholder' => 'Seleccione uno o varios líderes...'])" multiple>
                             @foreach ($lideres as $lider)
                                 <option value="{{ $lider->id }}" {{ in_array($lider->id, old('user_id', $ministerio->lideres->pluck('id')->toArray() ?? [])) ? 'selected' : '' }}>
-                                    {{ $lider->name }}
+                                    {{ $lider->name }} {{ $lider->last_name }}
                                 </option>
                             @endforeach
                         </x-adminlte-select2>
