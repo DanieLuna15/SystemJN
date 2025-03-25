@@ -7,6 +7,7 @@ use App\Http\Controllers\ImportController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\ReglaMultaController;
 use App\Http\Controllers\MinisterioController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\ActividadServicioController;
@@ -73,6 +74,15 @@ Route::middleware('auth')->group(function () {
         Route::match(['get', 'post'], '/asistencia', 'asistencia')->name('asistencia');
         Route::match(['get', 'post'], '/fidelizacion', 'fidelizacion')->name('fidelizacion');
         Route::get('/exportar-reporte', 'exportarReporte')->name('exportar');
+    });
+
+    // 📌 **Grupo de rutas para Reglas Multas**
+    Route::prefix('admin/reglas_multas')->name('admin.reglas_multas.')->controller(ReglaMultaController::class)->group(function () {
+        Route::get('/active', 'active')->name('active');
+        Route::get('/inactive', 'inactive')->name('inactive');
+        Route::post('/save/{id?}', 'store')->name('save');
+        Route::patch('/status/{id}', 'status')->name('status');
+        Route::resource('/', ReglaMultaController::class)->except(['store', 'update'])->parameters(['' => 'regla_multa']);
     });
 
     // 📌 **Grupo de rutas para Usuarios**

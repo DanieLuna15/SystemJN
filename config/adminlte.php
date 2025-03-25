@@ -346,6 +346,44 @@ return [
         ],
 
         [
+            'text' => 'Reglas Multas',
+            'icon' => 'fas fa-gavel',
+            'active' => ['admin/reglas_multas*'],
+            'can'  => 'ver horarios',
+            'submenu' => [
+                [
+                    'text' => 'Todas las Reglas',
+                    'url' => 'admin/reglas_multas',
+                    'icon' => 'fas fa-list-ul',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
+                    'can'  => 'ver horarios',
+
+                ],
+                [
+                    'text' => 'Reglas Activas',
+                    'url' => 'admin/reglas_multas/active',
+                    'icon' => 'fas fa-check-circle',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
+                    'can'  => 'ver horarios',
+                ],
+                [
+                    'text' => 'Reglas Inactivas',
+                    'url' => 'admin/reglas_multas/inactive',
+                    'icon' => 'fas fa-ban',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
+                    'can'  => 'ver horarios',
+                ],
+                [
+                    'text' => 'Crear Nueva Regla',
+                    'url' => 'admin/reglas_multas/create',
+                    'icon' => 'fas fa-plus-square',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
+                    'can'  => 'crear horarios',
+                ],
+            ],
+        ],
+
+        [
             'text' => 'Usuarios',
             'active' => ['admin/usuarios*'],
             'icon' => 'fas fa-users',
