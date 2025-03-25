@@ -40,7 +40,7 @@
 
                     <div class="col-md-12 col-lg-12">
                         <!-- Campo Líderes -->
-                        <x-adminlte-select2 id="usuariosSelect" name="user_id[]" label="Líderes"
+                        <x-adminlte-select2 id="usuariosSelect" name="user_id[]" label="Líderes:"
                             :config="array_merge($select2Config, ['placeholder' => 'Seleccione uno o varios líderes...'])" multiple>
                             @foreach ($lideres as $lider)
                                 <option value="{{ $lider->id }}" {{ in_array($lider->id, old('user_id', $ministerio->lideres->pluck('id')->toArray() ?? [])) ? 'selected' : '' }}>

@@ -21,7 +21,7 @@ class Ministerio extends Model
 
     public function reglasMultas()
     {
-        return $this->belongsToMany(ReglaMulta::class, 'regla_multa_ministerio', 'ministerio_id', 'regla_multa_id');
+        return $this->belongsToMany(ReglaMulta::class, 'regla_multa_ministerio')->withTimestamps();
     }
 
     public function horarios()
