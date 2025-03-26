@@ -14,21 +14,22 @@ class MinisterioSeeder extends Seeder
     public function run(): void
     {
         $ministerios = [
-            ['nombre' => 'Líderes', 'tipo' => 1],
-            ['nombre' => 'Alabanza y Adoración', 'tipo' => 0],
-            ['nombre' => 'Panderos', 'tipo' => 0],
-            ['nombre' => 'Ujieres', 'tipo' => 0],
-            ['nombre' => 'Jóvenes', 'tipo' => 0],
-            ['nombre' => 'Niños', 'tipo' => 0],
-            ['nombre' => 'Ayuno', 'tipo' => 0],
-            ['nombre' => 'Oración e Intercesión', 'tipo' => 0],
-            ['nombre' => 'Tecnología y Medios de Comunicación', 'tipo' => 0],
-            ['nombre' => 'Evangelismo', 'tipo' => 0],
-            ['nombre' => 'Servicio y Voluntariado', 'tipo' => 0],
-            ['nombre' => 'Visitas', 'tipo' => 0],
-            ['nombre' => 'Teatro y Danza', 'tipo' => 0],
+            ['nombre' => 'Líderes'],
+            ['nombre' => 'Alabanza y Adoración'],
+            ['nombre' => 'Panderos'],
+            ['nombre' => 'Ujieres'],
+            ['nombre' => 'Jóvenes'],
+            ['nombre' => 'Niños'],
+            ['nombre' => 'Ayuno'],
+            ['nombre' => 'Oración e Intercesión'],
+            ['nombre' => 'Tecnología y Medios de Comunicación'],
+            ['nombre' => 'Evangelismo'],
+            ['nombre' => 'Servicio y Voluntariado'],
+            ['nombre' => 'Visitas'],
+            ['nombre' => 'Teatro y Danza'],
+
         ];
-        
+
 
         foreach ($ministerios as & $ministerio){
             $horario['created_at'] = Carbon::now();

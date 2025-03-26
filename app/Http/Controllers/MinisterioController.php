@@ -90,7 +90,7 @@ class MinisterioController extends Controller
                             })
                             ->pluck('id')
                             ->toArray();
-    
+
                         if (!in_array($value, $lideresPermitidos)) {
                             $fail("El usuario seleccionado ($value) no está permitido como líder en este ministerio.");
                         }
@@ -100,7 +100,7 @@ class MinisterioController extends Controller
                             ->whereDoesntHave('ministeriosLiderados')
                             ->where('id', $value)
                             ->exists();
-    
+
                         if (!$liderLibre) {
                             $fail("El usuario seleccionado ($value) ya está liderando otro ministerio.");
                         }
@@ -109,60 +109,59 @@ class MinisterioController extends Controller
             ],
             'nombre' => 'required|string|min:3|max:255|unique:ministerios,nombre,' . ($id ? $id : 'NULL') . '|regex:/^[\p{L}\s]+$/u',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'tipo' => 'required|integer|min:0|max:1',
-        ];
+                ];
 
         $messages = [
             'user_id.required' => 'Debe seleccionar al menos un Líder.',
             'user_id.*.exists' => 'Uno o más Líderes seleccionados no son válidos.',
         ];
-    
+
         // Validar los datos
         $validatedData = $request->validate($rules, $messages);
-    
+
         // Recoger los datos excluyendo `_token` y `remove_logo`
         $data = $request->except('_token', 'remove_logo');
-    
+
         try {
             if ($id) {
                 // 📌 Si se trata de una edición, buscar el ministerio y actualizarlo
                 $ministerio = Ministerio::findOrFail($id);
-    
+
                 // Sincronizar los líderes seleccionados
                 $ministerio->lideres()->sync($request->user_id);
-    
+
                 // Eliminar logo si el usuario lo desea
                 if ($request->input('remove_logo') == '1') {
                     deleteFile($ministerio->logo); // Eliminar el logo anterior
                     $data['logo'] = null;
                 }
-    
+
                 // Subir el nuevo logo si se ha proporcionado uno
                 if ($request->hasFile('logo')) {
                     deleteFile($ministerio->logo); // Eliminar el logo anterior
                     $data['logo'] = uploadFile($request->file('logo'), 'uploads/ministerios');
                 }
-    
+
                 // Actualizar los datos del ministerio
                 $ministerio->update($data);
-    
+
                 $message = 'Ministerio actualizado correctamente.';
             } else {
                 // Crear el ministerio
                 $ministerio = Ministerio::create($data);
-    
+
                 // Asociar los líderes seleccionados
                 $ministerio->lideres()->attach($request->user_id);
-    
+
                 // Subir el nuevo logo si se ha proporcionado uno
                 if ($request->hasFile('logo')) {
                     $data['logo'] = uploadFile($request->file('logo'), 'uploads/ministerios');
                     $ministerio->update(['logo' => $data['logo']]);
                 }
-    
+
                 $message = 'Ministerio creado correctamente.';
             }
-    
+
             // Redirigir con mensaje de éxito
             return redirect()->route('admin.ministerios.index')->with('success', $message);
         } catch (\Exception $e) {
@@ -170,7 +169,7 @@ class MinisterioController extends Controller
             return redirect()->route('admin.ministerios.index')->with('error', 'Hubo un error en la operación: ' . $e->getMessage());
         }
     }
-    
+
 
     public function status($id)
     {

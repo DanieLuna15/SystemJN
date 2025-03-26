@@ -25,20 +25,6 @@
                     </div>
 
                     <div class="col-md-12 col-lg-12">
-                        <div class="form-group">
-                            <label>Categoría:</label>
-                            <x-adminlte-select2 name="tipo" class="form-control">
-                                <option value="" disabled>Seleccione Categoría</option>
-                                @foreach ([1 => 'Alto', 0 => 'Estandar'] as $key => $type)
-                                    <option value="{{ $key }}" {{ old('tipo', $ministerio->tipo ?? 0) == $key ? 'selected' : '' }}>
-                                        {{ $type }}
-                                    </option>
-                                @endforeach
-                            </x-adminlte-select2>
-                        </div>
-                    </div>
-
-                    <div class="col-md-12 col-lg-12">
                         <!-- Campo Líderes -->
                         <x-adminlte-select2 id="usuariosSelect" name="user_id[]" label="Líderes:"
                             :config="array_merge($select2Config, ['placeholder' => 'Seleccione uno o varios líderes...'])" multiple>

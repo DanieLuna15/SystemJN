@@ -17,7 +17,6 @@
                                     <th class="no-export">Imagen</th>
                                     <th>Nombre</th>
                                     <th>Estado</th>
-                                    <th>Categoría</th>
                                     <th>Líderes</th>
                                     <th class="no-export">Acciones</th>
                                 </tr>
@@ -44,19 +43,6 @@
                                             <div class="d-flex justify-content-center">
                                                 {!! $ministerio->statusBadge !!}
                                             </div>
-                                        </td>
-
-                                        <!-- Categoria centrada -->
-                                        <td class="align-middle">
-                                            @if ($ministerio->tipo == 1)
-                                                <small class="badge bg-gradient-primary w-100 h-100"><i
-                                                        class="fas fa-crown"></i>
-                                                    Alta</small>
-                                            @else
-                                                <small class="badge bg-gradient-info w-100 h-100"><i
-                                                        class="fas fa-star"></i>
-                                                    Estándar</small>
-                                            @endif
                                         </td>
 
                                         <!-- Líderes centrado -->
