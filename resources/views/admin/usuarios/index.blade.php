@@ -55,6 +55,10 @@
                                         <!-- Telefono centrado -->
                                         <td class="align-middle">
                                             @if ($usuario->phone)
+                                                <a href="https://wa.me/{{ $usuario->phone }}" target="_blank"> <img
+                                                        src="{{ asset('images/whatsapp.jpg') }}" title="Sin imagen"
+                                                        class="img-rounded-logo">
+                                                <a>
                                                 {{ $usuario->phone }}
                                             @else
                                                 <span class="text-muted">No disponible</span>
