@@ -21,6 +21,7 @@
                                     <th style="text-align: center">Hora Multa</th>
                                     <th style="text-align: center">Hora Límite</th>
                                     <th style="text-align: center">Tipo</th>
+                                    <th style="text-align: center">Opcion de Pago</th>
                                     <th style="text-align: center">Estado</th>
                                     <th class="no-export" style="text-align: center">Acciones</th>
                                 </tr>
@@ -83,6 +84,18 @@
                                                     <i class="far fa-clock"></i> Eventual
                                                 </small>
                                             @endif
+                                        </td>
+                                         <!-- Tipo PAGO U OPCION DE PAGO -->
+                                         <td class="text-center align-middle">
+                                            @if ($horario->tipo_pago == 1)
+                                            <small class="badge bg-gradient-purple w-100 h-100">
+                                                <i class="fas fa-coins"></i> Monetario
+                                            </small>
+                                        @else
+                                            <small class="badge bg-gradient-dark w-100 h-100">
+                                                <i class="fas fa-box"></i> Producto
+                                            </small>
+                                        @endif
                                         </td>
 
                                         <!-- Estado centrado -->

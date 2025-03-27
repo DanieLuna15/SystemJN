@@ -83,7 +83,7 @@ class HorarioController extends Controller
 
         $rules = [
             'ministerio_id' => 'required|array',
-            'ministerio_id.*' => 'exists:ministerios,id', 
+            'ministerio_id.*' => 'exists:ministerios,id',
             'actividad_servicio_id' => 'required|exists:actividad_servicios,id',
             'hora_registro' => ['required', 'date_format:H:i:s'],
             'hora_multa' => 'required|date_format:H:i:s|after:hora_registro',
@@ -91,6 +91,7 @@ class HorarioController extends Controller
             'tipo' => 'required|integer|min:0|max:1',
             'dia_semana' => $request->tipo == 1 ? 'required|integer|min:0|max:6' : 'nullable',
             'fecha' => $request->tipo == 0 ? 'required|date|after_or_equal:today' : 'nullable',
+            'tipo_pago' => 'required|integer|min:0|max:1',
         ];
 
         $request->validate($rules);
@@ -101,12 +102,12 @@ class HorarioController extends Controller
 
             if ($id) {
                 $horario = Horario::findOrFail($id);
-            
+
                 $horario->update($data);
                 $horario->ministerios()->sync($request->ministerio_id); // Sincroniza ministerios seleccionados
                 $message = 'Horario actualizado correctamente.';
             } else {
-            
+
                 $horario = Horario::create($data);
                 $horario->ministerios()->attach($request->ministerio_id); // Guarda la relación muchos a muchos
                 $message = 'Horario creado correctamente.';

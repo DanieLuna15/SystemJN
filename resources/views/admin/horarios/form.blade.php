@@ -24,6 +24,20 @@
 
             <div class="col-md-6 col-lg-6">
                 <div class="form-group">
+                    <label>Opcion de Pago:</label>
+                    <x-adminlte-select2 name="tipo_pago" id="tipoPago" class="form-control">
+                        <option value="" disabled>Seleccione el tipo de horario</option>
+                        @foreach ([1 => 'Monetario', 0 => 'Producto'] as $key => $type)
+                            <option value="{{ $key }}" {{ old('tipo', $horario->tipo_pago ?? 1) == $key ? 'selected' : '' }}>
+                                {{ $type }}
+                            </option>
+                        @endforeach
+                    </x-adminlte-select2>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-6">
+                <div class="form-group">
                     <label>Actividad o Servicio:</label>
                     <x-adminlte-select2 name="actividad_servicio_id" class="form-control">
                         <option value="" selected disabled>Seleccione una actividad o servicio</option>
@@ -35,21 +49,8 @@
                     </x-adminlte-select2>
                 </div>
             </div>
-
-            <div class="col-md-12 col-lg-12">
-                <x-adminlte-select2 id="ministeriosSelect" name="ministerio_id[]" label="Ministerios"
-                    :config="array_merge($select2Config, ['placeholder' => 'Seleccione uno o varios ministerios...'])"
-                    multiple>
-                    @foreach ($ministerios as $ministerio)
-                        <option value="{{ $ministerio->id }}" {{ in_array($ministerio->id, old('ministerio_id', $horario->ministerios->pluck('id')->toArray() ?? [])) ? 'selected' : '' }}>
-                            {{ $ministerio->nombre }}
-                        </option>
-                    @endforeach
-                </x-adminlte-select2>
-            </div>
-
             <!-- Día de la Semana -->
-            <div class="col-md-12 col-lg-12" id="diaSemanaContainer">
+            <div class="col-md-6 col-lg-6" id="diaSemanaContainer">
                 <div class="form-group">
                     <label>Día de la Semana:</label>
                     <x-adminlte-select2 name="dia_semana" class="form-control">
@@ -64,7 +65,7 @@
             </div>
 
             <!-- Campo Fecha (Oculto por defecto) -->
-            <div class="col-md-12 col-lg-12" id="fechaContainer" style="display: none;">
+            <div class="col-md-6 col-lg-6" id="fechaContainer" style="display: none;">
                 <x-adminlte-input type="date" name="fecha" label="Fecha:" id="fechaInput" min="{{ date('Y-m-d') }}"
                     value="{{ old('fecha', $horario->fecha ?? '') }}">
                     <x-slot name="prependSlot">
@@ -74,6 +75,19 @@
                     </x-slot>
                 </x-adminlte-input>
             </div>
+
+            <div class="col-md-12 col-lg-12">
+                <x-adminlte-select2 id="ministeriosSelect" name="ministerio_id[]" label="Ministerios"
+                    :config="array_merge($select2Config, ['placeholder' => 'Seleccione uno o varios ministerios...'])"
+                    multiple>
+                    @foreach ($ministerios as $ministerio)
+                        <option value="{{ $ministerio->id }}" {{ in_array($ministerio->id, old('ministerio_id', $horario->ministerios->pluck('id')->toArray() ?? [])) ? 'selected' : '' }}>
+                            {{ $ministerio->nombre }}
+                        </option>
+                    @endforeach
+                </x-adminlte-select2>
+            </div>
+
 
             <div class="col-md-4 col-lg-4">
                 <x-adminlte-input type="time" name="hora_registro" label="Hora de Registro:"
@@ -123,7 +137,7 @@
                     </x-slot>
                 </x-adminlte-input>
             </div>
-            
+
         </div>
 
         <!-- Botones de Acción -->
