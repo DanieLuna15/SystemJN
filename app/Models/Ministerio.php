@@ -19,6 +19,11 @@ class Ministerio extends Model
     public $timestamps = true;
 
 
+    public function excepciones()
+    {
+        return $this->belongsToMany(Excepcion::class, 'excepcion_ministerio')->withTimestamps();
+    }
+
     public function reglasMultas()
     {
         return $this->belongsToMany(ReglaMulta::class, 'regla_multa_ministerio')->withTimestamps();

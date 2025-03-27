@@ -384,6 +384,31 @@ return [
         ],
 
         [
+            'text' => 'Permisos y Excepciones',
+            'icon' => 'fas fa-calendar-check',
+            'active' => ['admin/permisos*', 'admin/excepciones*'],
+            'can'  => 'ver horarios',
+            'submenu' => [
+                [
+                    'text' => 'Permisos',
+                    'url' => 'admin/permisos',
+                    'icon' => 'fas fa-id-card',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
+                    'can'  => 'ver horarios',
+
+                ],
+                [
+                    'text' => 'Excepciones',
+                    'url' => 'admin/excepciones',
+                    'icon' => 'fas fa-user-clock',
+                    'classes' => 'btn btn-outline-success btn-sm text-left',
+                    'can'  => 'ver horarios',
+                ],
+            
+            ],
+        ],
+
+        [
             'text' => 'Usuarios',
             'active' => ['admin/usuarios*'],
             'icon' => 'fas fa-users',

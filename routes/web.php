@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\PerfilController;
+use App\Http\Controllers\ExcepcionController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\ReglaMultaController;
@@ -83,6 +84,15 @@ Route::middleware('auth')->group(function () {
         Route::post('/save/{id?}', 'store')->name('save');
         Route::patch('/status/{id}', 'status')->name('status');
         Route::resource('/', ReglaMultaController::class)->except(['store', 'update'])->parameters(['' => 'regla_multa']);
+    });
+
+    // 📌 **Grupo de rutas para Excepciones**
+    Route::prefix('admin/excepciones')->name('admin.excepciones.')->controller(ExcepcionController::class)->group(function () {
+        Route::get('/active', 'active')->name('active'); // Ruta para listar excepciones activas
+        Route::get('/inactive', 'inactive')->name('inactive'); // Ruta para listar excepciones inactivas
+        Route::post('/save/{id?}', 'store')->name('save'); // Ruta para guardar o actualizar excepciones
+        Route::patch('/status/{id}', 'status')->name('status'); // Ruta para cambiar el estado de una excepción
+        Route::resource('/', ExcepcionController::class)->except(['store', 'update'])->parameters(['' => 'excepcion']); // CRUD básico para excepciones
     });
 
     // 📌 **Grupo de rutas para Usuarios**
