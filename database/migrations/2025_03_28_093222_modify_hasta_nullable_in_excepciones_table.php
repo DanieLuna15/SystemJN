@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('excepciones', function (Blueprint $table) {
-            $table->date('hasta')->nullable(false)->comment('Fecha de finalización de la excepción')->change();
+            // $table->date('hasta')->nullable(false)->comment('Fecha de finalización de la excepción')->change();
         });
     }
 };
