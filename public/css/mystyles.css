@@ -82,21 +82,17 @@
 
 .img-rounded-logo {
     width: 30px;
-    /* Ancho fijo */
     height: 30px;
-    /* Alto fijo */
     border-radius: 50%;
-    /* Bordes redondeados (más suaves) */
-    object-fit: contain;
-    /* Asegura que la imagen cubra completamente el contenedor */
+    object-fit: cover;
     object-position: center;
-    /* Centra la imagen si no cubre completamente el contenedor */
-    border: 2px solid #65696b;
-    /* Borde más grueso de 2px y color gris oscuro */
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-    /* Sombra sutil para darle profundidad */
-    transition: all 0.3s ease;
-    /* Suaviza la transición al pasar el mouse */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+    }
 }
 
 /* Efecto al pasar el mouse (hover) */

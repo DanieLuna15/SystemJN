@@ -56,7 +56,7 @@
                                         <td class="align-middle">
                                             @if ($usuario->phone)
                                                 <a href="https://wa.me/{{ $usuario->phone }}" target="_blank"> <img
-                                                        src="{{ asset('images/whatsapp.jpg') }}" title="Sin imagen"
+                                                        src="{{ asset('images/whatsapp.jpg') }}" title="whatsapp"
                                                         class="img-rounded-logo">
                                                 <a>
                                                 {{ $usuario->phone }}
