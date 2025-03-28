@@ -69,7 +69,7 @@
                                                 @can('cambiar estado horarios')
                                                     <button type="button" title="Cambiar estado"
                                                         class="btn btn-sm {{ $regla_multa->estado ? 'btn-danger' : 'btn-success' }} confirmationBtn mx-1"
-                                                        data-action="{{ route('admin.horarios.status', $regla_multa->id) }}"
+                                                        data-action="{{ route('admin.reglas_multas.status', $regla_multa->id) }}"
                                                         data-question="{{ $regla_multa->estado ? '¿Seguro que deseas inhabilitar la Regla del <strong>' . $regla_multa->descripcion . '</strong>?' : '¿Seguro que deseas habilitar la Regla del <strong>' . $regla_multa->descripcion . '</strong>?' }}">
                                                         <i class="fas {{ $regla_multa->estado ? 'fa-eye-slash' : 'fa-eye' }}"></i>
                                                     </button>

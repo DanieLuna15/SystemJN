@@ -30,7 +30,14 @@ class Excepcion extends Model
         'hora_inicio',
         'hora_fin',
         'motivo',
+        'estado',
     ];
+
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'usuario_id');
+    }
+
 
     /**
      * Relación muchos a muchos con Ministerios a través de la tabla intermedia excepcion_ministerio.
@@ -47,9 +54,9 @@ class Excepcion extends Model
     {
         return new Attribute(
             get: function () {
-                return $this->dia_entero
-                    ? '<span class="badge badge-success d-flex align-items-center justify-content-center w-100 h-100">Día Entero</span>'
-                    : '<span class="badge badge-warning d-flex align-items-center justify-content-center w-100 h-100">Horario</span>';
+                return $this->estado == Status::ACTIVE
+                    ? '<span class="badge badge-success d-flex align-items-center justify-content-center w-100 h-100">Activo</span>'
+                    : '<span class="badge badge-danger d-flex align-items-center justify-content-center w-100 h-100">Inactivo</span>';
             }
         );
     }
