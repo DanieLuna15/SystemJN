@@ -14,7 +14,7 @@ class ExcepcionController extends Controller
      */
     public function index()
     {
-        $pageTitle = 'Todas los Excepciones';
+        $pageTitle = 'Todas las Excepciones';
         $excepciones = $this->commonQuery()->get();
         return view('admin.excepciones.index', compact('excepciones', 'pageTitle'));
     }

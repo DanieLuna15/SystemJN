@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Asistencia;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str; 
+use Illuminate\Support\Str;
 
 class ReporteController extends Controller
 {
@@ -762,11 +762,26 @@ class ReporteController extends Controller
     {
         $dayMapping = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
-        // Obtener horarios activos con su actividadServicio
+        // Obtener todos los horarios activos del ministerio con su actividadServicio
         $horarios = Ministerio::findOrFail($ministerioId)
             ->horarios()
             ->where('estado', Status::ACTIVE)
             ->with('actividadServicio:id,nombre')
+            ->get();
+
+        // Obtener las excepciones activas asociadas al ministerio dentro del rango
+        $excepciones = \App\Models\Excepcion::where('estado', true)
+            ->whereHas('ministerios', function ($q) use ($ministerioId) {
+                $q->where('ministerio_id', $ministerioId);
+            })
+            ->where(function ($query) use ($startDate, $endDate) {
+                // Se incluyen las excepciones que inician o terminan en el rango, o que abarcan el inicio
+                $query->whereBetween('fecha', [Carbon::parse($startDate)->format('Y-m-d'), Carbon::parse($endDate)->format('Y-m-d')])
+                    ->orWhere(function ($q) use ($startDate) {
+                        $q->where('fecha', '<=', Carbon::parse($startDate)->format('Y-m-d'))
+                            ->where('hasta', '>=', Carbon::parse($startDate)->format('Y-m-d'));
+                    });
+            })
             ->get();
 
         $resultados = [];
@@ -777,33 +792,75 @@ class ReporteController extends Controller
             $diaIndice = $fechaActual->format('w'); // 0 = Domingo, 1 = Lunes, etc.
             $fechaString = $fechaActual->format('Y-m-d');
 
-            // Horarios fijos según día de la semana
-            $horariosFijos = $horarios->where('tipo', 1)->where('dia_semana', $diaIndice);
-            if ($horariosFijos->isNotEmpty()) {
-                $resultados[$fechaString] = (object)[
-                    'fecha'       => $fechaString,
-                    'dia_semana'  => $dayMapping[$diaIndice],
-                    'actividades' => $horariosFijos->map(function ($h) {
-                        return (object)[
-                            'tipo'              => 'fijo',
-                            'nombre_actividad'  => $h->actividadServicio->nombre ?? null,
-                            'hora_registro'     => $h->hora_registro,
-                            'hora_multa'        => $h->hora_multa,
-                            'hora_limite'       => $h->hora_limite
+            // Filtrar las excepciones que afectan el día actual
+            $excepcionesHoy = $excepciones->filter(function ($excepcion) use ($fechaString) {
+                $fechaInicio = Carbon::parse($excepcion->fecha)->format('Y-m-d');
+                $fechaFinEx = $excepcion->hasta ? Carbon::parse($excepcion->hasta)->format('Y-m-d') : $fechaInicio;
+                return $fechaString >= $fechaInicio && $fechaString <= $fechaFinEx;
+            });
+
+            // Verificar si para el día actual hay alguna excepción de día completo o de varios días
+            $excepcionDiaCompleto = $excepcionesHoy->first(function ($ex) {
+                return in_array($ex->dia_entero, [1, 2]);
+            });
+
+            // Para los horarios fijos, si existe una excepción de día completo o de varios días se omite el día
+            if (!$excepcionDiaCompleto) {
+                // Obtener los horarios fijos para el día de la semana
+                $horariosFijos = $horarios->where('tipo', 1)->where('dia_semana', $diaIndice);
+
+                if ($horariosFijos->isNotEmpty()) {
+                    // Si existe una excepción parcial (rango de horas) se filtran las actividades afectadas
+                    $actividadesFiltradas = $horariosFijos->map(function ($h) use ($excepcionesHoy) {
+                        $excepcionParcial = $excepcionesHoy->first(function ($ex) {
+                            return $ex->dia_entero == 0 && $ex->hora_inicio && $ex->hora_fin;
+                        });
+
+                        if ($excepcionParcial) {
+                            $horaRegistro = Carbon::parse($h->hora_registro);
+                            $horaInicioEx = Carbon::parse($excepcionParcial->hora_inicio);
+                            $horaFinEx = Carbon::parse($excepcionParcial->hora_fin);
+                            // Si la hora de registro se encuentra dentro del rango de la excepción parcial, se descarta
+                            if ($horaRegistro->between($horaInicioEx, $horaFinEx, true)) {
+                                return null;
+                            }
+                        }
+                        return $h;
+                    })->filter(); // se remueven los null
+
+                    if ($actividadesFiltradas->isNotEmpty()) {
+                        $resultados[$fechaString] = (object)[
+                            'fecha'       => $fechaString,
+                            'dia_semana'  => $dayMapping[$diaIndice],
+                            'actividades' => $actividadesFiltradas->map(function ($h) {
+                                return (object)[
+                                    'tipo'              => 'fijo',
+                                    'nombre_actividad'  => $h->actividadServicio->nombre ?? null,
+                                    'hora_registro'     => $h->hora_registro,
+                                    'hora_multa'        => $h->hora_multa,
+                                    'hora_limite'       => $h->hora_limite
+                                ];
+                            })->values()->toArray()
                         ];
-                    })->values()->toArray()
-                ];
+                    }
+                }
             }
+            // Si hay excepción de día completo, no se agrega ningún horario fijo para esa fecha
+
             $fechaActual->modify('+1 day');
         }
 
-        // Agregar horarios eventuales (para fechas específicas) filtrando por el rango de fechas
+        // Se procesan los horarios eventuales sin filtrar excepciones (se pueden deshabilitar manualmente)
         $horariosEventuales = $horarios->where('tipo', 0)
             ->whereNotNull('fecha')
             ->filter(function ($horario) use ($startDate, $endDate) {
-                $fechaHorario = Carbon::parse($horario->fecha);
-                return $fechaHorario->between($startDate, $endDate, true);
+                return Carbon::parse($horario->fecha)->between(
+                    Carbon::parse($startDate)->format('Y-m-d'),
+                    Carbon::parse($endDate)->format('Y-m-d'),
+                    true
+                );
             });
+
         foreach ($horariosEventuales as $horario) {
             $fechaString = Carbon::parse($horario->fecha)->format('Y-m-d');
             $diaIndice = Carbon::parse($horario->fecha)->format('w');
@@ -833,6 +890,7 @@ class ReporteController extends Controller
         // Se retorna un array con los valores
         return array_values($resultados);
     }
+
 
     /**
      * Calcula la multa para una asistencia, basándose en el horario (o regla por defecto) y la regla de multa.
@@ -934,18 +992,18 @@ class ReporteController extends Controller
             'startDate'    => $startDate,
             'endDate'      => $endDate
         ]);
-    
+
         // Obtener horarios agrupados por fecha
         $horariosPorFecha = $this->obtenerHorariosPorMinisterio($ministerioId, $startDate, $endDate);
         Log::debug("Horarios por fecha obtenidos", ['horariosPorFecha' => $horariosPorFecha]);
-    
+
         // Extraer y ordenar las fechas disponibles
         $fechas = array_unique(array_map(function ($item) {
             return $item->fecha;
         }, $horariosPorFecha));
         sort($fechas);
         Log::debug("Fechas extraídas y ordenadas", ['fechas' => $fechas]);
-    
+
         // Obtener la regla de multa y los usuarios asociados
         $ministerio = Ministerio::findOrFail($ministerioId);
         $reglaMulta = $ministerio->reglasMultas()->where('estado', Status::ACTIVE)->first();
@@ -956,10 +1014,10 @@ class ReporteController extends Controller
             'ministerioId' => $ministerioId,
             'reglaMulta'   => $reglaMulta
         ]);
-    
+
         $usuarios = $ministerio->usuarios;
         Log::debug("Usuarios del ministerio", ['usuarios' => $usuarios]);
-    
+
         // Agrupar asistencias por llave compuesta: ci + '_' + fecha (Y-m-d)
         $ciUsuarios = $usuarios->pluck('ci')->toArray();
         $asistenciasQuery = Asistencia::whereIn('ci', $ciUsuarios)
@@ -968,12 +1026,12 @@ class ReporteController extends Controller
         Log::debug('Resultado de la consulta de asistencias', [
             'asistenciasQuery' => $asistenciasQuery->toArray()
         ]);
-    
+
         $asistencias = $asistenciasQuery->groupBy(function ($item) {
             return $item->ci . '_' . Carbon::parse($item->fecha)->format('Y-m-d');
         });
         Log::debug("Asistencias agrupadas", ['asistencias' => $asistencias->toArray()]);
-    
+
         // Construir el reporte
         $reporte = [];
         foreach ($usuarios as $usuario) {
@@ -983,7 +1041,7 @@ class ReporteController extends Controller
                 'ministerio'   => $usuario->ministerios->firstWhere('id', $ministerioId)->nombre ?? 'No asignado',
                 'Total_Multas' => 0
             ];
-    
+
             $totalMultasUsuario = 0;
             // Procesar cada fecha disponible
             foreach ($fechas as $fecha) {
@@ -996,12 +1054,12 @@ class ReporteController extends Controller
                     'key'         => $key,
                     'asistencias' => $asistenciasDia->toArray()
                 ]);
-    
+
                 // Obtener todos los horarios para la fecha
                 $horariosDia = array_filter($horariosPorFecha, function ($h) use ($fecha) {
                     return $h->fecha === $fecha;
                 });
-    
+
                 // Agrupar las actividades de la fecha de forma única, usando el nombre de la actividad
                 $actividadesGroup = [];
                 foreach ($horariosDia as $horario) {
@@ -1014,7 +1072,7 @@ class ReporteController extends Controller
                         $actividadesGroup[$nombreActividad][] = $actividad;
                     }
                 }
-    
+
                 // Procesar cada actividad agrupada
                 foreach ($actividadesGroup as $nombreActividad => $actividadesArray) {
                     $multaActividad = 0;
@@ -1023,7 +1081,7 @@ class ReporteController extends Controller
                         // Convertir tiempos del horario a Carbon
                         $horaRegistro = Carbon::parse($actividad->hora_registro);
                         $horaLimite   = Carbon::parse($actividad->hora_limite);
-    
+
                         // Filtrar asistencias que estén en el rango entre hora_registro y hora_limite
                         $asistenciasEnRango = $asistenciasDia->filter(function ($a) use ($horaRegistro, $horaLimite) {
                             $horaMarcacion = Carbon::parse($a->hora_marcacion);
@@ -1033,11 +1091,11 @@ class ReporteController extends Controller
                         $asistenciaActividad = $asistenciasEnRango->sortBy(function ($a) {
                             return Carbon::parse($a->hora_marcacion)->timestamp;
                         })->first();
-    
+
                         // Calcular la multa para la actividad
                         $multa = $this->calcularMulta($asistenciaActividad, $actividad, $reglaMulta);
                         $multaActividad += $multa;
-    
+
                         $detalleActividad[] = [
                             'nombre_actividad' => $nombreActividad,
                             'tipo'             => $actividad->tipo,
@@ -1048,7 +1106,7 @@ class ReporteController extends Controller
                             'multa'            => $multa
                         ];
                     }
-    
+
                     // Generar la llave dinámica para esta actividad en la fecha
                     $colKey = "d_{$fecha}_" . Str::slug($nombreActividad, '_');
                     $fila[$colKey] = [
@@ -1062,15 +1120,15 @@ class ReporteController extends Controller
             $reporte[] = $fila;
             Log::debug("Fila de reporte agregada", ['fila' => $fila]);
         }
-    
+
         Log::info("Reporte generado para ministerio", [
             'ministerioId' => $ministerioId,
             'reporte'      => $reporte
         ]);
-    
+
         return $reporte;
     }
-    
+
 
     /**
      * Obtiene el arreglo de cabecera con las fechas, el día de la semana y las actividades.
@@ -1104,7 +1162,6 @@ class ReporteController extends Controller
         return $cabecera;
     }
 
-
     public function multaReporte(Request $request)
     {
         $dateRange = $request->input('date_range', now()->startOfMonth()->format('d-m-Y 00:00:00') . ' - ' . now()->endOfMonth()->format('d-m-Y 23:59:59'));
@@ -1137,44 +1194,4 @@ class ReporteController extends Controller
         return view('admin.reportes.multa', compact('reporteDinamico', 'cabeceraFechas'));
     }
 
-    // public function multaReporte(Request $request)
-    // {
-    //     $dateRange = $request->input('date_range', now()->startOfMonth()->format('d-m-Y 00:00:00') . ' - ' . now()->endOfMonth()->format('d-m-Y 23:59:59'));
-
-    //     // Separar fecha de inicio y fin
-    //     [$startDate, $endDate] = explode(' - ', $dateRange);
-
-    //     // Guardar el rango de fechas en la sesión
-    //     $request->session()->put('date_range', $dateRange);
-
-    //     // Convertir a formato correcto para la base de datos (YYYY-MM-DD)
-    //     $startDate = Carbon::createFromFormat('d-m-Y H:i:s', trim($startDate))->format('Y-m-d H:i:s');
-    //     $endDate = Carbon::createFromFormat('d-m-Y H:i:s', trim($endDate))->format('Y-m-d H:i:s');
-    //     $deptId = $request->input('ministerio_id', 3);
-
-    //     //dd(['startDate' => $startDate, 'endDate' => $endDate, 'deptId' => $deptId]);
-
-    //     $pageTitle = 'Reporte de multas, desde el: '
-    //         . Carbon::parse($startDate)->translatedFormat('d F Y')
-    //         . ' hasta el: '
-    //         . Carbon::parse($endDate)->translatedFormat('d F Y');
-
-    //     $reporteDinamico = $this->generarReporteColumnasDinamicas($deptId, $startDate, $endDate);
-
-    //     $fechas = [];
-    //     foreach ($reporteDinamico as $reporte) {
-    //         foreach ($reporte as $key => $value) {
-    //             if (strpos($key, 'd_') === 0) {
-    //                 $fecha = str_replace('d_', '', $key);
-    //                 $fechas[$fecha] = $fecha;
-    //             }
-    //         }
-    //     }
-
-
-    //     // Ordenar las fechas en orden cronológico
-    //     sort($fechas);
-
-    //     return view('admin.reportes.multa', compact('reporteDinamico', 'fechas'));
-    // }
 }
