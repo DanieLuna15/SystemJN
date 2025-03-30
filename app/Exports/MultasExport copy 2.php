@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 namespace App\Exports;
 
@@ -20,51 +19,52 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
 
 class MultasExport implements
     FromCollection,
     WithHeadings,
     WithMapping,
-    ShouldAutoSize, // Esto ajusta el ancho de las columnas, pero lo reforzamos en afterSheet.
+    ShouldAutoSize,
     WithStyles,
     WithTitle,
     WithCustomStartCell,
     WithEvents
 {
-    protected array $multas_detalle;
-    protected array $dates;
-    protected string $pageTitle;
-    protected int $loopIndex = 0;
-    protected ?array $headingsCache = null;
+    protected $multas_detalle;
+    protected $dates;       // Aquí se reciben las cabeceras dinámicas
+    protected $pageTitle;
+    protected $loopIndex = 0;
 
-    public function __construct(array $multas_detalle, array $dates, string $pageTitle)
+    public function __construct($multas_detalle, $dates, $pageTitle)
     {
         $this->multas_detalle = $multas_detalle;
         $this->dates = $dates;
         $this->pageTitle = $pageTitle;
     }
 
-    public function collection(): Collection
+    /**
+     * Recuperar la colección de datos.
+     */
+    public function collection()
     {
         return collect($this->multas_detalle);
     }
 
+    /**
+     * Encabezados del archivo Excel con dos filas.
+     */
     public function headings(): array
     {
-        if ($this->headingsCache !== null) {
-            return $this->headingsCache;
-        }
-
-        // Primera fila: columnas fijas y encabezados por fecha
+        // Primera fila: columnas fijas y encabezados por fecha (se combinarán celdas luego en afterSheet)
         $headerRow1 = ['N°', 'Integrantes', 'Ministerio'];
         // Segunda fila: para las actividades por fecha
         $headerRow2 = ['', '', ''];
 
         foreach ($this->dates as $date) {
-            $cantActividades = count($date['actividades'] ?? []);
+            // Se obtiene la cantidad de actividades para la fecha
+            $cantActividades = count($date['actividades']);
             // En la primera fila se coloca el encabezado de la fecha con día
-            $headerRow1[] = $date['fecha'] . ' (' . ($date['dia_semana'] ?? '') . ')';
+            $headerRow1[] = $date['fecha'] . ' (' . $date['dia_semana'] . ')';
             // Si hay más de una actividad, se dejan las celdas siguientes en blanco
             for ($i = 1; $i < $cantActividades; $i++) {
                 $headerRow1[] = '';
@@ -74,28 +74,25 @@ class MultasExport implements
                 $headerRow2[] = $actividad;
             }
         }
-        // Columnas fijas al final
-        $headerRow1 = array_merge($headerRow1, [
-            'Total Multas', 
-            'Total a Pagar', 
-            'Puntualidad', 
-            'Pagos', 
-            'Observaciones'
-        ]);
+        // Columnas fijas al final (se espera que se fusionen en la cabecera, similar a Blade)
+        $headerRow1 = array_merge($headerRow1, ['Total Multas', 'Total a Pagar', 'Puntualidad', 'Pagos', 'Observaciones']);
+        // En la segunda fila se dejan vacías las celdas de las columnas fijas
         $headerRow2 = array_merge($headerRow2, ['', '', '', '', '']);
 
-        $this->headingsCache = [
+        return [
             $headerRow1,
             $headerRow2,
         ];
-
-        return $this->headingsCache;
     }
 
+    /**
+     * Mapeo de datos para cada fila.
+     */
     public function map($row): array
     {
         $this->loopIndex++;
 
+        // Acceder a los datos fijos (ajusta según la estructura de $multas_detalle)
         $nombreCompleto = trim(($row['nombre'] ?? '') . ' ' . ($row['apellido'] ?? ''));
         $rowData = [
             $this->loopIndex,
@@ -103,10 +100,11 @@ class MultasExport implements
             $row['ministerio'] ?? '',
         ];
 
-        // Recorrer cada fecha y actividad para obtener el valor de la multa
+        // Recorrer cada fecha y actividad para obtener el valor de la multa dinámica.
         foreach ($this->dates as $date) {
             foreach ($date['actividades'] as $actividad) {
                 $alias = "d_{$date['fecha']}_" . Str::slug($actividad, '_');
+                // Accedemos al subíndice 'multa_total'
                 $value = isset($row[$alias]['multa_total']) ? (int)$row[$alias]['multa_total'] : 0;
                 $rowData[] = $value === 0 ? "0" : $value;
             }
@@ -128,23 +126,27 @@ class MultasExport implements
         return $rowData;
     }
 
-    public function styles(Worksheet $sheet): array
+    /**
+     * Estilos personalizados para el documento.
+     */
+    public function styles(Worksheet $sheet)
     {
-        $headings = $this->headings();
-        $lastColumnIndex = count($headings[0]);
+        $lastColumnIndex = count($this->headings()[0]); // Total de columnas según la primera fila de encabezados
         $lastColumn = Coordinate::stringFromColumnIndex($lastColumnIndex);
 
-        // Estilos para las primeras 5 filas (A1 a A5)
+        // Aplicar estilos a las primeras 5 filas (A1 a A5) para la cabecera:
+        // - Fondo azul
+        // - Bordes blancos
         $headerRange = "A1:{$lastColumn}5";
         $sheet->getStyle($headerRange)->applyFromArray([
             'fill' => [
-                'fillType'   => Fill::FILL_SOLID,
-                'startColor' => ['argb' => '00008B'],
+                'fillType'       => Fill::FILL_SOLID,
+                'startColor'     => ['argb' => '00008B'],
             ],
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => Border::BORDER_THIN,
-                    'color'       => ['argb' => 'FFFFFFFF'],
+                    'color'       => ['argb' => 'FFFFFFFF'], // Bordes blancos
                 ],
             ],
             'alignment' => [
@@ -157,63 +159,38 @@ class MultasExport implements
             ],
         ]);
 
-        // Estilos para la fila 5 (manteniendo texto vertical en actividades)
-        $headerRange2 = "A5:{$lastColumn}5";
-        $sheet->getStyle($headerRange2)->applyFromArray([
-            'font' => [
-                'bold'  => true,
-                'size'  => 10,
-                'color' => ['argb' => Color::COLOR_WHITE],
-            ],
-            'fill' => [
-                'fillType'   => Fill::FILL_SOLID,
-                'startColor' => ['argb' => '00008B'],
-            ],
-            'alignment' => [
-                'horizontal'   => Alignment::HORIZONTAL_CENTER,
-                'vertical'     => Alignment::VERTICAL_CENTER,
-                // Se mantiene el texto vertical en la fila 5
-                'textRotation' => 90,
-            ],
+        // Aplicar estilos a los datos (desde la fila 6 en adelante) con bordes negros
+        $lastRow = count($this->multas_detalle) + 5;
+        $dataRange = "A6:{$lastColumn}{$lastRow}";
+        $sheet->getStyle($dataRange)->applyFromArray([
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => Border::BORDER_THIN,
+                    'color'       => ['argb' => 'FF000000'], // Bordes negros
                 ],
             ],
         ]);
 
-        // Centrar la columna N° (columna A)
+        // Asegurar que la columna A (N°) esté centrada
         $sheet->getStyle('A')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-
-        // Fondo a la columna "Total Multas"
-        $fixedCount = 5; 
-        $fixedStart = $lastColumnIndex - $fixedCount + 1;
-        $totalMultasColumnLetter = Coordinate::stringFromColumnIndex($fixedStart);
-        $lastRow = count($this->multas_detalle) + 5;
-        $totalMultasRange = "{$totalMultasColumnLetter}6:{$totalMultasColumnLetter}{$lastRow}";
-        $sheet->getStyle($totalMultasRange)->applyFromArray([
-            'fill' => [
-                'fillType'   => Fill::FILL_SOLID,
-                'startColor' => ['argb' => 'FFFF99'],
-            ],
-        ]);
 
         return [];
     }
 
-    public static function afterSheet(AfterSheet $event): void
+    /**
+     * Configuración del título y diseño del encabezado (A1 a A3) y fusiones de celdas.
+     */
+    public static function afterSheet(AfterSheet $event)
     {
-        $sheet = $event->sheet->getDelegate();
-        /** @var self $exportInstance */
-        $exportInstance = $event->getConcernable();
-        $pageTitle = $exportInstance->pageTitle ?: 'Registro de Multas';
+        $sheet           = $event->sheet->getDelegate();
+        $exportInstance  = $event->getConcernable();
+        $pageTitle       = $exportInstance->pageTitle ?? 'Registro de Multas';
 
-        $headings = $exportInstance->headings();
-        $lastColumnIndex = count($headings[0]);
-        $lastColumn = Coordinate::stringFromColumnIndex($lastColumnIndex);
-        $mergeRange = "A1:{$lastColumn}3";
+        $lastColumnIndex = count($exportInstance->headings()[0]);
+        $lastColumn      = Coordinate::stringFromColumnIndex($lastColumnIndex);
+        $mergeRange      = "A1:{$lastColumn}3";
 
-        // Título
+        // Título: se mantiene el fondo azul y la configuración ya establecida en styles()
         $sheet->setCellValue('A1', $pageTitle);
         $sheet->mergeCells($mergeRange);
         $sheet->getStyle('A1')->applyFromArray([
@@ -231,6 +208,7 @@ class MultasExport implements
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
                 'vertical'   => Alignment::VERTICAL_CENTER,
             ],
+            // No se modifica el borde aquí para no alterar lo definido en styles()
         ]);
 
         // Insertar logo (ajusta la ruta según corresponda)
@@ -244,63 +222,37 @@ class MultasExport implements
         $drawing->setOffsetY(5);
         $drawing->setWorksheet($sheet);
 
-        // Fusiones para las columnas fijas (A, B y C)
+        // Fusiones para los encabezados dinámicos (filas 4 y 5)
         $sheet->mergeCells("A4:A5");
         $sheet->mergeCells("B4:B5");
         $sheet->mergeCells("C4:C5");
 
-        // Fusiones dinámicas para cada fecha
-        $colIndex = 4;
+        $colIndex = 4; // Comienza en la columna 4 (las columnas A, B y C ya están ocupadas)
         foreach ($exportInstance->dates as $date) {
-            $cant = count($date['actividades'] ?? []);
+            $cant = count($date['actividades']);
             if ($cant > 1) {
                 $startCol = Coordinate::stringFromColumnIndex($colIndex);
-                $endCol = Coordinate::stringFromColumnIndex($colIndex + $cant - 1);
+                $endCol   = Coordinate::stringFromColumnIndex($colIndex + $cant - 1);
                 $sheet->mergeCells("{$startCol}4:{$endCol}4");
             }
             $colIndex += $cant;
         }
 
-        // Fusiones para las columnas fijas (Total Multas, Total a Pagar, etc.)
-        $fixedCount = 5; // 5 columnas fijas
-        $fixedStart = $lastColumnIndex - $fixedCount + 1;
-        for ($i = 0; $i < $fixedCount; $i++) {
-            $colLetter = Coordinate::stringFromColumnIndex($fixedStart + $i);
-            $sheet->mergeCells("{$colLetter}4:{$colLetter}5");
-        }
+        // Fusiones para las columnas fijas al final (en la cabecera, filas 4 y 5)
+        $fixedStart = $lastColumnIndex - 4 + 1;
+        $startFixed = Coordinate::stringFromColumnIndex($fixedStart);
+        $sheet->mergeCells("{$startFixed}4:{$startFixed}5"); // Total Multas
+        $sheet->mergeCells(Coordinate::stringFromColumnIndex($fixedStart + 1) . "4:" . Coordinate::stringFromColumnIndex($fixedStart + 1) . "5"); // Total a Pagar
+        $sheet->mergeCells(Coordinate::stringFromColumnIndex($fixedStart + 2) . "4:" . Coordinate::stringFromColumnIndex($fixedStart + 2) . "5"); // Puntualidad
+        $sheet->mergeCells(Coordinate::stringFromColumnIndex($fixedStart + 3) . "4:" . Coordinate::stringFromColumnIndex($fixedStart + 3) . "5"); // Pagos
+        $sheet->mergeCells(Coordinate::stringFromColumnIndex($fixedStart + 4) . "4:" . Coordinate::stringFromColumnIndex($fixedStart + 4) . "5"); // Observaciones
 
-        // Aplicar bordes a todo el contenido
-        $lastRow = count($exportInstance->multas_detalle) + 5;
-        $range = "A4:{$lastColumn}{$lastRow}";
-        $sheet->getStyle($range)->applyFromArray([
-            'borders' => [
-                'allBorders' => [
-                    'borderStyle' => Border::BORDER_THIN,
-                ],
-            ],
-        ]);
-
-        // -----------------------------------------------------------
-        // AJUSTAR TEXTO EN FILAS 4 Y 5 Y PERMITIR AUTO-ALTURA
-        // -----------------------------------------------------------
-        $headerRange = "A4:{$lastColumn}5";
-        $sheet->getStyle($headerRange)->getAlignment()->setWrapText(true);
-        // Fijar la altura de la fila 4 a 60px
-        $sheet->getRowDimension(4)->setRowHeight(60);
-        // La fila 5 se autoajusta
-        $sheet->getRowDimension(5)->setRowHeight(-1);
-
-        // -----------------------------------------------------------
-        // FORZAR AUTO-SIZE EN TODAS LAS COLUMNAS (incluyendo las de fechas)
-        // -----------------------------------------------------------
-        for ($i = 1; $i <= $lastColumnIndex; $i++) {
-            $colLetter = Coordinate::stringFromColumnIndex($i);
-            $sheet->getColumnDimension($colLetter)->setAutoSize(true);
-        }
-
-
+        // No se aplica borde general desde afterSheet, ya que los estilos se definieron en styles()
     }
 
+    /**
+     * Registrar eventos personalizados.
+     */
     public function registerEvents(): array
     {
         return [
@@ -308,13 +260,20 @@ class MultasExport implements
         ];
     }
 
+    /**
+     * Título de la hoja.
+     */
     public function title(): string
     {
         return 'Registro de Multas';
     }
 
+    /**
+     * Celda de inicio.
+     */
     public function startCell(): string
     {
         return 'A4';
     }
 }
+

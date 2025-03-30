@@ -144,7 +144,95 @@
                         </div>
 
                         <!-- Reporte dinamico -->
-                        {{-- ANTIGUO --}}
+                        {{-- <div class="tab-pane" id="dinamico">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="table-responsive">
+                                        <table id="reporte-asistencias-table"
+                                            class="table table-striped table-bordered table-hover table-sm datatable text-center">
+                                            <thead>
+                                                <tr>
+                                                    <th rowspan="2">Nombre</th>
+                                                    <th rowspan="2">Apellido</th>
+                                                    <th rowspan="2">Ministerio</th>
+                                                    @foreach ($cabeceraFechas as $fecha => $datos)
+                                                        <th colspan="{{ count($datos['actividades']) }}">
+                                                            {{ $fecha }} ({{ $datos['dia_semana'] }})
+                                                        </th>
+                                                    @endforeach
+                                                    <th rowspan="2">Total Multas</th>
+                                                </tr>
+                                                <tr>
+                                                    @foreach ($cabeceraFechas as $datos)
+                                                        @foreach ($datos['actividades'] as $actividad)
+                                                            <th>{{ $actividad }}</th>
+                                                        @endforeach
+                                                    @endforeach
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($reporteDinamico as $row)
+                                                    <tr>
+                                                        <td>{{ $row['nombre'] }}</td>
+                                                        <td>{{ $row['apellido'] }}</td>
+                                                        <td>{{ $row['ministerio'] }}</td>
+                                                        @foreach ($cabeceraFechas as $fecha => $datos)
+                                                            @foreach ($datos['actividades'] as $actividad)
+                                                                @php
+                                                                    $colKey =
+                                                                        "d_{$fecha}_" . Str::slug($actividad, '_');
+                                                                @endphp
+                                                                <td>
+                                                                    @if (isset($row[$colKey]))
+                                                                        {{ $row[$colKey]['multa_total'] }}
+                                                                    @else
+                                                                        Sin datos
+                                                                    @endif
+                                                                </td>
+                                                            @endforeach
+                                                        @endforeach
+                                                         @foreach ($cabeceraFechas as $fecha => $datos)
+                                                            @foreach ($datos['actividades'] as $actividad)
+                                                                @php
+                                                                    $colKey =
+                                                                        "d_{$fecha}_" . Str::slug($actividad, '_');
+                                                                @endphp
+                                                                <td>
+                                                                    @if (isset($row[$colKey]))
+                                                                        <p><strong>Total:</strong>
+                                                                            {{ $row[$colKey]['multa_total'] }}</p>
+                                                                        <ul class="list-unstyled">
+                                                                            @foreach ($row[$colKey]['detalle'] as $detalle)
+                                                                                <li>
+                                                                                    <strong>{{ $detalle['nombre_actividad'] }}</strong><br>
+                                                                                    Tipo: {{ $detalle['tipo'] }}<br>
+                                                                                    Hora Registro:
+                                                                                    {{ $detalle['hora_registro'] }}<br>
+                                                                                    Hora Marcado:
+                                                                                    {{ $detalle['hora_marcacion'] }}<br>
+                                                                                    Multa: {{ $detalle['multa'] }}
+                                                                                </li>
+                                                                            @endforeach
+                                                                        </ul>
+                                                                    @else
+                                                                        Sin datos
+                                                                    @endif
+                                                                </td>
+                                                            @endforeach
+                                                        @endforeach 
+                                                        <td>{{ $row['Total_Multas'] }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div> --}}
+
+                        <!-- Reporte dinamico -->
                         <div class="tab-pane" id="dinamico">
                             <div class="row">
                                 <div class="col-md-12">
@@ -192,42 +280,11 @@
                                                                 </td>
                                                             @endforeach
                                                         @endforeach
-                                                        {{-- @foreach ($cabeceraFechas as $fecha => $datos)
-                                                            @foreach ($datos['actividades'] as $actividad)
-                                                                @php
-                                                                    $colKey =
-                                                                        "d_{$fecha}_" . Str::slug($actividad, '_');
-                                                                @endphp
-                                                                <td>
-                                                                    @if (isset($row[$colKey]))
-                                                                        <p><strong>Total:</strong>
-                                                                            {{ $row[$colKey]['multa_total'] }}</p>
-                                                                        <ul class="list-unstyled">
-                                                                            @foreach ($row[$colKey]['detalle'] as $detalle)
-                                                                                <li>
-                                                                                    <strong>{{ $detalle['nombre_actividad'] }}</strong><br>
-                                                                                    Tipo: {{ $detalle['tipo'] }}<br>
-                                                                                    Hora Registro:
-                                                                                    {{ $detalle['hora_registro'] }}<br>
-                                                                                    Hora Marcado:
-                                                                                    {{ $detalle['hora_marcacion'] }}<br>
-                                                                                    Multa: {{ $detalle['multa'] }}
-                                                                                </li>
-                                                                            @endforeach
-                                                                        </ul>
-                                                                    @else
-                                                                        Sin datos
-                                                                    @endif
-                                                                </td>
-                                                            @endforeach
-                                                        @endforeach --}}
                                                         <td>{{ $row['Total_Multas'] }}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
-
-
                                     </div>
                                 </div>
                             </div>

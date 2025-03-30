@@ -17,6 +17,229 @@ use Illuminate\Support\Str;
 class ReporteController extends Controller
 {
 
+    // public function exportarReporte(Request $request)
+    // {
+    //     // Recuperar el rango de fechas desde la sesión o el request
+    //     $dateRange = $request->session()->get('date_range', now()->startOfMonth()->format('d-m-Y 00:00:00') . ' - ' . now()->endOfMonth()->format('d-m-Y 23:59:59'));
+
+    //     [$startDate, $endDate] = explode(' - ', $dateRange);
+
+    //     // Convertir las fechas a formato adecuado
+    //     $startDate = Carbon::createFromFormat('d-m-Y H:i:s', trim($startDate))->format('Y-m-d H:i:s');
+    //     $endDate = Carbon::createFromFormat('d-m-Y H:i:s', trim($endDate))->format('Y-m-d H:i:s');
+    //     $deptId = $request->input('ministerio_id', 3);
+
+    //     // Paso 1: Obtener las fechas únicas dentro del rango para los días de interés (jueves=4, viernes=5, domingo=0)
+    //     $datesResult = DB::connection('sqlite')->select("
+    //         SELECT DISTINCT DATE(punch_time) AS fecha, strftime('%w', punch_time) AS dia_semana
+    //         FROM att_punches
+    //         WHERE punch_time BETWEEN ? AND ?
+    //         AND strftime('%w', punch_time) IN ('0', '4', '5')
+    //         ORDER BY fecha ASC
+    //     ", [$startDate, $endDate]);
+
+    //     $dayNames = [
+    //         '0' => 'Domingo',
+    //         '1' => 'Lunes',
+    //         '2' => 'Martes',
+    //         '3' => 'Miércoles',
+    //         '4' => 'Jueves',
+    //         '5' => 'Viernes',
+    //         '6' => 'Sábado'
+    //     ];
+
+    //     $dates = [];
+    //     foreach ($datesResult as $row) {
+    //         $dates[] = [
+    //             'fecha' => $row->fecha,
+    //             'alias' => 'd_' . str_replace('-', '_', $row->fecha),
+    //             'dia_semana' => $row->dia_semana,
+    //             'dia_semana_lit' => $dayNames[$row->dia_semana]
+    //         ];
+    //     }
+
+    //     // Paso 2: Construir dinámicamente las columnas del SELECT para cada fecha
+    //     $columnsSql = [];
+    //     $sumColumns = []; // Para construir la suma total de multas
+
+    //     foreach ($dates as $d) {
+    //         $fecha = $d['fecha'];
+    //         $alias = $d['alias'];
+    //         $dia = $d['dia_semana']; // '0' (Dom), '4' (Jue), '5' (Vie)
+
+    //         if ($dia == '5') {
+    //             // Para viernes: se contempla la excepción del 21 de febrero y la lógica general.
+    //             $col = "SUM(
+    //                 CASE
+    //                     WHEN DATE(marc.punch_time) = '$fecha' THEN (
+    //                         CASE
+    //                             WHEN '$fecha' = '2025-02-21' THEN
+    //                                 CASE
+    //                                     WHEN TIME(marc.punch_time) > '22:15:59' THEN
+    //                                         CASE
+    //                                             WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 22:15:59')) > 1800
+    //                                                 THEN 20  -- Multa de 20 Bs si el retraso es mayor a 30 minutos
+    //                                                 ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 22:15:59')) / 300 AS INTEGER) + 1) * 2)  -- Multa progresiva de 2 Bs por cada 5 minutos de retraso
+    //                                         END
+    //                                     ELSE 0  -- No se aplica multa si llega antes de las 22:15:59 en el 21 de febrero
+    //                                 END
+    //                             ELSE
+    //                                 CASE
+    //                                     WHEN TIME(marc.punch_time) > '19:30:59' THEN
+    //                                         0 -- 'ACA DEBERIA PRODUCTO'
+    //                                     ELSE
+    //                                         0
+    //                                 END
+    //                         END
+    //                     ) ELSE 0
+    //                 END
+    //             ) AS \"$alias\"";
+    //         } elseif ($dia == '4') {
+    //             // Para jueves:
+    //             // - Si hay marcación y es después de las 19:15:59 se calcula la multa según la lógica original.
+    //             // - Además, se agrega una penalización de 40 Bs si NO hay ninguna marcación en el rango de 17:00:00 a 21:00:00.
+    //             $col = "(
+    //                 SUM(
+    //                     CASE WHEN DATE(marc.punch_time) = '$fecha' THEN (
+    //                         CASE
+    //                             WHEN TIME(marc.punch_time) > '19:15:59' THEN
+    //                                 CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 19:15:59')) > 1800
+    //                                     THEN 20
+    //                                     ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 19:15:59')) / 300 AS INTEGER) + 1) * 2)
+    //                                 END
+    //                             ELSE 0
+    //                         END
+    //                     ) ELSE 0 END
+    //                 )
+    //                 +
+    //                 CASE WHEN (
+    //                     SELECT COUNT(*) FROM att_punches a2
+    //                     WHERE a2.emp_id = marc.emp_id
+    //                       AND DATE(a2.punch_time) = '$fecha'
+    //                       AND TIME(a2.punch_time) BETWEEN '16:00:00' AND '21:00:00'
+    //                 ) = 0 THEN 40 ELSE 0 END
+    //             ) AS \"$alias\"";
+    //         } elseif ($dia == '0') {
+    //             $col = "(
+    //                 (
+    //                     SUM(
+    //                         CASE WHEN DATE(marc.punch_time) = '$fecha'
+    //                              AND TIME(marc.punch_time) BETWEEN '07:45:59' AND '10:00:00'
+    //                              THEN CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 07:45:59')) > 1800
+    //                                   THEN 20
+    //                                   ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 07:45:59')) / 300 AS INTEGER) + 1) * 2)
+    //                              END ELSE 0 END
+    //                     )
+    //                     +
+    //                     CASE WHEN (
+    //                         SELECT COUNT(*) FROM att_punches a2
+    //                         WHERE a2.emp_id = marc.emp_id
+    //                           AND DATE(a2.punch_time) = '$fecha'
+    //                           AND TIME(a2.punch_time) BETWEEN '07:00:00' AND '10:00:00'
+    //                     ) = 0 THEN 40 ELSE 0 END
+    //                 )
+    //                 +
+    //                 (
+    //                     SUM(
+    //                         CASE WHEN DATE(marc.punch_time) = '$fecha'
+    //                              AND TIME(marc.punch_time) BETWEEN '10:45:59' AND '13:00:00'
+    //                              THEN CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 10:45:59')) > 1800
+    //                                   THEN 20
+    //                                   ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 10:45:59')) / 300 AS INTEGER) + 1) * 2)
+    //                              END ELSE 0 END
+    //                     )
+    //                     +
+    //                     CASE WHEN (
+    //                         SELECT COUNT(*) FROM att_punches a2
+    //                         WHERE a2.emp_id = marc.emp_id
+    //                           AND DATE(a2.punch_time) = '$fecha'
+    //                           AND TIME(a2.punch_time) BETWEEN '10:20:00' AND '13:00:00'
+    //                     ) = 0 THEN 40 ELSE 0 END
+    //                 )
+    //                 +
+    //                 (
+    //                     SUM(
+    //                         CASE WHEN DATE(marc.punch_time) = '$fecha'
+    //                              AND TIME(marc.punch_time) BETWEEN '14:45:59' AND '18:00:00'
+    //                              THEN CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 14:45:59')) > 1800
+    //                                   THEN 20
+    //                                   ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 14:45:59')) / 300 AS INTEGER) + 1) * 2)
+    //                              END ELSE 0 END
+    //                     )
+    //                     +
+    //                     CASE WHEN (
+    //                         SELECT COUNT(*) FROM att_punches a2
+    //                         WHERE a2.emp_id = marc.emp_id
+    //                           AND DATE(a2.punch_time) = '$fecha'
+    //                           AND TIME(a2.punch_time) BETWEEN '14:20:59' AND '18:00:00'
+    //                     ) = 0 THEN 40 ELSE 0 END
+    //                 )
+    //             ) AS \"$alias\"";
+    //         }
+
+
+    //         $columnsSql[] = $col;
+    //         // Para la suma total se usa el alias seguro, no la fecha original
+    //         $sumColumns[] = "COALESCE(\"$alias\", 0)";
+    //     }
+
+    //     // Paso 3: Construir las columnas dinámicas separadas por coma
+    //     $columnsSqlStr = implode(", ", $columnsSql);
+
+    //     // Paso 4: Construir la parte de la suma total de multas
+    //     $totalSql = "";
+    //     if (count($sumColumns) > 0) {
+    //         // Generamos la suma de cada columna usando COALESCE para que si es NULL se convierta en 0.
+    //         $totalSql = ", ( " . implode(" + ", array_map(fn($col) => "COALESCE($col, 0)", $sumColumns)) . " ) AS Total_Multas";
+    //     }
+
+    //     // Paso 5: Armar la consulta SQL final de forma dinámica
+    //     $sql = "
+    //         WITH primeras_marcaciones_viernes AS (
+    //             SELECT emp_id, MIN(punch_time) AS punch_time
+    //             FROM att_punches
+    //             WHERE strftime('%w', punch_time) = '5'
+    //             AND TIME(punch_time) >= '19:30:59'
+    //             GROUP BY emp_id, DATE(punch_time)
+    //         ),
+    //         multas_calculadas AS (
+    //             SELECT
+    //                 m.emp_firstname,
+    //                 m.emp_lastname,
+    //                 d.dept_name" .
+    //         (!empty($columnsSqlStr) ? ", $columnsSqlStr" : "") .
+    //         (!empty($totalSql) ? " $totalSql" : "") . "
+    //             FROM hr_employee AS m
+    //             INNER JOIN att_punches AS marc
+    //                 ON m.id = marc.emp_id
+    //                 AND marc.punch_time BETWEEN ? AND ?
+    //             INNER JOIN hr_department AS d
+    //                 ON m.emp_dept = d.id
+    //             WHERE d.id = ?
+    //             GROUP BY m.id, m.emp_firstname, m.emp_lastname, d.dept_name
+    //         )
+    //         SELECT *,
+    //             (" . (count($sumColumns) > 0 ? implode(" + ", $sumColumns) : "0") . ") AS Total_Multas
+    //         FROM multas_calculadas
+    //         ORDER BY emp_firstname ASC;
+    //     ";
+
+
+    //     // Paso 6: Ejecutar la consulta con los parámetros necesarios
+    //     $multas_detalle = DB::connection('sqlite')->select($sql, [$startDate, $endDate, $deptId]);
+
+    //     $pageTitle = 'Reporte de multas ('
+    //         . Carbon::parse($startDate)->translatedFormat('d M') // Solo día y mes
+    //         . ' - '
+    //         . Carbon::parse($endDate)->translatedFormat('d M')
+    //         . ')';
+    //     // Construir el nombre del archivo con las fechas de inicio y fin
+    //     $fileName = 'reporte_multas_' . Carbon::parse($startDate)->format('Y-m-d') . '_a_' . Carbon::parse($endDate)->format('Y-m-d') . '.xlsx';
+
+    //     // Exportar los resultados a Excel con el nombre dinámico del archivo
+    //     return Excel::download(new MultasExport($multas_detalle, $dates, $pageTitle), $fileName);
+    // }
+
     public function exportarReporte(Request $request)
     {
         // Recuperar el rango de fechas desde la sesión o el request
@@ -27,213 +250,25 @@ class ReporteController extends Controller
         // Convertir las fechas a formato adecuado
         $startDate = Carbon::createFromFormat('d-m-Y H:i:s', trim($startDate))->format('Y-m-d H:i:s');
         $endDate = Carbon::createFromFormat('d-m-Y H:i:s', trim($endDate))->format('Y-m-d H:i:s');
-        $deptId = $request->input('ministerio_id', 3);
+        $ministerioId = $request->input('ministerio_propio_id', 1);
 
-        // Paso 1: Obtener las fechas únicas dentro del rango para los días de interés (jueves=4, viernes=5, domingo=0)
-        $datesResult = DB::connection('sqlite')->select("
-            SELECT DISTINCT DATE(punch_time) AS fecha, strftime('%w', punch_time) AS dia_semana
-            FROM att_punches
-            WHERE punch_time BETWEEN ? AND ?
-            AND strftime('%w', punch_time) IN ('0', '4', '5')
-            ORDER BY fecha ASC
-        ", [$startDate, $endDate]);
+        // $reporteDinamico = $this->generarReporteColumnasDinamicas($deptId, $startDate, $endDate);
+        $multas_detalle = $this->generarReporteColumnasDinamicas($ministerioId, $startDate, $endDate);
+        //dd($reporteDinamico);
 
-        $dayNames = [
-            '0' => 'Domingo',
-            '1' => 'Lunes',
-            '2' => 'Martes',
-            '3' => 'Miércoles',
-            '4' => 'Jueves',
-            '5' => 'Viernes',
-            '6' => 'Sábado'
-        ];
+        // Obtener los horarios por fecha
+        $horariosPorFecha = $this->obtenerHorariosPorMinisterio($ministerioId, $startDate, $endDate);
 
-        $dates = [];
-        foreach ($datesResult as $row) {
-            $dates[] = [
-                'fecha' => $row->fecha,
-                'alias' => 'd_' . str_replace('-', '_', $row->fecha),
-                'dia_semana' => $row->dia_semana,
-                'dia_semana_lit' => $dayNames[$row->dia_semana]
-            ];
-        }
-
-        // Paso 2: Construir dinámicamente las columnas del SELECT para cada fecha
-        $columnsSql = [];
-        $sumColumns = []; // Para construir la suma total de multas
-
-        foreach ($dates as $d) {
-            $fecha = $d['fecha'];
-            $alias = $d['alias'];
-            $dia = $d['dia_semana']; // '0' (Dom), '4' (Jue), '5' (Vie)
-
-            if ($dia == '5') {
-                // Para viernes: se contempla la excepción del 21 de febrero y la lógica general.
-                $col = "SUM(
-                    CASE
-                        WHEN DATE(marc.punch_time) = '$fecha' THEN (
-                            CASE
-                                WHEN '$fecha' = '2025-02-21' THEN
-                                    CASE
-                                        WHEN TIME(marc.punch_time) > '22:15:59' THEN
-                                            CASE
-                                                WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 22:15:59')) > 1800
-                                                    THEN 20  -- Multa de 20 Bs si el retraso es mayor a 30 minutos
-                                                    ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 22:15:59')) / 300 AS INTEGER) + 1) * 2)  -- Multa progresiva de 2 Bs por cada 5 minutos de retraso
-                                            END
-                                        ELSE 0  -- No se aplica multa si llega antes de las 22:15:59 en el 21 de febrero
-                                    END
-                                ELSE
-                                    CASE
-                                        WHEN TIME(marc.punch_time) > '19:30:59' THEN
-                                            0 -- 'ACA DEBERIA PRODUCTO'
-                                        ELSE
-                                            0
-                                    END
-                            END
-                        ) ELSE 0
-                    END
-                ) AS \"$alias\"";
-            } elseif ($dia == '4') {
-                // Para jueves:
-                // - Si hay marcación y es después de las 19:15:59 se calcula la multa según la lógica original.
-                // - Además, se agrega una penalización de 40 Bs si NO hay ninguna marcación en el rango de 17:00:00 a 21:00:00.
-                $col = "(
-                    SUM(
-                        CASE WHEN DATE(marc.punch_time) = '$fecha' THEN (
-                            CASE
-                                WHEN TIME(marc.punch_time) > '19:15:59' THEN
-                                    CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 19:15:59')) > 1800
-                                        THEN 20
-                                        ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 19:15:59')) / 300 AS INTEGER) + 1) * 2)
-                                    END
-                                ELSE 0
-                            END
-                        ) ELSE 0 END
-                    )
-                    +
-                    CASE WHEN (
-                        SELECT COUNT(*) FROM att_punches a2
-                        WHERE a2.emp_id = marc.emp_id
-                          AND DATE(a2.punch_time) = '$fecha'
-                          AND TIME(a2.punch_time) BETWEEN '16:00:00' AND '21:00:00'
-                    ) = 0 THEN 40 ELSE 0 END
-                ) AS \"$alias\"";
-            } elseif ($dia == '0') {
-                $col = "(
-                    (
-                        SUM(
-                            CASE WHEN DATE(marc.punch_time) = '$fecha'
-                                 AND TIME(marc.punch_time) BETWEEN '07:45:59' AND '10:00:00'
-                                 THEN CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 07:45:59')) > 1800
-                                      THEN 20
-                                      ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 07:45:59')) / 300 AS INTEGER) + 1) * 2)
-                                 END ELSE 0 END
-                        )
-                        +
-                        CASE WHEN (
-                            SELECT COUNT(*) FROM att_punches a2
-                            WHERE a2.emp_id = marc.emp_id
-                              AND DATE(a2.punch_time) = '$fecha'
-                              AND TIME(a2.punch_time) BETWEEN '07:00:00' AND '10:00:00'
-                        ) = 0 THEN 40 ELSE 0 END
-                    )
-                    +
-                    (
-                        SUM(
-                            CASE WHEN DATE(marc.punch_time) = '$fecha'
-                                 AND TIME(marc.punch_time) BETWEEN '10:45:59' AND '13:00:00'
-                                 THEN CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 10:45:59')) > 1800
-                                      THEN 20
-                                      ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 10:45:59')) / 300 AS INTEGER) + 1) * 2)
-                                 END ELSE 0 END
-                        )
-                        +
-                        CASE WHEN (
-                            SELECT COUNT(*) FROM att_punches a2
-                            WHERE a2.emp_id = marc.emp_id
-                              AND DATE(a2.punch_time) = '$fecha'
-                              AND TIME(a2.punch_time) BETWEEN '10:20:00' AND '13:00:00'
-                        ) = 0 THEN 40 ELSE 0 END
-                    )
-                    +
-                    (
-                        SUM(
-                            CASE WHEN DATE(marc.punch_time) = '$fecha'
-                                 AND TIME(marc.punch_time) BETWEEN '14:45:59' AND '18:00:00'
-                                 THEN CASE WHEN (strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 14:45:59')) > 1800
-                                      THEN 20
-                                      ELSE ((CAST((strftime('%s', marc.punch_time) - strftime('%s', DATE(marc.punch_time) || ' 14:45:59')) / 300 AS INTEGER) + 1) * 2)
-                                 END ELSE 0 END
-                        )
-                        +
-                        CASE WHEN (
-                            SELECT COUNT(*) FROM att_punches a2
-                            WHERE a2.emp_id = marc.emp_id
-                              AND DATE(a2.punch_time) = '$fecha'
-                              AND TIME(a2.punch_time) BETWEEN '14:20:59' AND '18:00:00'
-                        ) = 0 THEN 40 ELSE 0 END
-                    )
-                ) AS \"$alias\"";
-            }
-
-
-            $columnsSql[] = $col;
-            // Para la suma total se usa el alias seguro, no la fecha original
-            $sumColumns[] = "COALESCE(\"$alias\", 0)";
-        }
-
-        // Paso 3: Construir las columnas dinámicas separadas por coma
-        $columnsSqlStr = implode(", ", $columnsSql);
-
-        // Paso 4: Construir la parte de la suma total de multas
-        $totalSql = "";
-        if (count($sumColumns) > 0) {
-            // Generamos la suma de cada columna usando COALESCE para que si es NULL se convierta en 0.
-            $totalSql = ", ( " . implode(" + ", array_map(fn($col) => "COALESCE($col, 0)", $sumColumns)) . " ) AS Total_Multas";
-        }
-
-        // Paso 5: Armar la consulta SQL final de forma dinámica
-        $sql = "
-            WITH primeras_marcaciones_viernes AS (
-                SELECT emp_id, MIN(punch_time) AS punch_time
-                FROM att_punches
-                WHERE strftime('%w', punch_time) = '5'
-                AND TIME(punch_time) >= '19:30:59'
-                GROUP BY emp_id, DATE(punch_time)
-            ),
-            multas_calculadas AS (
-                SELECT
-                    m.emp_firstname,
-                    m.emp_lastname,
-                    d.dept_name" .
-            (!empty($columnsSqlStr) ? ", $columnsSqlStr" : "") .
-            (!empty($totalSql) ? " $totalSql" : "") . "
-                FROM hr_employee AS m
-                INNER JOIN att_punches AS marc
-                    ON m.id = marc.emp_id
-                    AND marc.punch_time BETWEEN ? AND ?
-                INNER JOIN hr_department AS d
-                    ON m.emp_dept = d.id
-                WHERE d.id = ?
-                GROUP BY m.id, m.emp_firstname, m.emp_lastname, d.dept_name
-            )
-            SELECT *,
-                (" . (count($sumColumns) > 0 ? implode(" + ", $sumColumns) : "0") . ") AS Total_Multas
-            FROM multas_calculadas
-            ORDER BY emp_firstname ASC;
-        ";
-
-
-        // Paso 6: Ejecutar la consulta con los parámetros necesarios
-        $multas_detalle = DB::connection('sqlite')->select($sql, [$startDate, $endDate, $deptId]);
+        // Usar una función separada para generar la cabecera con las fechas y actividades
+        $dates = $this->obtenerCabeceraFechas($horariosPorFecha);
+        //dd($cabeceraFechas);
 
         $pageTitle = 'Reporte de multas ('
-            . Carbon::parse($startDate)->translatedFormat('d M') // Solo día y mes
+            . Carbon::parse($startDate)->translatedFormat('d M')
             . ' - '
             . Carbon::parse($endDate)->translatedFormat('d M')
             . ')';
-        // Construir el nombre del archivo con las fechas de inicio y fin
+
         $fileName = 'reporte_multas_' . Carbon::parse($startDate)->format('Y-m-d') . '_a_' . Carbon::parse($endDate)->format('Y-m-d') . '.xlsx';
 
         // Exportar los resultados a Excel con el nombre dinámico del archivo
@@ -1193,5 +1228,4 @@ class ReporteController extends Controller
 
         return view('admin.reportes.multa', compact('reporteDinamico', 'cabeceraFechas'));
     }
-
 }
