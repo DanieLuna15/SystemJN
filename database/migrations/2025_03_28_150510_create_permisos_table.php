@@ -15,8 +15,8 @@ class CreatePermisosTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->comment('Creador del permiso');
             $table->date('fecha')->comment('Fecha de inicio del permiso');
-            $table->date('hasta')->comment('Fecha de finalización del permiso');
-            $table->boolean('dia_entero')->comment('Indica si el permiso cubre el día entero');
+            $table->date('hasta')->nullable()->comment('Fecha de finalización del permiso');
+            $table->boolean('dia_entero')->default(true)->comment('Indica si el permiso cubre el día entero');
             $table->time('hora_inicio')->nullable()->comment('Hora de inicio del permiso');
             $table->time('hora_fin')->nullable()->comment('Hora de fin del permiso');
             $table->string('motivo')->nullable()->comment('Motivo del permiso');
