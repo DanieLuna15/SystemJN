@@ -20,7 +20,9 @@ class DatabaseSeeder extends Seeder
             ActividadServiciosSeeder::class,
             MinisterioSeeder::class,
             HorariosSeeder::class,
-            HorarioMinisterioSeeder::class
+            HorarioMinisterioSeeder::class,
+            MinisterioUserSeeder::class,
+            MinisterioLiderSeeder::class,
         ]);
     }
 }

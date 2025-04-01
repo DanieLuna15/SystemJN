@@ -25,7 +25,7 @@ class PermisoController extends Controller
     public function create()
     {
         $pageTitle = 'Nuevo Permiso';
-        $usuarios = User::where('estado', Status::ACTIVE)->get();
+        $usuarios = User::has('ministerios')->get();
         return view('admin.permisos.create', compact('usuarios', 'pageTitle'));
     }
 
@@ -101,7 +101,7 @@ class PermisoController extends Controller
     public function edit(Permiso $permiso)
     {
         $pageTitle = 'Edición de Permiso';
-        $usuarios = User::where('estado', 1)->get();
+        $usuarios = User::has('ministerios')->get();
         return view('admin.permisos.edit', compact('permiso', 'usuarios', 'pageTitle'));
     }
 

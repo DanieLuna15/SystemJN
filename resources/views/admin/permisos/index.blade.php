@@ -13,7 +13,7 @@
                             class="table table-striped table-bordered table-hover table-sm datatable text-center">
                             <thead>
                                 <tr>
-                                    <th style="text-align: center">Usuarios</th>
+                                    <th style="text-align: center">Usuario(s)</th>
                                     <th style="text-align: center">Autor</th>
                                     <th style="text-align: center">Fecha</th>
                                     <th style="text-align: center">Hora de Inicio</th>

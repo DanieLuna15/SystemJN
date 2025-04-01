@@ -24,7 +24,7 @@ class UsersSeeder extends Seeder
                 'name' => 'Ariana',
                 'last_name' => 'Porce',
                 'email' => 'ariana@example.com',
-                'role' => 'Servidor',
+                'role' => 'Líder',
                 'address' => 'Calle Servidores 789, Ciudad',
                 'ci' => '13959831',
                 'phone' => '74781232'
@@ -33,7 +33,7 @@ class UsersSeeder extends Seeder
                 'name' => 'Kevin',
                 'last_name' => 'Condori',
                 'email' => 'kevin@example.com',
-                'role' => 'Servidor',
+                'role' => 'Líder',
                 'address' => 'Calle Servidores 789, Ciudad',
                 'ci' => '13692223',
                 'phone' => '74781233'
@@ -42,7 +42,7 @@ class UsersSeeder extends Seeder
                 'name' => 'César',
                 'last_name' => 'Yujra',
                 'email' => 'cesar@example.com',
-                'role' => 'Servidor',
+                'role' => 'Líder',
                 'address' => 'Calle Servidores 789, Ciudad',
                 'ci' => '7031339',
                 'phone' => '74781234'
@@ -51,7 +51,7 @@ class UsersSeeder extends Seeder
                 'name' => 'Silvia',
                 'last_name' => 'Mamani',
                 'email' => 'silvia@example.com',
-                'role' => 'Servidor',
+                'role' => 'Líder',
                 'address' => 'Calle Servidores 789, Ciudad',
                 'ci' => '12544603',
                 'phone' => '74781235'
