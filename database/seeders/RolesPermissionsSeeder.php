@@ -12,9 +12,11 @@ class RolesPermissionsSeeder extends Seeder
     {
         $rolesPermissions = [
             'Pastor/Admin' => [
+                // 📌 Reportes y Dashboard
                 'ver reportes',
                 'ver dashboard',
-                //------------------------
+
+                // 📌 Gestión de Usuarios
                 'crear usuarios',
                 'ver usuarios',
                 'ver info_usuario',
@@ -25,35 +27,47 @@ class RolesPermissionsSeeder extends Seeder
                 'editar perfil_informacion',
                 'editar perfil_imagen',
                 'editar perfil_contraseña',
-                //------------------------
+
+                // 📌 Gestión de Ministerios
                 'crear ministerios',
                 'ver ministerios',
                 'cambiar estado ministerios',
                 'editar ministerios',
                 'eliminar ministerios',
                 'ver horarios_ministerio',
-                //------------------------
+
+                // 📌 Gestión de Horarios
                 'crear horarios',
                 'ver horarios',
                 'cambiar estado horarios',
                 'editar horarios',
                 'eliminar horarios',
-                //------------------------
+
+                // 📌 Gestión de Actividades y Servicios
                 'crear actividades_servicios',
                 'ver actividades_servicios',
                 'cambiar estado actividades_servicios',
                 'editar actividades_servicios',
                 'eliminar actividades_servicios',
-                //------------------------
+
+                // 📌 Gestión de Roles
                 'crear roles',
                 'ver roles',
                 'cambiar estado roles',
                 'editar roles',
                 'eliminar roles',
-                //------------------------
+
+                // 📌 Configuración del Sistema
                 'editar configuracion informacion',
                 'editar configuracion imagenes',
                 'ver configuracion',
+
+                // 📌 Gestión de Permisos (Nuevo)
+                'crear permisos',
+                'ver permisos',
+                'editar permisos',
+                'cambiar estado permisos',
+                'eliminar permisos',
             ],
             'Líder' => [
                 'ver dashboard',

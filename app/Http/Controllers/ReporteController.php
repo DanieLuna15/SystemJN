@@ -34,10 +34,10 @@ class ReporteController extends Controller
 
         // Obtener los horarios por fecha
         $horariosPorFecha = $this->obtenerHorariosPorMinisterio($ministerioId, $startDate, $endDate);
-
+        //dd($horariosPorFecha);
         // Usar una función separada para generar la cabecera con las fechas y actividades
         $dates = $this->obtenerCabeceraFechas($horariosPorFecha);
-        //dd($cabeceraFechas);
+        //dd($dates);
 
         $pageTitle = 'Reporte de multas ('
             . Carbon::parse($startDate)->translatedFormat('d M')

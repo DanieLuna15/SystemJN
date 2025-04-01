@@ -16,6 +16,12 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, GlobalStatus;
 
+    public function permisos()
+    {
+        return $this->belongsToMany(Permiso::class, 'permiso_usuario')->withTimestamps();
+    }
+
+
     public function ministerios()
     {
         return $this->belongsToMany(Ministerio::class, 'ministerio_user')->withTimestamps();
@@ -42,7 +48,7 @@ class User extends Authenticatable
         'phone',        // Nuevo campo
         'estado'        // Nuevo campo
     ];
-    
+
     public function asistencias()
     {
         return $this->hasMany(Asistencia::class, 'ci', 'ci');

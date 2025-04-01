@@ -90,7 +90,7 @@ class HorarioController extends Controller
             'hora_limite' => 'required|date_format:H:i|after:hora_multa', // Validación para hora_limite
             'tipo' => 'required|integer|min:0|max:1',
             'dia_semana' => $request->tipo == 1 ? 'required|integer|min:0|max:6' : 'nullable',
-            'fecha' => $request->tipo == 0 ? 'required|date|after_or_equal:today' : 'nullable',
+            'fecha' => $request->tipo == 0 ? 'required|date' : 'nullable',
             'tipo_pago' => 'required|integer|min:0|max:1',
         ];
 

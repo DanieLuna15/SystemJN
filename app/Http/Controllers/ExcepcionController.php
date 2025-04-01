@@ -71,7 +71,7 @@ class ExcepcionController extends Controller
         $rules = [
             'ministerio_id' => 'required|array',
             'ministerio_id.*' => 'exists:ministerios,id',
-            'fecha' => 'required|date|after_or_equal:today',
+            'fecha' => 'required|date',
             'hasta' => $request->tipo == 2 ? 'required|date|after_or_equal:fecha' : 'nullable',
             'hora_inicio' => $request->tipo == 0 ? 'required|date_format:H:i' : 'nullable',
             'hora_fin' => $request->tipo == 0 ? 'required|date_format:H:i|after:hora_inicio' : 'nullable',
@@ -120,6 +120,11 @@ class ExcepcionController extends Controller
         $pageTitle = 'Edición de Excepcion';
         $ministerios = Ministerio::where('estado', Status::ACTIVE)->get();
         return view('admin.excepciones.edit', compact('excepcion', 'ministerios', 'pageTitle'));
+    }
+
+    public function status($id)
+    {
+        return Excepcion::changeStatus($id, 'estado');
     }
 
     /**

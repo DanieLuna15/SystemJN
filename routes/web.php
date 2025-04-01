@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\ExcepcionController;
+use App\Http\Controllers\PermisoController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\ReglaMultaController;
@@ -94,6 +95,16 @@ Route::middleware('auth')->group(function () {
         Route::patch('/status/{id}', 'status')->name('status'); // Ruta para cambiar el estado de una excepción
         Route::resource('/', ExcepcionController::class)->except(['store', 'update'])->parameters(['' => 'excepcion']); // CRUD básico para excepciones
     });
+
+    // 📌 **Grupo de rutas para Permisos**
+    Route::prefix('admin/permisos')->name('admin.permisos.')->controller(PermisoController::class)->group(function () {
+        Route::get('/active', 'active')->name('active'); // Ruta para listar permisos activos
+        Route::get('/inactive', 'inactive')->name('inactive'); // Ruta para listar permisos inactivos
+        Route::post('/save/{id?}', 'store')->name('save'); // Ruta para guardar o actualizar permisos
+        Route::patch('/status/{id}', 'status')->name('status'); // Ruta para cambiar el estado de un permiso
+        Route::resource('/', PermisoController::class)->except(['store', 'update'])->parameters(['' => 'permiso']); // CRUD básico para permisos
+    });
+
 
     // 📌 **Grupo de rutas para Usuarios**
     Route::prefix('admin/usuarios')->name('admin.usuarios.')->controller(UserController::class)->group(function () {
