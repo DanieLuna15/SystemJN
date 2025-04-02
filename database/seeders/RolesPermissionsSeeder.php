@@ -39,6 +39,7 @@ class RolesPermissionsSeeder extends Seeder
                 // 📌 Gestión de Horarios
                 'crear horarios',
                 'ver horarios',
+                'ver horario',
                 'cambiar estado horarios',
                 'editar horarios',
                 'eliminar horarios',
@@ -46,6 +47,7 @@ class RolesPermissionsSeeder extends Seeder
                 // 📌 Gestión de Actividades y Servicios
                 'crear actividades_servicios',
                 'ver actividades_servicios',
+                'ver actividad_servicio',
                 'cambiar estado actividades_servicios',
                 'editar actividades_servicios',
                 'eliminar actividades_servicios',
@@ -53,6 +55,7 @@ class RolesPermissionsSeeder extends Seeder
                 // 📌 Gestión de Roles
                 'crear roles',
                 'ver roles',
+                'ver rol',
                 'cambiar estado roles',
                 'editar roles',
                 'eliminar roles',
@@ -65,6 +68,7 @@ class RolesPermissionsSeeder extends Seeder
                 // 📌 Gestión de Permisos (Nuevo)
                 'crear permisos',
                 'ver permisos',
+                'ver permiso',
                 'editar permisos',
                 'cambiar estado permisos',
                 'eliminar permisos',
