@@ -73,11 +73,13 @@ class ReporteController extends Controller
 
         //dd(['startDate' => $startDate, 'endDate' => $endDate, 'deptId' => $deptId]);
 
-
         $pageTitle = 'Reporte de multas, desde el: '
             . Carbon::parse($startDate)->translatedFormat('d F Y')
             . ' hasta el: '
             . Carbon::parse($endDate)->translatedFormat('d F Y');
+
+
+
 
 
 
@@ -545,7 +547,7 @@ class ReporteController extends Controller
 
         // Obtener los horarios por fecha
         $horariosPorFecha = $this->obtenerHorariosPorMinisterio($ministerioId, $startDate, $endDate);
-        //dd($horariosPorFecha);
+        dd($horariosPorFecha);
         // Usar una función separada para generar la cabecera con las fechas y actividades
         $cabeceraFechas = $this->obtenerCabeceraFechas($horariosPorFecha);
         //dd($cabeceraFechas);
@@ -657,8 +659,7 @@ class ReporteController extends Controller
                                 'nombre_actividad' => $h->actividadServicio->nombre ?? null,
                                 'hora_registro'    => $h->hora_registro,
                                 'hora_multa'       => $h->hora_multa,
-                                'hora_limite'      => $h->hora_limite,
-                                'tipo_pago'        => $h->tipo_pago
+                                'hora_limite'      => $h->hora_limite
                             ])->values()->toArray()
                         ];
                     }
@@ -700,8 +701,7 @@ class ReporteController extends Controller
                 'nombre_actividad' => $horario->actividadServicio->nombre ?? null,
                 'hora_registro'    => $horario->hora_registro,
                 'hora_multa'       => $horario->hora_multa,
-                'hora_limite'      => $horario->hora_limite,
-                'tipo_pago'        => $horario->tipo_pago
+                'hora_limite'      => $horario->hora_limite
             ];
         }
 
@@ -721,69 +721,81 @@ class ReporteController extends Controller
             'reglaMulta' => $reglaMulta
         ]);
 
-        $esProducto = $horario->tipo_pago == 0;
-        $resultado = [
-            'tipo' => null,
-            'multa' => 0,
-            'producto' => false, // True si debe un producto
-            'hora_marcacion' => null,
-            'retraso_min' => null
-        ];
-
+        // Si no se encontró asistencia, se asume que el usuario no marcó dentro del periodo permitido.
         if (!$asistencia) {
-            Log::info("No se encontró asistencia. Aplicando multa por falta o producto.", [
-                'tipo_pago' => $horario->tipo_pago
+            Log::info("No se encontró asistencia. Aplicando multa por falta.", [
+                'multa_por_falta' => $reglaMulta->multa_por_falta
             ]);
-
-            $resultado['tipo'] = 'falta';
-            $resultado['multa'] = $esProducto ? 0 : $reglaMulta->multa_por_falta;
-            $resultado['producto'] = $esProducto;
-            return $resultado;
+            return $reglaMulta->multa_por_falta;
         }
 
+        // Se extraen las horas desde la tabla de horarios.
         $horaRegistro   = Carbon::parse($horario->hora_registro);
         $horaMulta     = Carbon::parse($horario->hora_multa);
         $horaLimite    = Carbon::parse($horario->hora_limite);
         $horaMarcacion = Carbon::parse($asistencia->hora_marcacion);
 
-        $resultado['hora_marcacion'] = $horaMarcacion->format('H:i:s');
+        Log::debug("Horas de referencia", [
+            'hora_registro'  => $horaRegistro->format('H:i:s'),
+            'hora_multa'     => $horaMulta->format('H:i:s'),
+            'hora_limite'    => $horaLimite->format('H:i:s'),
+            'hora_marcacion' => $horaMarcacion->format('H:i:s')
+        ]);
 
-        // Puntualidad
+        // 1. Si el usuario marca antes o justo en la hora_registro, se considera puntual.
         if ($horaMarcacion->lessThanOrEqualTo($horaRegistro)) {
-            $resultado['tipo'] = 'puntual';
-            return $resultado;
+            Log::info("Marcación a tiempo (antes o en hora_registro). No se aplica multa.", [
+                'hora_marcacion' => $horaMarcacion->format('H:i:s'),
+                'hora_registro'  => $horaRegistro->format('H:i:s')
+            ]);
+            return 0;
         }
 
+        // 2. Si el usuario marca entre hora_registro y hora_multa, se considera que aún no corre la multa.
         if ($horaMarcacion->lessThanOrEqualTo($horaMulta)) {
-            $resultado['tipo'] = 'puntual';
-            return $resultado;
+            Log::info("Marcación realizada antes de la hora_multa. No se aplica multa.", [
+                'hora_marcacion' => $horaMarcacion->format('H:i:s'),
+                'hora_multa'     => $horaMulta->format('H:i:s')
+            ]);
+            return 0;
         }
 
-        // Retraso
-        $retraso = $horaMarcacion->greaterThan($horaLimite)
-            ? $horaLimite->diffInMinutes($horaMulta)
-            : $horaMarcacion->diffInMinutes($horaMulta);
+        // 3. Si la marcación es posterior a hora_multa, se calcula el retraso.
+        if ($horaMarcacion->greaterThan($horaLimite)) {
+            Log::info("Marcación posterior a la hora_limite. Se usará la diferencia máxima.", [
+                'hora_limite' => $horaLimite->format('H:i:s'),
+                'hora_multa'  => $horaMulta->format('H:i:s')
+            ]);
+            $retraso = $horaLimite->diffInMinutes($horaMulta);
+        } else {
+            $retraso = $horaMarcacion->diffInMinutes($horaMulta);
+        }
 
-        $resultado['retraso_min'] = $retraso;
+        Log::debug("Retraso calculado a partir de hora_multa", ['retraso_minutos' => $retraso]);
 
+        // 4. Si el retraso supera o iguala el umbral definido para retraso largo, se aplica la multa fija.
         if ($retraso >= $reglaMulta->minutos_retraso_largo) {
-            $resultado['tipo'] = 'retraso_largo';
-            $resultado['multa'] = $esProducto ? 0 : $reglaMulta->multa_por_retraso_largo;
-            $resultado['producto'] = $esProducto;
-            return $resultado;
+            Log::info("Retraso largo detectado.", [
+                'retraso'               => $retraso,
+                'minutos_retraso_largo' => $reglaMulta->minutos_retraso_largo,
+                'multa_por_retraso_largo' => $reglaMulta->multa_por_retraso_largo
+            ]);
+            return $reglaMulta->multa_por_retraso_largo;
         }
 
-        // Retraso corto
+        // 5. Para retrasos menores al umbral, se calcula la multa incremental.
         $intervalos = ceil($retraso / $reglaMulta->minutos_por_incremento);
         $multaIncremental = $intervalos * $reglaMulta->multa_incremental;
+        Log::info("Calculando multa incremental", [
+            'retraso'                => $retraso,
+            'minutos_por_incremento' => $reglaMulta->minutos_por_incremento,
+            'intervalos'             => $intervalos,
+            'multa_incremental'      => $reglaMulta->multa_incremental,
+            'multa_calculada'        => $multaIncremental
+        ]);
 
-        $resultado['tipo'] = 'retraso';
-        $resultado['multa'] = $esProducto ? 0 : $multaIncremental;
-        $resultado['producto'] = $esProducto;
-
-        return $resultado;
+        return $multaIncremental;
     }
-
 
     /**
      * Genera el reporte de multas con columnas dinámicas.
@@ -792,60 +804,85 @@ class ReporteController extends Controller
      */
     public function generarReporteColumnasDinamicas($ministerioId, $startDate, $endDate)
     {
-        Log::debug("Generando reporte de multas y productos", [
+        Log::debug("Generando reporte de multas", [
             'ministerioId' => $ministerioId,
             'startDate'    => $startDate,
             'endDate'      => $endDate
         ]);
 
+        // Obtener horarios agrupados por fecha
         $horariosPorFecha = $this->obtenerHorariosPorMinisterio($ministerioId, $startDate, $endDate);
         Log::debug("Horarios por fecha obtenidos", ['horariosPorFecha' => $horariosPorFecha]);
 
-        $fechas = array_unique(array_map(fn($item) => $item->fecha, $horariosPorFecha));
+        // Extraer y ordenar las fechas disponibles
+        $fechas = array_unique(array_map(function ($item) {
+            return $item->fecha;
+        }, $horariosPorFecha));
         sort($fechas);
+        Log::debug("Fechas extraídas y ordenadas", ['fechas' => $fechas]);
 
+        // Obtener la regla de multa y los usuarios asociados
         $ministerio = Ministerio::findOrFail($ministerioId);
         $reglaMulta = $ministerio->reglasMultas()->where('estado', Status::ACTIVE)->first();
-
         if (!$reglaMulta) {
             throw new \Exception("No se encontró una regla de multa para el ministerio.");
         }
+        Log::info("Regla de multa obtenida para ministerio", [
+            'ministerioId' => $ministerioId,
+            'reglaMulta'   => $reglaMulta
+        ]);
 
         $usuarios = $ministerio->usuarios;
-        $ciUsuarios = $usuarios->pluck('ci')->toArray();
+        Log::debug("Usuarios del ministerio", ['usuarios' => $usuarios]);
 
+        // Agrupar asistencias por llave compuesta: ci + '_' + fecha (Y-m-d)
+        $ciUsuarios = $usuarios->pluck('ci')->toArray();
         $asistenciasQuery = Asistencia::whereIn('ci', $ciUsuarios)
             ->whereBetween('fecha', [$startDate, $endDate])
             ->get();
+        Log::debug('Resultado de la consulta de asistencias', [
+            'asistenciasQuery' => $asistenciasQuery->toArray()
+        ]);
 
         $asistencias = $asistenciasQuery->groupBy(function ($item) {
             return $item->ci . '_' . Carbon::parse($item->fecha)->format('Y-m-d');
         });
+        Log::debug("Asistencias agrupadas", ['asistencias' => $asistencias->toArray()]);
 
+        // Construir el reporte
         $reporte = [];
-
         foreach ($usuarios as $usuario) {
             $fila = [
-                'nombre'          => $usuario->name,
-                'apellido'        => $usuario->last_name,
-                'ministerio'      => $usuario->ministerios->firstWhere('id', $ministerioId)->nombre ?? 'No asignado',
-                'Total_Multas'    => 0,
-                'Total_Productos' => 0
+                'nombre'       => $usuario->name,
+                'apellido'     => $usuario->last_name,
+                'ministerio'   => $usuario->ministerios->firstWhere('id', $ministerioId)->nombre ?? 'No asignado',
+                'Total_Multas' => 0
             ];
 
             $totalMultasUsuario = 0;
-            $totalProductosUsuario = 0;
-
+            // Procesar cada fecha disponible
             foreach ($fechas as $fecha) {
+                // Llave para obtener todas las asistencias del usuario en ese día
                 $key = $usuario->ci . '_' . $fecha;
                 $asistenciasDia = isset($asistencias[$key]) ? $asistencias[$key] : collect();
+                Log::debug("Procesando asistencias para usuario", [
+                    'usuario_ci'  => $usuario->ci,
+                    'fecha'       => $fecha,
+                    'key'         => $key,
+                    'asistencias' => $asistenciasDia->toArray()
+                ]);
 
-                $horariosDia = array_filter($horariosPorFecha, fn($h) => $h->fecha === $fecha);
+                // Obtener todos los horarios para la fecha
+                $horariosDia = array_filter($horariosPorFecha, function ($h) use ($fecha) {
+                    return $h->fecha === $fecha;
+                });
 
+                // Agrupar las actividades de la fecha de forma única, usando el nombre de la actividad
                 $actividadesGroup = [];
                 foreach ($horariosDia as $horario) {
                     foreach ($horario->actividades as $actividad) {
                         $nombreActividad = $actividad->nombre_actividad ?? 'Sin nombre';
+                        // Agrupamos todas las instancias de la misma actividad (por nombre)
                         if (!isset($actividadesGroup[$nombreActividad])) {
                             $actividadesGroup[$nombreActividad] = [];
                         }
@@ -853,59 +890,50 @@ class ReporteController extends Controller
                     }
                 }
 
+                // Procesar cada actividad agrupada
                 foreach ($actividadesGroup as $nombreActividad => $actividadesArray) {
                     $multaActividad = 0;
-                    $productosActividad = 0;
                     $detalleActividad = [];
-
                     foreach ($actividadesArray as $actividad) {
+                        // Convertir tiempos del horario a Carbon
                         $horaRegistro = Carbon::parse($actividad->hora_registro);
                         $horaLimite   = Carbon::parse($actividad->hora_limite);
 
+                        // Filtrar asistencias que estén en el rango entre hora_registro y hora_limite
                         $asistenciasEnRango = $asistenciasDia->filter(function ($a) use ($horaRegistro, $horaLimite) {
                             $horaMarcacion = Carbon::parse($a->hora_marcacion);
                             return $horaMarcacion->between($horaRegistro, $horaLimite, true);
                         });
+                        // Ordenar y obtener la asistencia más temprana
+                        $asistenciaActividad = $asistenciasEnRango->sortBy(function ($a) {
+                            return Carbon::parse($a->hora_marcacion)->timestamp;
+                        })->first();
 
-                        $asistenciaActividad = $asistenciasEnRango->sortBy(fn($a) => Carbon::parse($a->hora_marcacion)->timestamp)->first();
-
-                        // Calcular multa/producto
-                        $resultado = $this->calcularMulta($asistenciaActividad, $actividad, $reglaMulta);
-
-                        $multaActividad += $resultado['multa'];
-                        if ($resultado['producto']) {
-                            $productosActividad++; // Solo cuenta 1 por falta o atraso
-                        }
+                        // Calcular la multa para la actividad
+                        $multa = $this->calcularMulta($asistenciaActividad, $actividad, $reglaMulta);
+                        $multaActividad += $multa;
 
                         $detalleActividad[] = [
                             'nombre_actividad' => $nombreActividad,
                             'tipo'             => $actividad->tipo,
-                            'tipo_pago'        => $actividad->tipo_pago ?? 1,
                             'hora_registro'    => $actividad->hora_registro,
                             'hora_multa'       => $actividad->hora_multa,
                             'hora_limite'      => $actividad->hora_limite,
-                            'hora_marcacion'   => $resultado['hora_marcacion'] ?? 'No marcó',
-                            'retraso_min'      => $resultado['retraso_min'],
-                            'tipo_multa'       => $resultado['tipo'],
-                            'multa'            => $resultado['multa'],
-                            'producto'         => $resultado['producto']
+                            'hora_marcacion'   => $asistenciaActividad ? Carbon::parse($asistenciaActividad->hora_marcacion)->format('H:i:s') : 'No marcó',
+                            'multa'            => $multa
                         ];
                     }
 
+                    // Generar la llave dinámica para esta actividad en la fecha
                     $colKey = "d_{$fecha}_" . Str::slug($nombreActividad, '_');
                     $fila[$colKey] = [
-                        'multa_total'    => $multaActividad,
-                        'productos'      => $productosActividad,
-                        'detalle'        => $detalleActividad
+                        'multa_total' => $multaActividad,
+                        'detalle'     => $detalleActividad
                     ];
-
                     $totalMultasUsuario += $multaActividad;
-                    $totalProductosUsuario += $productosActividad;
                 }
             }
-
             $fila['Total_Multas'] = $totalMultasUsuario;
-            $fila['Total_Productos'] = $totalProductosUsuario;
             $reporte[] = $fila;
             Log::debug("Fila de reporte agregada", ['fila' => $fila]);
         }

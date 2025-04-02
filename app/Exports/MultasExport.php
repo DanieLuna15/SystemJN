@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Exports;
@@ -26,7 +27,7 @@ class MultasExport implements
     FromCollection,
     WithHeadings,
     WithMapping,
-    ShouldAutoSize, // Esto ajusta el ancho de las columnas, pero lo reforzamos en afterSheet.
+    ShouldAutoSize,
     WithStyles,
     WithTitle,
     WithCustomStartCell,
@@ -56,33 +57,29 @@ class MultasExport implements
             return $this->headingsCache;
         }
 
-        // Primera fila: columnas fijas y encabezados por fecha
         $headerRow1 = ['N°', 'Integrantes', 'Ministerio'];
-        // Segunda fila: para las actividades por fecha
         $headerRow2 = ['', '', ''];
 
         foreach ($this->dates as $date) {
             $cantActividades = count($date['actividades'] ?? []);
-            // En la primera fila se coloca el encabezado de la fecha con día
             $headerRow1[] = $date['fecha'] . ' (' . ($date['dia_semana'] ?? '') . ')';
-            // Si hay más de una actividad, se dejan las celdas siguientes en blanco
             for ($i = 1; $i < $cantActividades; $i++) {
                 $headerRow1[] = '';
             }
-            // En la segunda fila se muestran los nombres de las actividades
             foreach ($date['actividades'] as $actividad) {
                 $headerRow2[] = $actividad;
             }
         }
-        // Columnas fijas al final
+
         $headerRow1 = array_merge($headerRow1, [
-            'Total Multas', 
-            'Total a Pagar', 
-            'Puntualidad', 
-            'Pagos', 
+            'Total Multas',
+            'Total Productos',
+            'Total a Pagar',
+            'Puntualidad',
+            'Pagos',
             'Observaciones'
         ]);
-        $headerRow2 = array_merge($headerRow2, ['', '', '', '', '']);
+        $headerRow2 = array_merge($headerRow2, ['', '', '', '', '', '']);
 
         $this->headingsCache = [
             $headerRow1,
@@ -103,23 +100,31 @@ class MultasExport implements
             $row['ministerio'] ?? '',
         ];
 
-        // Recorrer cada fecha y actividad para obtener el valor de la multa
         foreach ($this->dates as $date) {
             foreach ($date['actividades'] as $actividad) {
                 $alias = "d_{$date['fecha']}_" . Str::slug($actividad, '_');
-                $value = isset($row[$alias]['multa_total']) ? (int)$row[$alias]['multa_total'] : 0;
+                if (isset($row[$alias])) {
+                    if (($row[$alias]['productos'] ?? 0) > 0) {
+                        $value = 'Producto';
+                    } else {
+                        $value = (int)($row[$alias]['multa_total'] ?? 0);
+                    }
+                } else {
+                    $value = 'Sin datos';
+                }
                 $rowData[] = $value === 0 ? "0" : $value;
             }
         }
 
-        // Agregar las columnas fijas finales
-        $totalMultas   = (int)($row['Total_Multas'] ?? 0);
-        $totalPagar    = (int)($row['Total_Pagar'] ?? 0);
-        $puntualidad   = $row['Puntualidad'] ?? '';
-        $pagos         = $row['Pagos'] ?? '';
+        $totalMultas = (int)($row['Total_Multas'] ?? 0);
+        $totalProductos = (int)($row['Total_Productos'] ?? 0);
+        $totalPagar = (int)($row['Total_Pagar'] ?? 0);
+        $puntualidad = $row['Puntualidad'] ?? '';
+        $pagos = $row['Pagos'] ?? '';
         $observaciones = $row['Observaciones'] ?? '';
 
         $rowData[] = $totalMultas === 0 ? "0" : $totalMultas;
+        $rowData[] = $totalProductos === 0 ? "0" : $totalProductos;
         $rowData[] = $totalPagar === 0 ? "0" : $totalPagar;
         $rowData[] = $puntualidad;
         $rowData[] = $pagos;
@@ -186,7 +191,7 @@ class MultasExport implements
         $sheet->getStyle('A')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
         // Fondo a la columna "Total Multas"
-        $fixedCount = 5; 
+        $fixedCount = 6;
         $fixedStart = $lastColumnIndex - $fixedCount + 1;
         $totalMultasColumnLetter = Coordinate::stringFromColumnIndex($fixedStart);
         $lastRow = count($this->multas_detalle) + 5;
@@ -262,7 +267,7 @@ class MultasExport implements
         }
 
         // Fusiones para las columnas fijas (Total Multas, Total a Pagar, etc.)
-        $fixedCount = 5; // 5 columnas fijas
+        $fixedCount = 6; // 5 columnas fijas
         $fixedStart = $lastColumnIndex - $fixedCount + 1;
         for ($i = 0; $i < $fixedCount; $i++) {
             $colLetter = Coordinate::stringFromColumnIndex($fixedStart + $i);

@@ -250,6 +250,7 @@
                                                         </th>
                                                     @endforeach
                                                     <th rowspan="2">Total Multas</th>
+                                                    <th rowspan="2">Total Productos</th>
                                                 </tr>
                                                 <tr>
                                                     @foreach ($cabeceraFechas as $datos)
@@ -268,12 +269,15 @@
                                                         @foreach ($cabeceraFechas as $fecha => $datos)
                                                             @foreach ($datos['actividades'] as $actividad)
                                                                 @php
-                                                                    $colKey =
-                                                                        "d_{$fecha}_" . Str::slug($actividad, '_');
+                                                                    $colKey = "d_{$fecha}_" . Str::slug($actividad, '_');
                                                                 @endphp
                                                                 <td>
                                                                     @if (isset($row[$colKey]))
-                                                                        {{ $row[$colKey]['multa_total'] }}
+                                                                        @if ($row[$colKey]['productos'] > 0)
+                                                                            <span class="badge badge-warning">Producto</span>
+                                                                        @else
+                                                                            {{ $row[$colKey]['multa_total'] }}
+                                                                        @endif
                                                                     @else
                                                                         Sin datos
                                                                     @endif
@@ -281,6 +285,7 @@
                                                             @endforeach
                                                         @endforeach
                                                         <td>{{ $row['Total_Multas'] }}</td>
+                                                        <td>{{ $row['Total_Productos'] }}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -289,6 +294,7 @@
                                 </div>
                             </div>
                         </div>
+                        
 
 
 

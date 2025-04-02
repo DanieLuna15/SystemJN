@@ -24,7 +24,8 @@ class MinisterioUserSeeder extends Seeder
             [8, 2],
             [9, 1],
             [9, 3],
-            [10, 3]
+            [10, 3],
+            [11, 2],
         ])->map(fn($asociacion) => [
             'user_id' => $asociacion[0], // Usuario
             'ministerio_id' => $asociacion[1], // Ministerio
