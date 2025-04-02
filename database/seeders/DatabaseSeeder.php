@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
             HorarioMinisterioSeeder::class,
             MinisterioUserSeeder::class,
             MinisterioLiderSeeder::class,
+            ReglasMultasSeeder::class,
+            ReglaMultaMinisterioSeeder::class,
         ]);
     }
 }

@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
-class Regla_Multa_MinisterioSeeder extends Seeder
+class ReglaMultaMinisterioSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -17,10 +18,9 @@ class Regla_Multa_MinisterioSeeder extends Seeder
             [1, 2],
             [1, 3],
             [1, 4],
-
         ])->map(fn($asociacion) => [
+            'regla_multa_id' => $asociacion[0],
             'ministerio_id' => $asociacion[1],
-            'regla_multa_id' => $asociacion[1],
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ])->toArray();
