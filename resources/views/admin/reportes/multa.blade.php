@@ -22,218 +22,13 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#detallado" data-toggle="tab" data-section="detallado">Detalle</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#servicios" data-toggle="tab" data-section="servicios">Servicios</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#dinamico" data-toggle="tab" data-section="dinamico">Servicios</a>
-                        </li>
                     </ul>
                 </div>
                 <div class="card-body">
                     <div class="tab-content">
-                        <!-- Reporte General -->
-                        <div class="active tab-pane" id="general">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="table-responsive">
-                                        <table id="actividad_servicios-table"
-                                            class="table table-striped table-bordered table-hover table-sm datatable text-center">
-                                            <thead class="text-center">
-                                                <tr>
-                                                    <th>Nombre</th>
-                                                    <th>Apellido</th>
-                                                    <th>Ministerio</th>
-                                                    <th>Multa total (Bs)</th>
-                                                    <th>Productos</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($multas_general as $empleado)
-                                                    <tr>
-                                                        <td>{{ $empleado->emp_firstname }}</td>
-                                                        <td>{{ $empleado->emp_lastname }}</td>
-                                                        <td>{{ $empleado->dept_name }}</td>
-                                                        <td>{{ $empleado->total_multa_bs }}</td>
-                                                        <td>{{ $empleado->productos_adeudados }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Reporte detallado -->
-                        <div class="tab-pane" id="detallado">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="table-responsive">
-                                        <table id="actividad_servicios-table"
-                                            class="table table-striped table-bordered table-hover table-sm datatable text-center">
-                                            <thead class="text-center">
-                                                <tr>
-                                                    <th>Nombre</th>
-                                                    <th>Apellido</th>
-                                                    <th>Día de la semana</th>
-                                                    <th>Fecha</th>
-                                                    <th>Hora</th>
-                                                    <th>Departamento</th>
-                                                    <th>Multa (Bs) / Productos</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($multas_detalle as $empleado)
-                                                    <tr>
-                                                        <td>{{ $empleado->emp_firstname }}</td>
-                                                        <td>{{ $empleado->emp_lastname }}</td>
-                                                        <td>{{ $empleado->dia_semana }}</td>
-                                                        <td>{{ $empleado->punch_date }}</td>
-                                                        <td>{{ $empleado->punch_hour }}</td>
-                                                        <td>{{ $empleado->dept_name }}</td>
-                                                        <td>{{ $empleado->multa_bs }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Reporte tipo Pivot (Columnas dinámicas para cada día) -->
-                        <div class="tab-pane" id="servicios">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="table-responsive">
-                                        <table id="reporte-asistencias-table"
-                                            class="table table-striped table-bordered table-hover table-sm datatable text-center">
 
-                                            <thead>
-
-                                                <tr>
-                                                    <th>Nombre</th>
-                                                    <th>Apellido</th>
-                                                    <th>Departamento</th>
-                                                    {{-- Se generan dinámicamente las cabeceras de cada fecha --}}
-                                                    @foreach ($dates as $date)
-                                                        <th>{{ "{$date['fecha']} - {$date['dia_semana_lit']}" }}</th>
-                                                    @endforeach
-                                                    <th>Total Multas</th>
-                                                    <th>Observaciones</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($multas_detalle_reporte as $empleado)
-                                                    <tr>
-                                                        <td>{{ $empleado->emp_firstname }}</td>
-                                                        <td>{{ $empleado->emp_lastname }}</td>
-                                                        <td>{{ $empleado->dept_name }}</td>
-                                                        {{-- Se muestran las multas correspondientes a cada fecha dinámica --}}
-                                                        @foreach ($dates as $date)
-                                                            <td>{{ $empleado->{$date['alias']} ?? 0 }}</td>
-                                                        @endforeach
-                                                        <td>{{ $empleado->Total_Multas ?? 0 }}</td>
-                                                        <td></td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Reporte dinamico -->
-                        {{-- <div class="tab-pane" id="dinamico">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="table-responsive">
-                                        <table id="reporte-asistencias-table"
-                                            class="table table-striped table-bordered table-hover table-sm datatable text-center">
-                                            <thead>
-                                                <tr>
-                                                    <th rowspan="2">Nombre</th>
-                                                    <th rowspan="2">Apellido</th>
-                                                    <th rowspan="2">Ministerio</th>
-                                                    @foreach ($cabeceraFechas as $fecha => $datos)
-                                                        <th colspan="{{ count($datos['actividades']) }}">
-                                                            {{ $fecha }} ({{ $datos['dia_semana'] }})
-                                                        </th>
-                                                    @endforeach
-                                                    <th rowspan="2">Total Multas</th>
-                                                </tr>
-                                                <tr>
-                                                    @foreach ($cabeceraFechas as $datos)
-                                                        @foreach ($datos['actividades'] as $actividad)
-                                                            <th>{{ $actividad }}</th>
-                                                        @endforeach
-                                                    @endforeach
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($reporteDinamico as $row)
-                                                    <tr>
-                                                        <td>{{ $row['nombre'] }}</td>
-                                                        <td>{{ $row['apellido'] }}</td>
-                                                        <td>{{ $row['ministerio'] }}</td>
-                                                        @foreach ($cabeceraFechas as $fecha => $datos)
-                                                            @foreach ($datos['actividades'] as $actividad)
-                                                                @php
-                                                                    $colKey =
-                                                                        "d_{$fecha}_" . Str::slug($actividad, '_');
-                                                                @endphp
-                                                                <td>
-                                                                    @if (isset($row[$colKey]))
-                                                                        {{ $row[$colKey]['multa_total'] }}
-                                                                    @else
-                                                                        Sin datos
-                                                                    @endif
-                                                                </td>
-                                                            @endforeach
-                                                        @endforeach
-                                                         @foreach ($cabeceraFechas as $fecha => $datos)
-                                                            @foreach ($datos['actividades'] as $actividad)
-                                                                @php
-                                                                    $colKey =
-                                                                        "d_{$fecha}_" . Str::slug($actividad, '_');
-                                                                @endphp
-                                                                <td>
-                                                                    @if (isset($row[$colKey]))
-                                                                        <p><strong>Total:</strong>
-                                                                            {{ $row[$colKey]['multa_total'] }}</p>
-                                                                        <ul class="list-unstyled">
-                                                                            @foreach ($row[$colKey]['detalle'] as $detalle)
-                                                                                <li>
-                                                                                    <strong>{{ $detalle['nombre_actividad'] }}</strong><br>
-                                                                                    Tipo: {{ $detalle['tipo'] }}<br>
-                                                                                    Hora Registro:
-                                                                                    {{ $detalle['hora_registro'] }}<br>
-                                                                                    Hora Marcado:
-                                                                                    {{ $detalle['hora_marcacion'] }}<br>
-                                                                                    Multa: {{ $detalle['multa'] }}
-                                                                                </li>
-                                                                            @endforeach
-                                                                        </ul>
-                                                                    @else
-                                                                        Sin datos
-                                                                    @endif
-                                                                </td>
-                                                            @endforeach
-                                                        @endforeach 
-                                                        <td>{{ $row['Total_Multas'] }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div> --}}
-
-                        <!-- Reporte dinamico -->
-                        <div class="tab-pane" id="dinamico">
+                        <!-- Reporte General dinamico -->
+                        <div class="tab-pane fade show active" id="general">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="table-responsive">
@@ -269,12 +64,25 @@
                                                         @foreach ($cabeceraFechas as $fecha => $datos)
                                                             @foreach ($datos['actividades'] as $actividad)
                                                                 @php
-                                                                    $colKey = "d_{$fecha}_" . Str::slug($actividad, '_');
+                                                                    $colKey =
+                                                                        "d_{$fecha}_" . Str::slug($actividad, '_');
                                                                 @endphp
                                                                 <td>
                                                                     @if (isset($row[$colKey]))
-                                                                        @if ($row[$colKey]['productos'] > 0)
-                                                                            <span class="badge badge-warning">Producto</span>
+                                                                        @php
+                                                                            $detalle = $row[$colKey]['detalle'];
+                                                                            $tienePermiso = collect($detalle)->contains(
+                                                                                function ($d) {
+                                                                                    return $d['permiso'] !== 'No';
+                                                                                },
+                                                                            );
+                                                                        @endphp
+
+                                                                        @if ($tienePermiso)
+                                                                            <span class="badge badge-info">Permiso</span>
+                                                                        @elseif ($row[$colKey]['productos'] > 0)
+                                                                            <span
+                                                                                class="badge badge-warning">Producto</span>
                                                                         @else
                                                                             {{ $row[$colKey]['multa_total'] }}
                                                                         @endif
@@ -294,67 +102,30 @@
                                 </div>
                             </div>
                         </div>
-                        
-
-
-
-                        {{-- @php
-                            // Prepara un arreglo con claves tipo "YYYY-MM-DD" y valores "YYYY-MM-DD Literal"
-                            // Por ejemplo: "2025-03-02" => "2025-03-02 Domingo"
-                            $fechasLetras = [];
-                            foreach ($reporteDinamico as $reporte) {
-                                foreach ($reporte as $key => $value) {
-                                    if (strpos($key, 'd_') === 0 && is_array($value) && isset($value['dia_semana'])) {
-                                        $fechaOnly = str_replace('d_', '', $key);
-                                        $fechasLetras[$fechaOnly] = "{$fechaOnly} " . ucfirst($value['dia_semana']);
-                                    }
-                                }
-                            }
-                            ksort($fechasLetras);
-
-                            // Calcular el máximo número de actividades por cada fecha, entre todos los registros
-                            $maxActividades = [];
-                            foreach ($fechasLetras as $fecha => $label) {
-                                $max = 0;
-                                foreach ($reporteDinamico as $row) {
-                                    $colKey = 'd_' . $fecha;
-                                    if (isset($row[$colKey]) && isset($row[$colKey]['detalle'])) {
-                                        $count = count($row[$colKey]['detalle']);
-                                        if ($count > $max) {
-                                            $max = $count;
-                                        }
-                                    }
-                                }
-                                // Si no hay actividades, asignamos al menos 1 subcolumna para mostrar "Sin actividades"
-                                $maxActividades[$fecha] = $max > 0 ? $max : 1;
-                            }
-                        @endphp
-
-                        <!-- Reporte dinamico -->
-                        <div class="tab-pane" id="dinamico">
+                        <!-- Reporte detallado -->
+                        <div class="tab-pane" id="detallado">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="table-responsive">
-                                        <table id="reporte-asistencias-table"
+                                        <table id="reporte-detallado-table"
                                             class="table table-striped table-bordered table-hover table-sm datatable text-center">
                                             <thead>
-                                                <!-- Primera fila de encabezado: datos fijos y encabezados por fecha con colspan -->
                                                 <tr>
                                                     <th rowspan="2">Nombre</th>
                                                     <th rowspan="2">Apellido</th>
-                                                    <th rowspan="2">Ministerio</th>
-                                                    @foreach ($fechasLetras as $fecha => $label)
-                                                        <th colspan="{{ $maxActividades[$fecha] }}">{{ $label }}
+                                                    @foreach ($cabeceraFechas as $fecha => $datos)
+                                                        <th colspan="{{ count($datos['actividades']) }}">
+                                                            {{ $fecha }} ({{ $datos['dia_semana'] }})
                                                         </th>
                                                     @endforeach
                                                     <th rowspan="2">Total Multas</th>
+                                                    <th rowspan="2">Total Productos</th>
                                                 </tr>
-                                                <!-- Segunda fila de encabezado: subcolumnas para cada fecha -->
                                                 <tr>
-                                                    @foreach ($fechasLetras as $fecha => $label)
-                                                        @for ($i = 0; $i < $maxActividades[$fecha]; $i++)
-                                                            <th>Actividad {{ $i + 1 }}</th>
-                                                        @endfor
+                                                    @foreach ($cabeceraFechas as $datos)
+                                                        @foreach ($datos['actividades'] as $actividad)
+                                                            <th>{{ $actividad }}</th>
+                                                        @endforeach
                                                     @endforeach
                                                 </tr>
                                             </thead>
@@ -363,38 +134,62 @@
                                                     <tr>
                                                         <td>{{ $row['nombre'] }}</td>
                                                         <td>{{ $row['apellido'] }}</td>
-                                                        <td>{{ $row['ministerio'] }}</td>
-                                                        @foreach ($fechasLetras as $fecha => $label)
-                                                            @php
-                                                                $colKey = 'd_' . $fecha;
-                                                                $detalles = isset($row[$colKey]['detalle'])
-                                                                    ? $row[$colKey]['detalle']
-                                                                    : [];
-                                                                $cantDetalle = count($detalles);
-                                                                $max = $maxActividades[$fecha];
-                                                            @endphp
-                                                            @if ($cantDetalle > 0)
-                                                                @foreach ($detalles as $detalle)
-                                                                    <td class="text-center">
-                                                                        <strong>{{ $detalle['nombre_actividad'] }}</strong><br>
-                                                                        Tipo: {{ $detalle['tipo'] }}<br>
-                                                                        Hora:
-                                                                        {{ $detalle['hora_marcacion'] ?? 'No marcó' }}<br>
-                                                                        Multa: {{ number_format($detalle['multa'], 2) }}
-                                                                    </td>
-                                                                @endforeach
-                                                                
-                                                                @for ($i = 0; $i < $max - $cantDetalle; $i++)
-                                                                    <td></td>
-                                                                @endfor
-                                                            @else
-                                                                
-                                                                @for ($i = 0; $i < $max; $i++)
-                                                                    <td>Sin actividades</td>
-                                                                @endfor
-                                                            @endif
+                                                        @foreach ($cabeceraFechas as $fecha => $datos)
+                                                            @foreach ($datos['actividades'] as $actividad)
+                                                                @php
+                                                                    $colKey =
+                                                                        "d_{$fecha}_" . Str::slug($actividad, '_');
+                                                                @endphp
+                                                                <td>
+                                                                    @if (isset($row[$colKey]))
+                                                                        @foreach ($row[$colKey]['detalle'] as $item)
+                                                                            <div class="border-bottom mb-1 pb-1">
+                                                                                {{-- Mostrar permiso --}}
+                                                                                @if (isset($item['permiso']) && is_array($item['permiso']))
+                                                                                    <span
+                                                                                        class="badge badge-info">Permiso</span><br>
+                                                                                    <span
+                                                                                        class="badge badge-dark">{{ $item['permiso']['tipo'] }}</span><br>
+                                                                                    <small><strong>Motivo:</strong>
+                                                                                        {{ $item['permiso']['motivo'] }}</small><br>
+                                                                                @elseif (isset($item['permiso']) && $item['permiso'] !== 'No')
+                                                                                    <span
+                                                                                        class="badge badge-info">Permiso</span><br>
+                                                                                @endif
+
+                                                                                {{-- Mostrar datos si no tiene permiso --}}
+                                                                                @if (!isset($item['permiso']) || $item['permiso'] === 'No')
+                                                                                    <small><strong>H/Reg.:</strong>
+                                                                                        {{ $item['hora_registro'] }}</small><br>
+                                                                                    <small><strong>H/Mul.:</strong>
+                                                                                        {{ $item['hora_multa'] }}</small><br>
+                                                                                    <small><strong>H/Marc.:</strong>
+                                                                                        {{ $item['hora_marcacion'] }}</small><br>
+                                                                                    <small><strong>Min/R:</strong>
+                                                                                        {{ $item['retraso_min'] ?? 0 }}</small><br>
+                                                                                    <small><strong>Tipo Multa:</strong>
+                                                                                        {{ $item['tipo_multa'] ?? '-' }}</small><br>
+
+                                                                                    @if ($item['producto'])
+                                                                                        <span
+                                                                                            class="badge badge-warning">Producto</span><br>
+                                                                                    @elseif($item['multa'] > 0)
+                                                                                        <small><strong>Multa:</strong>
+                                                                                            {{ $item['multa'] }}</small><br>
+                                                                                    @else
+                                                                                        <small><strong>Puntual</strong></small><br>
+                                                                                    @endif
+                                                                                @endif
+                                                                            </div>
+                                                                        @endforeach
+                                                                    @else
+                                                                        Sin datos
+                                                                    @endif
+                                                                </td>
+                                                            @endforeach
                                                         @endforeach
-                                                        <td>{{ number_format($row['Total_Multas'], 2) }}</td>
+                                                        <td>{{ $row['Total_Multas'] }}</td>
+                                                        <td>{{ $row['Total_Productos'] }}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -402,7 +197,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </div> --}}
+                        </div>
+
 
 
                     </div>

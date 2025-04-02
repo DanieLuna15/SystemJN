@@ -104,7 +104,14 @@ class MultasExport implements
             foreach ($date['actividades'] as $actividad) {
                 $alias = "d_{$date['fecha']}_" . Str::slug($actividad, '_');
                 if (isset($row[$alias])) {
-                    if (($row[$alias]['productos'] ?? 0) > 0) {
+                    $detalle = $row[$alias]['detalle'] ?? [];
+                    $tienePermiso = collect($detalle)->contains(function ($d) {
+                        return $d['permiso'] !== 'No';
+                    });
+
+                    if ($tienePermiso) {
+                        $value = 'Permiso';
+                    } elseif (($row[$alias]['productos'] ?? 0) > 0) {
                         $value = 'Producto';
                     } else {
                         $value = (int)($row[$alias]['multa_total'] ?? 0);
@@ -132,6 +139,7 @@ class MultasExport implements
 
         return $rowData;
     }
+
 
     public function styles(Worksheet $sheet): array
     {
@@ -302,8 +310,6 @@ class MultasExport implements
             $colLetter = Coordinate::stringFromColumnIndex($i);
             $sheet->getColumnDimension($colLetter)->setAutoSize(true);
         }
-
-
     }
 
     public function registerEvents(): array
