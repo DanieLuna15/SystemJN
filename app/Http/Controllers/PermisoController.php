@@ -8,7 +8,17 @@ use App\Models\User;
 use Illuminate\Http\Request;
 
 class PermisoController extends Controller
-{
+{    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('can:ver permisos')->only(['index']);
+        $this->middleware('can:crear permisos')->only(['create', 'store']);
+        $this->middleware('can:editar permisos')->only(['edit', 'store']);
+        $this->middleware('can:ver permiso')->only(['show']);
+        $this->middleware('can:eliminar permisos')->only(['destroy']);
+        $this->middleware('can:cambiar estado permisos')->only(['status']);
+    }
+
     /**
      * Lista todos los permisos.
      */

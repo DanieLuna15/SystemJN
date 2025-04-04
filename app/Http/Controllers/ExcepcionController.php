@@ -9,6 +9,17 @@ use Illuminate\Http\Request;
 
 class ExcepcionController extends Controller
 {
+
+    public function __construct()
+{
+    $this->middleware('auth');
+    $this->middleware('can:ver excepciones')->only(['index']);
+    $this->middleware('can:crear excepciones')->only(['create', 'store']);
+    $this->middleware('can:editar excepciones')->only(['edit', 'store']);
+    $this->middleware('can:ver excepcion')->only(['show']);
+    $this->middleware('can:eliminar excepciones')->only(['destroy']);
+    $this->middleware('can:cambiar estado excepciones')->only(['status']);
+}
     /**
      * Display a listing of the resource.
      */

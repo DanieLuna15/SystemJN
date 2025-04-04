@@ -72,6 +72,14 @@ class RolesPermissionsSeeder extends Seeder
                 'editar permisos',
                 'cambiar estado permisos',
                 'eliminar permisos',
+
+                // 📌 Gestión de Excepciones (Nuevo)
+                'crear excepciones',
+                'ver excepciones',
+                'ver excepcion',
+                'editar excepciones',
+                'cambiar estado excepciones',
+                'eliminar excepciones',
             ],
             'Líder' => [
                 'ver dashboard',

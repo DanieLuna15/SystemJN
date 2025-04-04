@@ -41,10 +41,10 @@
                                                     Sin datos
                                                 </small>
                                             @else
-                                                {{ $excepcion->usuario->name }} 
+                                                {{ $excepcion->usuario->name }}
                                             @endif
                                         </td>
-                                        
+
 
                                         <!-- fecha centrado -->
                                         <td class="text-center align-middle">
@@ -115,13 +115,13 @@
                                         <!-- Acciones centradas -->
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center">
-                                                @can('editar horarios')
+                                                @can('editar excepciones')
                                                     <a href="{{ route('admin.excepciones.edit', $excepcion) }}"
                                                         class="btn btn-warning btn-sm mx-1" title="Editar">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                 @endcan
-                                                @can('cambiar estado horarios')
+                                                @can('cambiar estado excepciones')
                                                     <button type="button" title="Cambiar estado"
                                                         class="btn btn-sm {{ $excepcion->estado ? 'btn-danger' : 'btn-success' }} confirmationBtn mx-1"
                                                         data-action="{{ route('admin.excepciones.status', $excepcion->id) }}"
@@ -152,7 +152,7 @@
 @endpush
 
 @push('breadcrumb-plugins')
-    @can('crear horarios')
+    @can('crear excepciones')
         <a href="{{ route('admin.excepciones.create') }}" class="btn btn-success rounded">
             <i class="fas fa-plus-square"></i> Nuevo
         </a>
