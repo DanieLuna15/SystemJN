@@ -36,8 +36,7 @@
                                             class="table table-striped table-bordered table-hover table-sm datatable text-center">
                                             <thead>
                                                 <tr>
-                                                    <th rowspan="2">Nombre</th>
-                                                    <th rowspan="2">Apellido</th>
+                                                    <th rowspan="2">Integrantes</th>
                                                     <th rowspan="2">Ministerio</th>
                                                     @foreach ($cabeceraFechas as $fecha => $datos)
                                                         <th colspan="{{ count($datos['actividades']) }}">
@@ -50,7 +49,7 @@
                                                 <tr>
                                                     @foreach ($cabeceraFechas as $datos)
                                                         @foreach ($datos['actividades'] as $actividad)
-                                                            <th>{{ $actividad }}</th>
+                                                            <th>{{ $actividad['nombre_actividad'] }}</th>
                                                         @endforeach
                                                     @endforeach
                                                 </tr>
@@ -58,14 +57,13 @@
                                             <tbody>
                                                 @foreach ($reporteDinamico as $row)
                                                     <tr>
-                                                        <td>{{ $row['nombre'] }}</td>
-                                                        <td>{{ $row['apellido'] }}</td>
+                                                        <td>{{ $row['integrantes'] }}</td>
                                                         <td>{{ $row['ministerio'] }}</td>
                                                         @foreach ($cabeceraFechas as $fecha => $datos)
                                                             @foreach ($datos['actividades'] as $actividad)
                                                                 @php
                                                                     $colKey =
-                                                                        "d_{$fecha}_" . Str::slug($actividad, '_');
+                                                                        "d_{$fecha}_" . Str::slug($actividad['nombre_actividad'], '_');
                                                                 @endphp
                                                                 <td>
                                                                     @if (isset($row[$colKey]))
@@ -111,8 +109,7 @@
                                             class="table table-striped table-bordered table-hover table-sm datatable text-center">
                                             <thead>
                                                 <tr>
-                                                    <th rowspan="2">Nombre</th>
-                                                    <th rowspan="2">Apellido</th>
+                                                    <th rowspan="2">Integrantes</th>
                                                     @foreach ($cabeceraFechas as $fecha => $datos)
                                                         <th colspan="{{ count($datos['actividades']) }}">
                                                             {{ $fecha }} ({{ $datos['dia_semana'] }})
@@ -124,7 +121,7 @@
                                                 <tr>
                                                     @foreach ($cabeceraFechas as $datos)
                                                         @foreach ($datos['actividades'] as $actividad)
-                                                            <th>{{ $actividad }}</th>
+                                                            <th>{{ $actividad['nombre_actividad'] }}</th>
                                                         @endforeach
                                                     @endforeach
                                                 </tr>
@@ -132,13 +129,12 @@
                                             <tbody>
                                                 @foreach ($reporteDinamico as $row)
                                                     <tr>
-                                                        <td>{{ $row['nombre'] }}</td>
-                                                        <td>{{ $row['apellido'] }}</td>
+                                                        <td>{{ $row['integrantes'] }}</td>
                                                         @foreach ($cabeceraFechas as $fecha => $datos)
                                                             @foreach ($datos['actividades'] as $actividad)
                                                                 @php
                                                                     $colKey =
-                                                                        "d_{$fecha}_" . Str::slug($actividad, '_');
+                                                                        "d_{$fecha}_" . Str::slug($actividad['nombre_actividad'], '_');
                                                                 @endphp
                                                                 <td>
                                                                     @if (isset($row[$colKey]))

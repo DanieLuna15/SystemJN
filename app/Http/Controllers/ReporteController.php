@@ -32,7 +32,7 @@ class ReporteController extends Controller
 
         // $reporteDinamico = $this->generarReporteColumnasDinamicas($deptId, $startDate, $endDate);
         $multas_detalle = $this->generarReporteColumnasDinamicas($ministerioId, $startDate, $endDate);
-        //dd($reporteDinamico);
+        //dd($multas_detalle);
 
         // Obtener los horarios por fecha
         $horariosPorFecha = $this->obtenerHorariosPorMinisterio($ministerioId, $startDate, $endDate);
@@ -190,16 +190,16 @@ class ReporteController extends Controller
                     })->filter();
 
                     if ($actividades->isNotEmpty()) {
-                        $resultados[$fechaString] = (object)[
-                            'fecha'       => $fechaString,
-                            'dia_semana'  => $dayMapping[$diaIndice],
-                            'actividades' => $actividades->map(fn($h) => (object)[
-                                'tipo'             => 'fijo',
+                        $resultados[$fechaString] = (object) [
+                            'fecha' => $fechaString,
+                            'dia_semana' => $dayMapping[$diaIndice],
+                            'actividades' => $actividades->map(fn($h) => (object) [
+                                'tipo' => 'fijo',
                                 'nombre_actividad' => $h->actividadServicio->nombre ?? null,
-                                'hora_registro'    => $h->hora_registro,
-                                'hora_multa'       => $h->hora_multa,
-                                'hora_limite'      => $h->hora_limite,
-                                'tipo_pago'        => $h->tipo_pago
+                                'hora_registro' => $h->hora_registro,
+                                'hora_multa' => $h->hora_multa,
+                                'hora_limite' => $h->hora_limite,
+                                'tipo_pago' => $h->tipo_pago
                             ])->values()->toArray()
                         ];
                     }
@@ -229,20 +229,20 @@ class ReporteController extends Controller
             $diaIndice = Carbon::parse($horario->fecha)->dayOfWeek;
 
             if (!isset($resultados[$fechaString])) {
-                $resultados[$fechaString] = (object)[
-                    'fecha'       => $fechaString,
-                    'dia_semana'  => $dayMapping[$diaIndice],
+                $resultados[$fechaString] = (object) [
+                    'fecha' => $fechaString,
+                    'dia_semana' => $dayMapping[$diaIndice],
                     'actividades' => []
                 ];
             }
 
-            $resultados[$fechaString]->actividades[] = (object)[
-                'tipo'             => 'eventual',
+            $resultados[$fechaString]->actividades[] = (object) [
+                'tipo' => 'eventual',
                 'nombre_actividad' => $horario->actividadServicio->nombre ?? null,
-                'hora_registro'    => $horario->hora_registro,
-                'hora_multa'       => $horario->hora_multa,
-                'hora_limite'      => $horario->hora_limite,
-                'tipo_pago'        => $horario->tipo_pago
+                'hora_registro' => $horario->hora_registro,
+                'hora_multa' => $horario->hora_multa,
+                'hora_limite' => $horario->hora_limite,
+                'tipo_pago' => $horario->tipo_pago
             ];
         }
 
@@ -258,7 +258,7 @@ class ReporteController extends Controller
     {
         Log::debug("Iniciando cálculo de multa", [
             'asistencia' => $asistencia,
-            'horario'    => $horario,
+            'horario' => $horario,
             'reglaMulta' => $reglaMulta
         ]);
 
@@ -282,9 +282,9 @@ class ReporteController extends Controller
             return $resultado;
         }
 
-        $horaRegistro   = Carbon::parse($horario->hora_registro);
-        $horaMulta     = Carbon::parse($horario->hora_multa);
-        $horaLimite    = Carbon::parse($horario->hora_limite);
+        $horaRegistro = Carbon::parse($horario->hora_registro);
+        $horaMulta = Carbon::parse($horario->hora_multa);
+        $horaLimite = Carbon::parse($horario->hora_limite);
         $horaMarcacion = Carbon::parse($asistencia->hora_marcacion);
 
         $resultado['hora_marcacion'] = $horaMarcacion->format('H:i:s');
@@ -360,7 +360,12 @@ class ReporteController extends Controller
             throw new \Exception("No se encontró una regla de multa para el ministerio.");
         }
 
-        $usuarios = $ministerio->usuarios;
+        //$usuarios = $ministerio->usuarios;
+        $usuarios = $ministerio->usuarios()
+            ->where('estado', Status::ACTIVE)
+            ->orderBy('last_name', 'asc') // Ordena por apellido ascendente
+            ->get();
+
         $usuarioIds = $usuarios->pluck('id')->toArray();
 
         $permisos = $this->getPermisosPorUsuarios($usuarioIds, $startDate, $endDate);
@@ -381,10 +386,9 @@ class ReporteController extends Controller
 
         foreach ($usuarios as $usuario) {
             $fila = [
-                'nombre'          => $usuario->name,
-                'apellido'        => $usuario->last_name,
-                'ministerio'      => $usuario->ministerios->firstWhere('id', $ministerioId)->nombre ?? 'No asignado',
-                'Total_Multas'    => 0,
+                'integrantes' => $usuario->last_name . ' ' . $usuario->name,
+                'ministerio' => $usuario->ministerios->firstWhere('id', $ministerioId)->nombre ?? 'No asignado',
+                'Total_Multas' => 0,
                 'Total_Productos' => 0
             ];
 
@@ -459,9 +463,9 @@ class ReporteController extends Controller
                         if ($permisoInfo) {
                             $detalleActividad[] = [
                                 'nombre_actividad' => $nombreActividad,
-                                'permiso'          => $permisoInfo,
-                                'multa'            => 0,
-                                'producto'         => false
+                                'permiso' => $permisoInfo,
+                                'multa' => 0,
+                                'producto' => false
                             ];
                             continue;
                         }
@@ -482,25 +486,25 @@ class ReporteController extends Controller
 
                         $detalleActividad[] = [
                             'nombre_actividad' => $nombreActividad,
-                            'tipo'             => $actividad->tipo,
-                            'tipo_pago'        => $actividad->tipo_pago ?? 1,
-                            'hora_registro'    => $actividad->hora_registro,
-                            'hora_multa'       => $actividad->hora_multa,
-                            'hora_limite'      => $actividad->hora_limite,
-                            'hora_marcacion'   => $resultado['hora_marcacion'] ?? 'No marcó',
-                            'retraso_min'      => $resultado['retraso_min'],
-                            'tipo_multa'       => $resultado['tipo'],
-                            'multa'            => $resultado['multa'],
-                            'producto'         => $resultado['producto'],
-                            'permiso'          => 'No'
+                            'tipo' => $actividad->tipo,
+                            'tipo_pago' => $actividad->tipo_pago ?? 1,
+                            'hora_registro' => $actividad->hora_registro,
+                            'hora_multa' => $actividad->hora_multa,
+                            'hora_limite' => $actividad->hora_limite,
+                            'hora_marcacion' => $resultado['hora_marcacion'] ?? 'No marcó',
+                            'retraso_min' => $resultado['retraso_min'],
+                            'tipo_multa' => $resultado['tipo'],
+                            'multa' => $resultado['multa'],
+                            'producto' => $resultado['producto'],
+                            'permiso' => 'No'
                         ];
                     }
 
                     $colKey = "d_{$fecha}_" . Str::slug($nombreActividad, '_');
                     $fila[$colKey] = [
-                        'multa_total'    => $multaActividad,
-                        'productos'      => $productosActividad,
-                        'detalle'        => $detalleActividad
+                        'multa_total' => $multaActividad,
+                        'productos' => $productosActividad,
+                        'detalle' => $detalleActividad
                     ];
 
                     $totalMultasUsuario += $multaActividad;
@@ -531,8 +535,8 @@ class ReporteController extends Controller
             // Si la fecha no se ha agregado aún, inicializamos el array
             if (!isset($cabecera[$fecha])) {
                 $cabecera[$fecha] = [
-                    'fecha'       => $fecha,
-                    'dia_semana'  => $horario->dia_semana, // ya viene traducido
+                    'fecha' => $fecha,
+                    'dia_semana' => $horario->dia_semana, // ya viene traducido
                     'actividades' => []
                 ];
             }
@@ -540,12 +544,16 @@ class ReporteController extends Controller
             // Recorrer las actividades de ese día y agregar solo las únicas
             foreach ($horario->actividades as $actividad) {
                 if (!in_array($actividad->nombre_actividad, $cabecera[$fecha]['actividades'])) {
-                    $cabecera[$fecha]['actividades'][] = $actividad->nombre_actividad;
+                    $cabecera[$fecha]['actividades'][] = [
+                        'nombre_actividad' => $actividad->nombre_actividad,
+                        'tipo' => $actividad->tipo
+                    ];
                 }
             }
         }
         // ordenar las fechas cronológicamente
         ksort($cabecera);
+        //dd($cabecera);
         return $cabecera;
     }
 }

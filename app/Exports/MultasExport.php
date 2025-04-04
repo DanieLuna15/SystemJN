@@ -60,6 +60,7 @@ class MultasExport implements
         $headerRow1 = ['N°', 'Integrantes', 'Ministerio'];
         $headerRow2 = ['', '', ''];
 
+        //dd($this->dates);
         foreach ($this->dates as $date) {
             $cantActividades = count($date['actividades'] ?? []);
             $headerRow1[] = $date['fecha'] . ' (' . ($date['dia_semana'] ?? '') . ')';
@@ -67,7 +68,7 @@ class MultasExport implements
                 $headerRow1[] = '';
             }
             foreach ($date['actividades'] as $actividad) {
-                $headerRow2[] = $actividad;
+                $headerRow2[] = $actividad['nombre_actividad'];
             }
         }
 
@@ -91,18 +92,23 @@ class MultasExport implements
 
     public function map($row): array
     {
+        //dd($this->collection());
+
         $this->loopIndex++;
 
-        $nombreCompleto = trim(($row['nombre'] ?? '') . ' ' . ($row['apellido'] ?? ''));
+        //$nombreCompleto = trim(($row['integrantes'] ?? ''));
         $rowData = [
             $this->loopIndex,
-            $nombreCompleto,
+            trim($row['integrantes'] ?? ''),
             $row['ministerio'] ?? '',
         ];
 
         foreach ($this->dates as $date) {
+
             foreach ($date['actividades'] as $actividad) {
-                $alias = "d_{$date['fecha']}_" . Str::slug($actividad, '_');
+                //$alias = "d_{$date['fecha']}_" . Str::slug($actividad, '_');
+                $alias = "d_{$date['fecha']}_" . Str::slug($actividad['nombre_actividad'], '_'); // ✅ Correcto para arrays
+
                 if (isset($row[$alias])) {
                     $detalle = $row[$alias]['detalle'] ?? [];
                     $tienePermiso = collect($detalle)->contains(function ($d) {
@@ -114,7 +120,7 @@ class MultasExport implements
                     } elseif (($row[$alias]['productos'] ?? 0) > 0) {
                         $value = 'Producto';
                     } else {
-                        $value = (int)($row[$alias]['multa_total'] ?? 0);
+                        $value = (int) ($row[$alias]['multa_total'] ?? 0);
                     }
                 } else {
                     $value = 'Sin datos';
@@ -123,9 +129,9 @@ class MultasExport implements
             }
         }
 
-        $totalMultas = (int)($row['Total_Multas'] ?? 0);
-        $totalProductos = (int)($row['Total_Productos'] ?? 0);
-        $totalPagar = (int)($row['Total_Pagar'] ?? 0);
+        $totalMultas = (int) ($row['Total_Multas'] ?? 0);
+        $totalProductos = (int) ($row['Total_Productos'] ?? 0);
+        $totalPagar = (int) ($row['Total_Pagar'] ?? 0);
         $puntualidad = $row['Puntualidad'] ?? '';
         $pagos = $row['Pagos'] ?? '';
         $observaciones = $row['Observaciones'] ?? '';
@@ -151,21 +157,21 @@ class MultasExport implements
         $headerRange = "A1:{$lastColumn}5";
         $sheet->getStyle($headerRange)->applyFromArray([
             'fill' => [
-                'fillType'   => Fill::FILL_SOLID,
+                'fillType' => Fill::FILL_SOLID,
                 'startColor' => ['argb' => '00008B'],
             ],
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => Border::BORDER_THIN,
-                    'color'       => ['argb' => 'FFFFFFFF'],
+                    'color' => ['argb' => 'FFFFFFFF'],
                 ],
             ],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical'   => Alignment::VERTICAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
             ],
             'font' => [
-                'bold'  => true,
+                'bold' => true,
                 'color' => ['argb' => Color::COLOR_WHITE],
             ],
         ]);
@@ -174,17 +180,17 @@ class MultasExport implements
         $headerRange2 = "A5:{$lastColumn}5";
         $sheet->getStyle($headerRange2)->applyFromArray([
             'font' => [
-                'bold'  => true,
-                'size'  => 10,
+                'bold' => true,
+                'size' => 10,
                 'color' => ['argb' => Color::COLOR_WHITE],
             ],
             'fill' => [
-                'fillType'   => Fill::FILL_SOLID,
+                'fillType' => Fill::FILL_SOLID,
                 'startColor' => ['argb' => '00008B'],
             ],
             'alignment' => [
-                'horizontal'   => Alignment::HORIZONTAL_CENTER,
-                'vertical'     => Alignment::VERTICAL_CENTER,
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
                 // Se mantiene el texto vertical en la fila 5
                 'textRotation' => 90,
             ],
@@ -194,6 +200,29 @@ class MultasExport implements
                 ],
             ],
         ]);
+
+        // 📌 Aplicar color de fondo si la actividad es de tipo "eventual"
+        $columnIndex = 4; // Empezamos después de "N°", "Integrantes", "Ministerio"
+
+        foreach ($this->dates as $date) {
+            foreach ($date['actividades'] as $actividad) {
+                // Definir la columna actual basada en la posición del índice
+                $currentColumn = Coordinate::stringFromColumnIndex($columnIndex);
+                $cellRange = "{$currentColumn}5"; // Rango de celda en la fila 5
+
+                // Verificar si la actividad es de tipo "eventual" y cambiar el color
+                if ($actividad['tipo'] === "eventual") {
+                    $sheet->getStyle($cellRange)->applyFromArray([
+                        'fill' => [
+                            'fillType' => Fill::FILL_SOLID,
+                            'startColor' => ['argb' => 'FFDD44'], // Amarillo para eventuales
+                        ],
+                    ]);
+                }
+
+                $columnIndex++; // Avanzar a la siguiente columna
+            }
+        }
 
         // Centrar la columna N° (columna A)
         $sheet->getStyle('A')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -206,7 +235,7 @@ class MultasExport implements
         $totalMultasRange = "{$totalMultasColumnLetter}6:{$totalMultasColumnLetter}{$lastRow}";
         $sheet->getStyle($totalMultasRange)->applyFromArray([
             'fill' => [
-                'fillType'   => Fill::FILL_SOLID,
+                'fillType' => Fill::FILL_SOLID,
                 'startColor' => ['argb' => 'FFFF99'],
             ],
         ]);
@@ -231,18 +260,18 @@ class MultasExport implements
         $sheet->mergeCells($mergeRange);
         $sheet->getStyle('A1')->applyFromArray([
             'font' => [
-                'bold'  => true,
-                'size'  => 20,
-                'name'  => 'Lucida Calligraphy',
+                'bold' => true,
+                'size' => 20,
+                'name' => 'Lucida Calligraphy',
                 'color' => ['argb' => Color::COLOR_WHITE],
             ],
             'fill' => [
-                'fillType'   => Fill::FILL_SOLID,
+                'fillType' => Fill::FILL_SOLID,
                 'startColor' => ['argb' => '00008B'],
             ],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical'   => Alignment::VERTICAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
             ],
         ]);
 
