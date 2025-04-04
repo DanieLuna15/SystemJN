@@ -7,6 +7,7 @@ use App\Models\Horario;
 use App\Models\Permiso;
 use Carbon\CarbonPeriod;
 use App\Constants\Status;
+use App\Models\Excepcion;
 use App\Models\Asistencia;
 use App\Models\Ministerio;
 use Illuminate\Support\Str;
@@ -41,6 +42,15 @@ class ReporteController extends Controller
         $dates = $this->obtenerCabeceraFechas($horariosPorFecha);
         //dd($dates);
 
+        $excepciones = Excepcion::whereHas('ministerios', function ($query) use ($ministerioId) {
+            $query->where('ministerio_id', $ministerioId);  // Filtra por el ministerio específico
+        })
+            ->where('estado', Status::ACTIVE)  // Filtra por estado activo
+            ->whereBetween('fecha', [$startDate, $endDate])  // Filtra por rango de fechas
+            ->orderByDesc('id')
+            ->get();
+        //dd($excepciones->toArray());
+
         $pageTitle = 'Reporte de multas ('
             . Carbon::parse($startDate)->translatedFormat('d M')
             . ' - '
@@ -50,7 +60,7 @@ class ReporteController extends Controller
         $fileName = 'reporte_multas_' . Carbon::parse($startDate)->format('Y-m-d') . '_a_' . Carbon::parse($endDate)->format('Y-m-d') . '.xlsx';
 
         // Exportar los resultados a Excel con el nombre dinámico del archivo
-        return Excel::download(new MultasExport($multas_detalle, $dates, $pageTitle), $fileName);
+        return Excel::download(new MultasExport($multas_detalle, $dates, $pageTitle,$excepciones), $fileName);
     }
 
     public function multa(Request $request)
