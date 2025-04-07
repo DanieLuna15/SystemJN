@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Ministerio;
+use App\Models\Permiso;
 use App\Constants\Status;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -157,11 +158,18 @@ class UserController extends Controller
     {
         return User::changeStatus($id, 'estado');
     }
-
     public function info(User $usuario)
     {
+        $usuarioId = $usuario->id;
         $pageTitle = 'Informacion del Usuario: ' . $usuario->name;
+        $permisos = Permiso::whereHas('usuarios', function ($query) use ($usuarioId) {
+            $query->where('usuario_id', $usuarioId);  // Filtra por el ministerio específico
+        })
+            ->orderByDesc('id')
+            ->get();
 
-        return view('admin.usuarios.info', compact('usuario', 'pageTitle'));
+        return view('admin.usuarios.info', compact('usuario', 'pageTitle', 'permisos'));
     }
+
+
 }

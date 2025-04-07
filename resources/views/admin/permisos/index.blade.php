@@ -16,6 +16,7 @@
                                     <th style="text-align: center">Usuario(s)</th>
                                     <th style="text-align: center">Autor</th>
                                     <th style="text-align: center">Fecha</th>
+                                    <th style="text-align: center">Fecha Fin</th>
                                     <th style="text-align: center">Hora de Inicio</th>
                                     <th style="text-align: center">Hora Fin</th>
                                     <th style="text-align: center">Motivo</th>
@@ -30,7 +31,8 @@
                                         <!-- Usuarios centrado -->
                                         <td class="align-middle text-truncate">
                                             @foreach ($permiso->usuarios as $usuario)
-                                                [<span class="badge badge-info">{{ $usuario->name }} {{ $usuario->last_name }}</span>]
+                                                [<span class="badge badge-info">{{ $usuario->name }}
+                                                    {{ $usuario->last_name }}</span>]
                                             @endforeach
                                         </td>
 
@@ -41,10 +43,10 @@
                                                     Sin datos
                                                 </small>
                                             @else
-                                                {{ $permiso->usuario->name }} 
+                                                {{ $permiso->usuario->name }}
                                             @endif
                                         </td>
-                                        
+
                                         <!-- Fecha centrada -->
                                         <td class="text-center align-middle">
                                             @if ($permiso->fecha == null)
@@ -52,7 +54,17 @@
                                                     Sin datos
                                                 </small>
                                             @else
-                                                {{ $permiso->fecha }}
+                                                {{ $permiso->hasta }}
+                                            @endif
+                                        </td>
+                                        <!-- Fecha fin -->
+                                        <td class="text-center align-middle">
+                                            @if ($permiso->hasta == null)
+                                                <small class="badge bg-gradient-warning w-100 h-100">
+                                                    Sin datos
+                                                </small>
+                                            @else
+                                                {{ $permiso->hasta }}
                                             @endif
                                         </td>
 
@@ -92,17 +104,19 @@
                                                     <small class="badge bg-gradient-primary w-100 h-100">
                                                         <i class="fas fa-sun"></i> Todo el día
                                                     </small>
-                                                    @break
+                                                @break
+
                                                 @case(0)
                                                     <small class="badge bg-gradient-info w-100 h-100">
                                                         <i class="far fa-clock"></i> Rango de horas
                                                     </small>
-                                                    @break
+                                                @break
+
                                                 @case(2)
                                                     <small class="badge bg-gradient-warning w-100 h-100">
                                                         <i class="fas fa-calendar-alt"></i> Varios días
                                                     </small>
-                                                    @break
+                                                @break
                                             @endswitch
                                         </td>
 
@@ -121,38 +135,40 @@
                                                     </a>
                                                 @endcan
                                                 @can('cambiar estado permisos')
-                                                @php
-                                                    // Definir clases de estado y mensajes de pregunta en un array
-                                                    $clasesEstado = [
-                                                        0 => 'btn-warning',
-                                                        1 => 'btn-success',
-                                                        2 => 'btn-danger'
-                                                    ];
-                                            
-                                                    $iconosEstado = [
-                                                        0 => 'fa-hourglass-start',
-                                                        1 => 'fa-check-circle',
-                                                        2 => 'fa-times-circle'
-                                                    ];
+                                                    @php
+                                                        // Definir clases de estado y mensajes de pregunta en un array
+                                                        $clasesEstado = [
+                                                            0 => 'btn-warning',
+                                                            1 => 'btn-success',
+                                                            2 => 'btn-danger',
+                                                        ];
 
-                                                    // Obtener nombres de los usuarios involucrados
-                                                    $usuariosInvolucrados = $permiso->usuarios->pluck('name')->implode(', ');
-                                            
-                                                    $preguntasEstado = [
-                                                        0 => "¿Seguro que deseas autorizar el Permiso de <strong>{$usuariosInvolucrados}</strong>?",
-                                                        1 => "¿Seguro que deseas rechazar el Permiso de <strong>{$usuariosInvolucrados}</strong>?",
-                                                        2 => "¿Seguro que deseas volver a pendiente el Permiso de <strong>{$usuariosInvolucrados}</strong>?"
-                                                    ];
-                                                @endphp
-                                            
-                                                <button type="button" title="Cambiar estado"
+                                                        $iconosEstado = [
+                                                            0 => 'fa-hourglass-start',
+                                                            1 => 'fa-check-circle',
+                                                            2 => 'fa-times-circle',
+                                                        ];
+
+                                                        // Obtener nombres de los usuarios involucrados
+                                                        $usuariosInvolucrados = $permiso->usuarios
+                                                            ->pluck('name')
+                                                            ->implode(', ');
+
+                                                        $preguntasEstado = [
+                                                            0 => "¿Seguro que deseas autorizar el Permiso de <strong>{$usuariosInvolucrados}</strong>?",
+                                                            1 => "¿Seguro que deseas rechazar el Permiso de <strong>{$usuariosInvolucrados}</strong>?",
+                                                            2 => "¿Seguro que deseas volver a pendiente el Permiso de <strong>{$usuariosInvolucrados}</strong>?",
+                                                        ];
+                                                    @endphp
+
+                                                    <button type="button" title="Cambiar estado"
                                                         class="btn btn-sm {{ $clasesEstado[$permiso->estado] }} confirmationBtn mx-1"
                                                         data-action="{{ route('admin.permisos.status', $permiso->id) }}"
                                                         data-question="{{ $preguntasEstado[$permiso->estado] }}">
-                                                    <i class="fas {{ $iconosEstado[$permiso->estado] }}"></i>
-                                                </button>
-                                            @endcan
-                                            
+                                                        <i class="fas {{ $iconosEstado[$permiso->estado] }}"></i>
+                                                    </button>
+                                                @endcan
+
                                             </div>
                                         </td>
                                     </tr>
