@@ -109,7 +109,7 @@ class MinisterioController extends Controller
             ],
             'nombre' => 'required|string|min:3|max:255|unique:ministerios,nombre,' . ($id ? $id : 'NULL') . '|regex:/^[\p{L}\s]+$/u',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                ];
+        ];
 
         $messages = [
             'user_id.required' => 'Debe seleccionar al menos un Líder.',
@@ -178,12 +178,20 @@ class MinisterioController extends Controller
 
     public function horarios(Ministerio $ministerio)
     {
+        $ministerioId = $ministerio->id;
+
         $pageTitle = 'Todos los horarios del ministerio: ' . $ministerio->nombre;
 
         $horarios = $ministerio->horarios()
             ->orderByDesc('id')
             ->get();
 
-        return view('admin.ministerios.horarios', compact('horarios', 'pageTitle'));
+        $permisos = Permiso::whereHas('usuarios', function ($query) use ($usuarioId) {
+            $query->where('usuario_id', $usuarioId);  // Filtra por el ministerio específico
+        })
+            ->orderByDesc('id')
+            ->get();
+
+        return view('admin.ministerios.horarios', compact('horarios', 'pageTitle','excepciones'));
     }
 }

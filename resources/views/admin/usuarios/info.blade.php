@@ -97,7 +97,7 @@
                             <a class="nav-link" href="#agenda" data-toggle="tab" data-section="contraseña">Agenda</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#permiso" data-toggle="tab" data-section="contraseña">Permiso</a>
+                            <a class="nav-link" href="#permiso" data-toggle="tab" data-section="contraseña">Permisos</a>
                         </li>
                     </ul>
                 </div>
