@@ -223,7 +223,7 @@
 
                                         <div class="card-body">
                                             <div class="table-responsive">
-                                                <table id="permisos-table"
+                                                <table id="horarios-table"
                                                     class="table table-striped table-bordered table-hover table-sm datatable text-center">
                                                     <thead>
                                                         <tr>
@@ -235,6 +235,7 @@
                                                             <th style="text-align: center">Motivo</th>
                                                             <th style="text-align: center">Tiempo</th>
                                                             <th style="text-align: center">Estado</th>
+                                                            <th class="no-export" style="text-align: center">Acciones</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -338,14 +339,55 @@
                                                                 <td class="text-center align-middle">
                                                                     {!! $permiso->statusBadge !!}
                                                                 </td>
+                                                                <td class="text-center">
+                                                                    <div class="d-flex justify-content-center">
+                                                                        @can('cambiar estado permisos')
+                                                                            @php
+                                                                                // Definir clases de estado y mensajes de pregunta en un array
+                                                                                $clasesEstado = [
+                                                                                    0 => 'btn-warning',
+                                                                                    1 => 'btn-success',
+                                                                                    2 => 'btn-danger',
+                                                                                ];
 
+                                                                                $iconosEstado = [
+                                                                                    0 => 'fa-hourglass-start',
+                                                                                    1 => 'fa-check-circle',
+                                                                                    2 => 'fa-times-circle',
+                                                                                ];
+
+                                                                                // Obtener nombres de los usuarios involucrados
+                                                                                $usuariosInvolucrados = $permiso->usuarios
+                                                                                    ->map(
+                                                                                        fn($u) => $u->last_name .
+                                                                                            ' ' .
+                                                                                            $u->name,
+                                                                                    )
+                                                                                    ->implode(', ');
+
+                                                                                $preguntasEstado = [
+                                                                                    0 => "¿Seguro que deseas autorizar el Permiso de <strong>{$usuariosInvolucrados}</strong>?",
+                                                                                    1 => "¿Seguro que deseas rechazar el Permiso de <strong>{$usuariosInvolucrados}</strong>?",
+                                                                                    2 => "¿Seguro que deseas volver a pendiente el Permiso de <strong>{$usuariosInvolucrados}</strong>?",
+                                                                                ];
+                                                                            @endphp
+
+                                                                            <button type="button" title="Cambiar estado"
+                                                                                class="btn btn-sm {{ $clasesEstado[$permiso->estado] }} confirmationBtn mx-1"
+                                                                                data-action="{{ route('admin.permisos.status', $permiso->id) }}"
+                                                                                data-question="{{ $preguntasEstado[$permiso->estado] }}">
+                                                                                <i
+                                                                                    class="fas {{ $iconosEstado[$permiso->estado] }}"></i>
+                                                                            </button>
+                                                                        @endcan
+                                                                    </div>
+                                                                </td>
                                                             </tr>
                                                         @endforeach
                                                     </tbody>
                                                 </table>
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>

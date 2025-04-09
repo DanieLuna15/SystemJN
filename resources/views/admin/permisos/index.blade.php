@@ -152,7 +152,7 @@
 
                                                         // Obtener nombres de los usuarios involucrados
                                                         $usuariosInvolucrados = $permiso->usuarios
-                                                            ->pluck('name')
+                                                            ->map(fn($u) => $u->last_name . ' ' . $u->name)
                                                             ->implode(', ');
 
                                                         $preguntasEstado = [
