@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Excepcion;
 use App\Models\User;
 use App\Models\Ministerio;
 use Illuminate\Http\Request;
@@ -177,21 +178,20 @@ class MinisterioController extends Controller
     }
 
     public function horarios(Ministerio $ministerio)
-    {
-        $ministerioId = $ministerio->id;
+{
+    $ministerioId = $ministerio->id;
+    $pageTitle = 'Todos los horarios del ministerio: ' . $ministerio->nombre;
 
-        $pageTitle = 'Todos los horarios del ministerio: ' . $ministerio->nombre;
+    $horarios = $ministerio->horarios()
+        ->orderByDesc('id')
+        ->get();
+    $excepciones = Excepcion::whereHas('ministerios', function ($query) use ($ministerioId) {
+        $query->where('ministerio_id', $ministerioId);
+    })
+        ->orderByDesc('id')
+        ->get();
 
-        $horarios = $ministerio->horarios()
-            ->orderByDesc('id')
-            ->get();
+    return view('admin.ministerios.horarios', compact('horarios', 'pageTitle', 'excepciones'));
+}
 
-        $permisos = Permiso::whereHas('usuarios', function ($query) use ($usuarioId) {
-            $query->where('usuario_id', $usuarioId);  // Filtra por el ministerio específico
-        })
-            ->orderByDesc('id')
-            ->get();
-
-        return view('admin.ministerios.horarios', compact('horarios', 'pageTitle','excepciones'));
-    }
 }

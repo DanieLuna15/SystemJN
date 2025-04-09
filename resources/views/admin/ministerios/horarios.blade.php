@@ -149,102 +149,100 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach ($permisos as $permiso)
-                                                        <tr>
+                                                    @foreach ($excepciones as $excepcion)
+    <tr>
+        <!-- Usuario Autor centrado -->
+        <td class="text-center align-middle">
+            @if ($excepcion->usuario == null)
+                <small class="badge bg-gradient-warning w-100 h-100">
+                    Sin datos
+                </small>
+            @else
+                {{ $excepcion->usuario->name }}
+            @endif
+        </td>
 
+        <!-- Fecha centrada -->
+        <td class="text-center align-middle">
+            @if ($excepcion->fecha == null)
+                <small class="badge bg-gradient-warning w-100 h-100">
+                    Sin datos
+                </small>
+            @else
+                {{ $excepcion->fecha }}
+            @endif
+        </td>
 
-                                                            <!-- Usuario Autor centrado -->
-                                                            <td class="text-center align-middle">
-                                                                @if ($permiso->usuario == null)
-                                                                    <small class="badge bg-gradient-warning w-100 h-100">
-                                                                        Sin datos
-                                                                    </small>
-                                                                @else
-                                                                    {{ $permiso->usuario->name }}
-                                                                @endif
-                                                            </td>
+        <!-- Hasta -->
+        <td class="text-center align-middle">
+            @if ($excepcion->hasta == null)
+                <small class="badge bg-gradient-warning w-100 h-100">
+                    Sin datos
+                </small>
+            @else
+                {{ $excepcion->hasta }}
+            @endif
+        </td>
 
-                                                            <!-- Fecha centrada -->
-                                                            <td class="text-center align-middle">
-                                                                @if ($permiso->fecha == null)
-                                                                    <small class="badge bg-gradient-warning w-100 h-100">
-                                                                        Sin datos
-                                                                    </small>
-                                                                @else
-                                                                    {{ $permiso->fecha }}
-                                                                @endif
-                                                            </td>
-                                                            <!-- Fecha centrada -->
-                                                            <td class="text-center align-middle">
-                                                                @if ($permiso->hasta == null)
-                                                                    <small class="badge bg-gradient-warning w-100 h-100">
-                                                                        Sin datos
-                                                                    </small>
-                                                                @else
-                                                                    {{ $permiso->hasta }}
-                                                                @endif
-                                                            </td>
-                                                            <!-- Hora de Inicio centrada -->
-                                                            <td class="text-center align-middle">
-                                                                @if ($permiso->hora_inicio == null)
-                                                                    <small class="badge bg-gradient-warning w-100 h-100">
-                                                                        Sin datos
-                                                                    </small>
-                                                                @else
-                                                                    <small class="badge bg-gradient-primary w-100 h-100">
-                                                                        <i class="far fa-clock"></i>
-                                                                        {{ $permiso->hora_inicio }}
-                                                                    </small>
-                                                                @endif
-                                                            </td>
+        <!-- Hora de Inicio -->
+        <td class="text-center align-middle">
+            @if ($excepcion->hora_inicio == null)
+                <small class="badge bg-gradient-warning w-100 h-100">
+                    Sin datos
+                </small>
+            @else
+                <small class="badge bg-gradient-primary w-100 h-100">
+                    <i class="far fa-clock"></i>
+                    {{ $excepcion->hora_inicio }}
+                </small>
+            @endif
+        </td>
 
-                                                            <!-- Hora Fin centrada -->
-                                                            <td class="text-center align-middle">
-                                                                @if ($permiso->hora_fin == null)
-                                                                    <small class="badge bg-gradient-warning w-100 h-100">
-                                                                        Sin datos
-                                                                    </small>
-                                                                @else
-                                                                    <small class="badge bg-gradient-primary w-100 h-100">
-                                                                        <i class="far fa-clock"></i>
-                                                                        {{ $permiso->hora_fin }}
-                                                                    </small>
-                                                                @endif
-                                                            </td>
+        <!-- Hora Fin -->
+        <td class="text-center align-middle">
+            @if ($excepcion->hora_fin == null)
+                <small class="badge bg-gradient-warning w-100 h-100">
+                    Sin datos
+                </small>
+            @else
+                <small class="badge bg-gradient-primary w-100 h-100">
+                    <i class="far fa-clock"></i>
+                    {{ $excepcion->hora_fin }}
+                </small>
+            @endif
+        </td>
 
-                                                            <!-- Motivo centrada -->
-                                                            <td class="text-center">{{ $permiso->motivo }}</td>
+        <!-- Motivo -->
+        <td class="text-center">{{ $excepcion->motivo }}</td>
 
-                                                            <!-- Tipo de permiso centrado -->
-                                                            <td class="text-center align-middle">
-                                                                @switch($permiso->dia_entero)
-                                                                    @case(1)
-                                                                        <small class="badge bg-gradient-primary w-100 h-100">
-                                                                            <i class="fas fa-sun"></i> Todo el día
-                                                                        </small>
-                                                                    @break
+        <!-- Tipo de excepción -->
+        <td class="text-center align-middle">
+            @switch($excepcion->dia_entero)
+                @case(1)
+                    <small class="badge bg-gradient-primary w-100 h-100">
+                        <i class="fas fa-sun"></i> Todo el día
+                    </small>
+                    @break
+                @case(0)
+                    <small class="badge bg-gradient-info w-100 h-100">
+                        <i class="far fa-clock"></i> Rango de horas
+                    </small>
+                    @break
+                @case(2)
+                    <small class="badge bg-gradient-warning w-100 h-100">
+                        <i class="fas fa-calendar-alt"></i> Varios días
+                    </small>
+                    @break
+            @endswitch
+        </td>
 
-                                                                    @case(0)
-                                                                        <small class="badge bg-gradient-info w-100 h-100">
-                                                                            <i class="far fa-clock"></i> Rango de horas
-                                                                        </small>
-                                                                    @break
+        <!-- Estado -->
+        <td class="text-center align-middle">
+            {!! $excepcion->statusBadge !!}
+        </td>
+    </tr>
+@endforeach
 
-                                                                    @case(2)
-                                                                        <small class="badge bg-gradient-warning w-100 h-100">
-                                                                            <i class="fas fa-calendar-alt"></i> Varios días
-                                                                        </small>
-                                                                    @break
-                                                                @endswitch
-                                                            </td>
-
-                                                            <!-- Estado centrado -->
-                                                            <td class="text-center align-middle">
-                                                                {!! $permiso->statusBadge !!}
-                                                            </td>
-
-                                                        </tr>
-                                                    @endforeach
                                                 </tbody>
                                             </table>
                                         </div>

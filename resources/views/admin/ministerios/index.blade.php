@@ -79,7 +79,7 @@
 
                                                 @can('ver horarios_ministerio')
                                                     <a href="{{ route('admin.ministerios.horarios', $ministerio) }}"
-                                                        class="btn btn-secondary btn-sm mx-1" title="Verificar Horarios">
+                                                        class="btn btn-secondary btn-sm mx-1" title="Ver mas Informacion">
                                                         <i class="fas fa-list-ul" style="color: #63E6BE;"></i>
                                                     </a>
                                                 @endcan
