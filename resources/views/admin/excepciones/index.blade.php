@@ -16,6 +16,7 @@
                                     <th style="text-align: center">Ministerio(s)</th>
                                     <th style="text-align: center">Autor</th>
                                     <th style="text-align: center">Fecha</th>
+                                    <th style="text-align: center">Fecha fin</th>
                                     <th style="text-align: center">Hora de Inicio</th>
                                     <th style="text-align: center">Hora Fin</th>
                                     <th style="text-align: center">Motivo</th>
@@ -56,7 +57,16 @@
                                                 {{ $excepcion->fecha }}
                                             @endif
                                         </td>
-
+                                        <!-- Fecha centrada -->
+                                        <td class="text-center align-middle">
+                                            @if ($excepcion->hasta == null)
+                                                <small class="badge bg-gradient-warning w-100 h-100">
+                                                    Sin datos
+                                                </small>
+                                            @else
+                                                {{ $excepcion->hasta }}
+                                            @endif
+                                        </td>
                                         <!-- Hora de Inicio centrada -->
                                         <td class="text-center align-middle">
                                             @if ($excepcion->hora_inicio == null)
@@ -93,17 +103,19 @@
                                                     <small class="badge bg-gradient-primary w-100 h-100">
                                                         <i class="fas fa-sun"></i> Todo el día
                                                     </small>
-                                                    @break
+                                                @break
+
                                                 @case(0)
                                                     <small class="badge bg-gradient-info w-100 h-100">
                                                         <i class="far fa-clock"></i> Rango de horas
                                                     </small>
-                                                    @break
+                                                @break
+
                                                 @case(2)
                                                     <small class="badge bg-gradient-warning w-100 h-100">
                                                         <i class="fas fa-calendar-alt"></i> Varios días
                                                     </small>
-                                                    @break
+                                                @break
                                             @endswitch
                                         </td>
 
@@ -126,7 +138,8 @@
                                                         class="btn btn-sm {{ $excepcion->estado ? 'btn-danger' : 'btn-success' }} confirmationBtn mx-1"
                                                         data-action="{{ route('admin.excepciones.status', $excepcion->id) }}"
                                                         data-question="{{ $excepcion->estado ? '¿Seguro que deseas inhabilitar la Excepcion del <strong>' . $excepcion->motivo . '</strong>?' : '¿Seguro que deseas habilitar la Excepcion del <strong>' . $excepcion->motivo . '</strong>?' }}">
-                                                        <i class="fas {{ $excepcion->estado ? 'fa-eye-slash' : 'fa-eye' }}"></i>
+                                                        <i
+                                                            class="fas {{ $excepcion->estado ? 'fa-eye-slash' : 'fa-eye' }}"></i>
                                                     </button>
                                                 @endcan
                                             </div>

@@ -54,9 +54,10 @@
                                                     Sin datos
                                                 </small>
                                             @else
-                                                {{ $permiso->hasta }}
+                                                {{ $permiso->fecha }}
                                             @endif
                                         </td>
+
                                         <!-- Fecha fin -->
                                         <td class="text-center align-middle">
                                             @if ($permiso->hasta == null)
