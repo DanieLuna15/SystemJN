@@ -12,7 +12,7 @@ use App\Models\Asistencia;
 use App\Models\Ministerio;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Exports\MultasExport;
+use App\Exports\ReporteExport;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
@@ -55,12 +55,13 @@ class ReporteController extends Controller
             . Carbon::parse($startDate)->translatedFormat('d M')
             . ' - '
             . Carbon::parse($endDate)->translatedFormat('d M')
-            . ')';
+            . ') '
+            . Carbon::parse($endDate)->format('Y'); // ✅ Agrega el año al título
 
         $fileName = 'reporte_multas_' . Carbon::parse($startDate)->format('Y-m-d') . '_a_' . Carbon::parse($endDate)->format('Y-m-d') . '.xlsx';
 
         // Exportar los resultados a Excel con el nombre dinámico del archivo
-        return Excel::download(new MultasExport($multas_detalle, $dates, $pageTitle,$excepciones), $fileName);
+        return Excel::download(new ReporteExport($multas_detalle, $dates, $excepciones, $pageTitle), $fileName);
     }
 
     public function multa(Request $request)
