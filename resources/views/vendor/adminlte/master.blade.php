@@ -152,6 +152,16 @@
             window.sweetAlertMessage = "{{ session('error') }}";
         @endif
 
+        @if (session()->has('errorRegla'))
+            Swal.fire({
+                title: "¡Error!",
+                text: "{{ session('errorRegla') }}",
+                icon: "error",
+                confirmButtonText: "Aceptar"
+            });
+            {{ session()->forget('errorRegla') }}
+        @endif
+
         @if (session('warning'))
             window.sweetAlertType = 'warning';
             window.sweetAlertMessage = "{{ session('warning') }}";

@@ -66,44 +66,43 @@ class ReporteController extends Controller
 
     public function multa(Request $request)
     {
+        try {
+            $dateRange = $request->input('date_range', now()->startOfMonth()->format('d-m-Y 00:00:00') . ' - ' . now()->format('d-m-Y 23:59:59'));
+            [$startDate, $endDate] = explode(' - ', $dateRange);
 
-        //dd($request->all());
-        // Obtener el rango de fechas enviado desde el formulario
-        $dateRange = $request->input('date_range', now()->startOfMonth()->format('d-m-Y 00:00:00') . ' - ' . now()->format('d-m-Y 23:59:59'));
+            $request->session()->put('date_range', $dateRange);
 
-        // Separar fecha de inicio y fin
-        [$startDate, $endDate] = explode(' - ', $dateRange);
+            $startDate = Carbon::createFromFormat('d-m-Y H:i:s', trim($startDate))->format('Y-m-d H:i:s');
+            $endDate = Carbon::createFromFormat('d-m-Y H:i:s', trim($endDate))->format('Y-m-d H:i:s');
+            $ministerioId = $request->input('ministerio_id', 1);
 
-        // Guardar el rango de fechas en la sesión
-        $request->session()->put('date_range', $dateRange);
+            $pageTitle = 'Reporte de multas, desde el: '
+                . Carbon::parse($startDate)->translatedFormat('d F Y')
+                . ' hasta el: '
+                . Carbon::parse($endDate)->translatedFormat('d F Y');
 
-        // Convertir a formato correcto para la base de datos (YYYY-MM-DD)
-        $startDate = Carbon::createFromFormat('d-m-Y H:i:s', trim($startDate))->format('Y-m-d H:i:s');
-        $endDate = Carbon::createFromFormat('d-m-Y H:i:s', trim($endDate))->format('Y-m-d H:i:s');
-        $ministerioId = $request->input('ministerio_id', 1);
+            $ministerios = Ministerio::where('estado', Status::ACTIVE)->get();
 
-        //dd(['startDate' => $startDate, 'endDate' => $endDate, 'deptId' => $deptId]);
+            // Esta es la parte que puede lanzar una excepción
+            $reporteDinamico = $this->generarReporteColumnasDinamicas($ministerioId, $startDate, $endDate);
+            //dd($reporteDinamico);
+            $horariosPorFecha = $this->obtenerHorariosPorMinisterio($ministerioId, $startDate, $endDate);
+            $cabeceraFechas = $this->obtenerCabeceraFechas($horariosPorFecha);
 
-
-        $pageTitle = 'Reporte de multas, desde el: '
-            . Carbon::parse($startDate)->translatedFormat('d F Y')
-            . ' hasta el: '
-            . Carbon::parse($endDate)->translatedFormat('d F Y');
-
-        $ministerios = Ministerio::where('estado', Status::ACTIVE)->get();
-        // $reporteDinamico = $this->generarReporteColumnasDinamicas($deptId, $startDate, $endDate);
-        $reporteDinamico = $this->generarReporteColumnasDinamicas($ministerioId, $startDate, $endDate);
-        //dd($reporteDinamico);
-
-        // Obtener los horarios por fecha
-        $horariosPorFecha = $this->obtenerHorariosPorMinisterio($ministerioId, $startDate, $endDate);
-        //dd($horariosPorFecha);
-        // Usar una función separada para generar la cabecera con las fechas y actividades
-        $cabeceraFechas = $this->obtenerCabeceraFechas($horariosPorFecha);
-        //dd($cabeceraFechas);
-
-        return view('admin.reportes.multa', compact('ministerios', 'pageTitle', 'ministerioId', 'dateRange', 'reporteDinamico', 'cabeceraFechas'));
+            return view('admin.reportes.multa', compact(
+                'ministerios',
+                'pageTitle',
+                'ministerioId',
+                'dateRange',
+                'reporteDinamico',
+                'cabeceraFechas'
+            ));
+        } catch (\Exception $e) {
+            // Retornamos la vista con el error como variable de sesión
+            return back()->withInput()->with('errorRegla', $e->getMessage());
+        }
     }
+
 
     public function asistencia(Request $request)
     {
@@ -368,7 +367,7 @@ class ReporteController extends Controller
         $reglaMulta = $ministerio->reglasMultas()->where('estado', 1)->first();
 
         if (!$reglaMulta) {
-            throw new \Exception("No se encontró una regla de multa para el ministerio.");
+            throw new \Exception("No se encontró una regla de multa para el ministerio: " . $ministerio->nombre);
         }
 
         //$usuarios = $ministerio->usuarios;
