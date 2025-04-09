@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Ministerio;
 use App\Models\Permiso;
 use App\Models\Asistencia;
+// use Illuminate\Support\Facades\Log;
 use App\Constants\Status;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -168,9 +169,12 @@ class UserController extends Controller
         })
             ->orderByDesc('id')
             ->get();
-            $asistencias = Asistencia::where('ci', $usuario->ci)->get();
-            dd($asistencias);
+            $asistencias = Asistencia::where('ci', $usuario->ci)
+            ->orderByDesc('fecha')
+            ->orderByDesc('hora_marcacion')
+            ->get();
 
+            // Log::info($asistencias);
         return view('admin.usuarios.info', compact('usuario', 'pageTitle', 'permisos', 'asistencias'));
     }
 

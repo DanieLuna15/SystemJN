@@ -90,7 +90,8 @@
                                 General</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#asistencia" data-toggle="tab" data-section="asistencia">Asistencia</a>
+                            <a class="nav-link" href="#asistencia" data-toggle="tab"
+                                data-section="asistencia">Asistencia</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#agenda" data-toggle="tab" data-section="contraseña">Agenda</a>
@@ -160,125 +161,57 @@
                                 </a>
                             @endcan
                         </div>
+                        {{-- campo de asistencia --}}
                         <div class="tab-pane" id="asistencia">
                             <div class="tab-pane" id="asistencias">
                                 <div class="row">
                                     <div class="col-md-12">
-
                                         <div class="card-body">
                                             <div class="table-responsive">
                                                 <table id="asistencias-table"
                                                     class="table table-striped table-bordered table-hover table-sm datatable text-center">
                                                     <thead>
                                                         <tr>
-
                                                             <th style="text-align: center">Fecha</th>
                                                             <th style="text-align: center">Hora</th>
-
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach ($asitencias as $asistencia)
+                                                        @foreach ($asistencias as $asistencia)
                                                             <tr>
-
-
-
-                                                                <!-- Fecha centrada -->
+                                                                <!-- Fecha de asistencia -->
                                                                 <td class="text-center align-middle">
-                                                                    @if ($permiso->fecha == null)
+                                                                    @if ($asistencia->fecha == null)
                                                                         <small
                                                                             class="badge bg-gradient-warning w-100 h-100">
                                                                             Sin datos
                                                                         </small>
                                                                     @else
-                                                                        {{ $permiso->fecha }}
+                                                                        {{ $asistencia->fecha }}
                                                                     @endif
                                                                 </td>
-                                                                <!-- Fecha centrada -->
+                                                                <!-- Hora marcación -->
                                                                 <td class="text-center align-middle">
-                                                                    @if ($permiso->hasta == null)
+                                                                    @if ($asistencia->hora_marcacion == null)
                                                                         <small
                                                                             class="badge bg-gradient-warning w-100 h-100">
                                                                             Sin datos
                                                                         </small>
                                                                     @else
-                                                                        {{ $permiso->hasta }}
+                                                                        {{ $asistencia->hora_marcacion }}
                                                                     @endif
                                                                 </td>
-                                                                <!-- Hora de Inicio centrada -->
-                                                                <td class="text-center align-middle">
-                                                                    @if ($permiso->hora_inicio == null)
-                                                                        <small
-                                                                            class="badge bg-gradient-warning w-100 h-100">
-                                                                            Sin datos
-                                                                        </small>
-                                                                    @else
-                                                                        <small
-                                                                            class="badge bg-gradient-primary w-100 h-100">
-                                                                            <i class="far fa-clock"></i>
-                                                                            {{ $permiso->hora_inicio }}
-                                                                        </small>
-                                                                    @endif
-                                                                </td>
-
-                                                                <!-- Hora Fin centrada -->
-                                                                <td class="text-center align-middle">
-                                                                    @if ($permiso->hora_fin == null)
-                                                                        <small
-                                                                            class="badge bg-gradient-warning w-100 h-100">
-                                                                            Sin datos
-                                                                        </small>
-                                                                    @else
-                                                                        <small
-                                                                            class="badge bg-gradient-primary w-100 h-100">
-                                                                            <i class="far fa-clock"></i>
-                                                                            {{ $permiso->hora_fin }}
-                                                                        </small>
-                                                                    @endif
-                                                                </td>
-
-                                                                <!-- Motivo centrada -->
-                                                                <td class="text-center">{{ $permiso->motivo }}</td>
-
-                                                                <!-- Tipo de permiso centrado -->
-                                                                <td class="text-center align-middle">
-                                                                    @switch($permiso->dia_entero)
-                                                                        @case(1)
-                                                                            <small class="badge bg-gradient-primary w-100 h-100">
-                                                                                <i class="fas fa-sun"></i> Todo el día
-                                                                            </small>
-                                                                        @break
-
-                                                                        @case(0)
-                                                                            <small class="badge bg-gradient-info w-100 h-100">
-                                                                                <i class="far fa-clock"></i> Rango de horas
-                                                                            </small>
-                                                                        @break
-
-                                                                        @case(2)
-                                                                            <small class="badge bg-gradient-warning w-100 h-100">
-                                                                                <i class="fas fa-calendar-alt"></i> Varios días
-                                                                            </small>
-                                                                        @break
-                                                                    @endswitch
-                                                                </td>
-
-                                                                <!-- Estado centrado -->
-                                                                <td class="text-center align-middle">
-                                                                    {!! $permiso->statusBadge !!}
-                                                                </td>
-
                                                             </tr>
                                                         @endforeach
                                                     </tbody>
                                                 </table>
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <div class="tab-pane" id="agenda">
                             <h5 class="text-center">Agenda</h5>
 
