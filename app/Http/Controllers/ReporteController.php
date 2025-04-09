@@ -395,11 +395,26 @@ class ReporteController extends Controller
         $reporte = [];
 
         foreach ($usuarios as $usuario) {
+            $permisosUsuario = $permisos->filter(function ($permiso) use ($usuario) {
+                return $permiso->usuarios->contains('id', $usuario->id);
+            })->values(); 
+
             $fila = [
                 'integrantes' => $usuario->last_name . ' ' . $usuario->name,
                 'ministerio' => $usuario->ministerios->firstWhere('id', $ministerioId)->nombre ?? 'No asignado',
                 'Total_Multas' => 0,
-                'Total_Productos' => 0
+                'Total_Productos' => 0,
+                'permisos' => $permisosUsuario->map(function ($permiso) {
+                    return [
+                        'id' => $permiso->id,
+                        'motivo' => $permiso->motivo,
+                        'fecha' => $permiso->fecha,
+                        'hasta' => $permiso->hasta,
+                        'dia_entero' => $permiso->dia_entero,
+                        'hora_inicio' => $permiso->hora_inicio,
+                        'hora_fin' => $permiso->hora_fin,
+                    ];
+                })->toArray()
             ];
 
             $totalMultasUsuario = 0;
