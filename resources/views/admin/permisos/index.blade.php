@@ -9,7 +9,7 @@
             <div class="card card-outline card-primary">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="permisos-table"
+                        <table id="horarios-table"
                             class="table table-striped table-bordered table-hover table-sm datatable text-center">
                             <thead>
                                 <tr>

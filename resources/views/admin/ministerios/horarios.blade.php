@@ -98,13 +98,6 @@
                                                             <!-- Acciones centradas -->
                                                             <td class="text-center">
                                                                 <div class="d-flex justify-content-center">
-                                                                    @can('editar horarios')
-                                                                        <a href="{{ route('admin.horarios.edit', $horario) }}"
-                                                                            class="btn btn-warning btn-sm mx-1" title="Editar">
-                                                                            <i class="fas fa-edit"></i>
-                                                                        </a>
-                                                                    @endcan
-
                                                                     @can('cambiar estado horarios')
                                                                         <button type="button" title="Cambiar estado"
                                                                             class="btn btn-sm {{ $horario->estado ? 'btn-danger' : 'btn-success' }} confirmationBtn mx-1"
@@ -134,7 +127,7 @@
 
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table id="permisos-table"
+                                            <table id="horarios-table"
                                                 class="table table-striped table-bordered table-hover table-sm datatable text-center">
                                                 <thead>
                                                     <tr>
@@ -146,6 +139,7 @@
                                                         <th style="text-align: center">Motivo</th>
                                                         <th style="text-align: center">Tiempo</th>
                                                         <th style="text-align: center">Estado</th>
+                                                        <th style="text-align: center">Acciones</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -241,6 +235,21 @@
                                                             <!-- Estado -->
                                                             <td class="text-center align-middle">
                                                                 {!! $excepcion->statusBadge !!}
+                                                            </td>
+
+                                                             <!-- Acciones centradas -->
+                                                             <td class="text-center">
+                                                                <div class="d-flex justify-content-center">
+                                                                    @can('cambiar estado excepciones')
+                                                                        <button type="button" title="Cambiar estado"
+                                                                            class="btn btn-sm {{ $excepcion->estado ? 'btn-danger' : 'btn-success' }} confirmationBtn mx-1"
+                                                                            data-action="{{ route('admin.excepciones.status', $excepcion->id) }}"
+                                                                            data-question="{{ $excepcion->estado ? '¿Seguro que deseas inhabilitar la excepción del <strong>' . $excepcion->fecha . '</strong>?' : '¿Seguro que deseas habilitar la excepción del <strong>' . $excepcion->fecha . '</strong>?' }}">
+                                                                            <i
+                                                                                class="fas {{ $excepcion->estado ? 'fa-eye-slash' : 'fa-eye' }}"></i>
+                                                                        </button>
+                                                                    @endcan
+                                                                </div>
                                                             </td>
                                                         </tr>
                                                     @endforeach
