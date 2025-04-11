@@ -54,61 +54,61 @@ class MultasSheet implements
     }
 
     public function headings(): array
-{
-    if ($this->headingsCache !== null) {
+    {
+        if ($this->headingsCache !== null) {
+            return $this->headingsCache;
+        }
+
+        // Columnas fijas iniciales
+        $headerRow1 = ['N°', 'Integrantes', 'Ministerio'];
+        $headerRow2 = ['', '', ''];
+        $headerRow3 = ['', '', ''];
+
+        // Recorrer las fechas y sus actividades
+        foreach ($this->dates as $date) {
+            $cantActividades = count($date['actividades'] ?? []);
+
+            // ✅ Primera fila → Fecha
+            $headerRow1[] = Carbon::parse($date['fecha'])->translatedFormat('d - M');
+            for ($i = 1; $i < $cantActividades; $i++) {
+                $headerRow1[] = '';
+            }
+
+            // ✅ Segunda fila → Día de la semana
+            $headerRow2[] = $date['dia_semana'] ?? '';
+            for ($i = 1; $i < $cantActividades; $i++) {
+                $headerRow2[] = '';
+            }
+
+            // ✅ Tercera fila → Nombre de la actividad
+            foreach ($date['actividades'] as $actividad) {
+                $headerRow3[] = $actividad['nombre_actividad'];
+            }
+        }
+
+        // Agregar columnas finales fijas
+        $columnasFinales = [
+            'Total Multas',
+            'Total Productos',
+            'Total a Pagar',
+            'Puntualidad',
+            'Pagos',
+            'Observaciones'
+        ];
+
+        $headerRow1 = array_merge($headerRow1, $columnasFinales);
+        $headerRow2 = array_merge($headerRow2, ['', '', '', '', '', '']);
+        $headerRow3 = array_merge($headerRow3, ['', '', '', '', '', '']);
+
+        // Almacenar en caché para eficiencia
+        $this->headingsCache = [
+            $headerRow1,
+            $headerRow2,
+            $headerRow3,
+        ];
+
         return $this->headingsCache;
     }
-
-    // Columnas fijas iniciales
-    $headerRow1 = ['N°', 'Integrantes', 'Ministerio'];
-    $headerRow2 = ['', '', ''];
-    $headerRow3 = ['', '', ''];
-
-    // Recorrer las fechas y sus actividades
-    foreach ($this->dates as $date) {
-        $cantActividades = count($date['actividades'] ?? []);
-
-        // ✅ Primera fila → Fecha
-        $headerRow1[] = Carbon::parse($date['fecha'])->translatedFormat('d - M');
-        for ($i = 1; $i < $cantActividades; $i++) {
-            $headerRow1[] = '';
-        }
-
-        // ✅ Segunda fila → Día de la semana
-        $headerRow2[] = $date['dia_semana'] ?? '';
-        for ($i = 1; $i < $cantActividades; $i++) {
-            $headerRow2[] = '';
-        }
-
-        // ✅ Tercera fila → Nombre de la actividad
-        foreach ($date['actividades'] as $actividad) {
-            $headerRow3[] = $actividad['nombre_actividad'];
-        }
-    }
-
-    // Agregar columnas finales fijas
-    $columnasFinales = [
-        'Total Multas',
-        'Total Productos',
-        'Total a Pagar',
-        'Puntualidad',
-        'Pagos',
-        'Observaciones'
-    ];
-
-    $headerRow1 = array_merge($headerRow1, $columnasFinales);
-    $headerRow2 = array_merge($headerRow2, ['', '', '', '', '', '']);
-    $headerRow3 = array_merge($headerRow3, ['', '', '', '', '', '']);
-
-    // Almacenar en caché para eficiencia
-    $this->headingsCache = [
-        $headerRow1,
-        $headerRow2,
-        $headerRow3,
-    ];
-
-    return $this->headingsCache;
-}
 
 
     public function map($row): array
@@ -160,10 +160,10 @@ class MultasSheet implements
 
         if (!empty($row['permisos'])) {
             $observacionesArray = [];
-        
+
             foreach ($row['permisos'] as $index => $permiso) {
                 $fechaFormateada = Carbon::parse($permiso['fecha'])->format('d M.');
-        
+
                 if ($permiso['dia_entero'] == 1) {
                     // Si es un día entero (1), mostramos fecha y motivo
                     $observacion = "Fecha: {$fechaFormateada} Motivo: {$permiso['motivo']}";
@@ -177,16 +177,16 @@ class MultasSheet implements
                     $horaFin = !empty($permiso['hora_fin']) ? Carbon::parse($permiso['hora_fin'])->format('H:i') : 'Sin hora';
                     $observacion = "Fecha: {$fechaFormateada} Horas: ({$horaInicio} - {$horaFin}) Motivo: {$permiso['motivo']}";
                 }
-        
+
                 // Agregamos numeración al inicio
                 $observacionesArray[] = ($index + 1) . ". " . $observacion;
             }
-        
+
             // Concatenamos todas las observaciones en una sola cadena separada por comas
             $observaciones = implode(', |', $observacionesArray);
         }
-        
-        
+
+
 
         $rowData[] = $totalMultas === 0 ? "0" : $totalMultas;
         $rowData[] = $totalProductos === 0 ? "0" : $totalProductos;
@@ -351,7 +351,7 @@ class MultasSheet implements
 
         foreach ($exportInstance->dates as $date) {
             $cantActividades = count($date['actividades'] ?? []);
-            
+
             if ($cantActividades > 1) {
                 // ✅ Fusionar FECHA en la primera fila
                 $startCol = Coordinate::stringFromColumnIndex($colIndex);

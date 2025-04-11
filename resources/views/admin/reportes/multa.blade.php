@@ -9,7 +9,10 @@
 
 @section('content')
     <x-adminlte-card>
-        @include('admin.reportes.form')
+        <form action="{{ route('admin.reportes.multa') }}" method="POST">
+            @csrf
+            @include('admin.reportes.form')
+        </form>
     </x-adminlte-card>
     <div class="row">
         <div class="col-md-12">
@@ -63,7 +66,8 @@
                                                             @foreach ($datos['actividades'] as $actividad)
                                                                 @php
                                                                     $colKey =
-                                                                        "d_{$fecha}_" . Str::slug($actividad['nombre_actividad'], '_');
+                                                                        "d_{$fecha}_" .
+                                                                        Str::slug($actividad['nombre_actividad'], '_');
                                                                 @endphp
                                                                 <td>
                                                                     @if (isset($row[$colKey]))
@@ -134,7 +138,8 @@
                                                             @foreach ($datos['actividades'] as $actividad)
                                                                 @php
                                                                     $colKey =
-                                                                        "d_{$fecha}_" . Str::slug($actividad['nombre_actividad'], '_');
+                                                                        "d_{$fecha}_" .
+                                                                        Str::slug($actividad['nombre_actividad'], '_');
                                                                 @endphp
                                                                 <td>
                                                                     @if (isset($row[$colKey]))

@@ -19,25 +19,25 @@ class ExcepcionesSheet implements FromCollection, WithHeadings, WithTitle, WithS
     }
 
     public function collection()
-{
-    return $this->excepciones->map(function ($row, $index) {
-        return [
-            'N°' => $index + 1,
-            'Motivo' => $row['motivo'] ?? '',
-            'Fecha' => \Carbon\Carbon::parse($row['fecha'])->format('d/m/Y'), // ✅ Formato día/mes/año
-            'Hasta' => $row['hasta'] ? \Carbon\Carbon::parse($row['hasta'])->format('d/m/Y') : 'No especificado',
-            'Día Entero' => match ($row['dia_entero'] ?? 0) {
-                1 => 'Todo el día',        // ✅ Cubre todo el día
-                2 => 'Varios días', // ✅ Indica un período extendido
-                default => 'Rango de horas',  // ✅ No cubre todo el día
-            },
-            'Hora Inicio' => $row['hora_inicio'] ?? 'Sin hora',
-            'Hora Fin' => $row['hora_fin'] ?? 'Sin hora',
-            'Usuario' => $row->usuario->name ?? 'Desconocido', // ✅ Muestra el nombre en lugar del ID
-            'Creado el' => \Carbon\Carbon::parse($row['created_at'])->format('d/m/Y H:i:s'), // ✅ Fecha con hora
-        ];
-    });
-}
+    {
+        return $this->excepciones->map(function ($row, $index) {
+            return [
+                'N°' => $index + 1,
+                'Motivo' => $row['motivo'] ?? '',
+                'Fecha' => \Carbon\Carbon::parse($row['fecha'])->format('d/m/Y'), // ✅ Formato día/mes/año
+                'Hasta' => $row['hasta'] ? \Carbon\Carbon::parse($row['hasta'])->format('d/m/Y') : 'No especificado',
+                'Día Entero' => match ($row['dia_entero'] ?? 0) {
+                    1 => 'Todo el día',        // ✅ Cubre todo el día
+                    2 => 'Varios días', // ✅ Indica un período extendido
+                    default => 'Rango de horas',  // ✅ No cubre todo el día
+                },
+                'Hora Inicio' => $row['hora_inicio'] ?? 'Sin hora',
+                'Hora Fin' => $row['hora_fin'] ?? 'Sin hora',
+                'Usuario' => $row->usuario->name ?? 'Desconocido', // ✅ Muestra el nombre en lugar del ID
+                'Creado el' => \Carbon\Carbon::parse($row['created_at'])->format('d/m/Y H:i:s'), // ✅ Fecha con hora
+            ];
+        });
+    }
 
 
     public function headings(): array
@@ -45,8 +45,14 @@ class ExcepcionesSheet implements FromCollection, WithHeadings, WithTitle, WithS
         return [
             ['REGISTRO DE EXCEPCIONES'], // ✅ Título de la tabla en la primera fila
             [
-                'N°', 'Motivo', 'Fecha', 'Hasta', 'Tipo',
-                'Hora Inicio', 'Hora Fin', 'Autor',
+                'N°',
+                'Motivo',
+                'Fecha',
+                'Hasta',
+                'Tipo',
+                'Hora Inicio',
+                'Hora Fin',
+                'Autor',
                 'Fecha de Creación'
             ]
         ];
@@ -71,7 +77,7 @@ class ExcepcionesSheet implements FromCollection, WithHeadings, WithTitle, WithS
         }
 
         // ✅ Ocultar las líneas de cuadrícula
-            $sheet->setShowGridlines(false);
+        $sheet->setShowGridlines(false);
 
         // ✅ Aplicar estilos al título y encabezados
         return [
@@ -87,8 +93,8 @@ class ExcepcionesSheet implements FromCollection, WithHeadings, WithTitle, WithS
                 'borders' => ['allBorders' => ['borderStyle' => 'thin', 'color' => ['rgb' => 'FFFFFF']]], // Bordes blancos
             ],
             "A3:I$totalRows" => [ // ✅ Bordes dinámicos según el número de filas
-            'font' => ['size' => 10],
-            'borders' => ['allBorders' => ['borderStyle' => 'thin', 'color' => ['rgb' => '000000']]],
+                'font' => ['size' => 10],
+                'borders' => ['allBorders' => ['borderStyle' => 'thin', 'color' => ['rgb' => '000000']]],
             ],
         ];
     }

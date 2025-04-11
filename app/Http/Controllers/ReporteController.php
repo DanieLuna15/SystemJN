@@ -35,8 +35,12 @@ class ReporteController extends Controller
         $multas_detalle = $this->generarReporteColumnasDinamicas($ministerioId, $startDate, $endDate);
         //dd($multas_detalle);
 
+        $asistencia_detalle = $this->generarReporteColumnasDinamicas($ministerioId, $startDate, $endDate);
+        //dd($asistencia_detalle);
+
         // Obtener los horarios por fecha
         $horariosPorFecha = $this->obtenerHorariosPorMinisterio($ministerioId, $startDate, $endDate);
+
         //dd($horariosPorFecha);
         // Usar una función separada para generar la cabecera con las fechas y actividades
         $dates = $this->obtenerCabeceraFechas($horariosPorFecha);
@@ -51,17 +55,24 @@ class ReporteController extends Controller
             ->get();
         //dd($excepciones->toArray());
 
-        $pageTitle = 'Reporte de multas ('
+        $pageTitleMultas = 'Reporte de multas ('
             . Carbon::parse($startDate)->translatedFormat('d M')
             . ' - '
             . Carbon::parse($endDate)->translatedFormat('d M')
             . ') '
-            . Carbon::parse($endDate)->format('Y'); // ✅ Agrega el año al título
+            . Carbon::parse($endDate)->format('Y');
+
+        $pageTitleAsistencias = 'Reporte de asistencia ('
+            . Carbon::parse($startDate)->translatedFormat('d M')
+            . ' - '
+            . Carbon::parse($endDate)->translatedFormat('d M')
+            . ') '
+            . Carbon::parse($endDate)->format('Y');
 
         $fileName = 'reporte_multas_' . Carbon::parse($startDate)->format('Y-m-d') . '_a_' . Carbon::parse($endDate)->format('Y-m-d') . '.xlsx';
 
         // Exportar los resultados a Excel con el nombre dinámico del archivo
-        return Excel::download(new ReporteExport($multas_detalle, $dates, $excepciones, $pageTitle), $fileName);
+        return Excel::download(new ReporteExport($multas_detalle, $asistencia_detalle, $dates, $excepciones, $pageTitleMultas, $pageTitleAsistencias), $fileName);
     }
 
     public function multa(Request $request)
@@ -397,7 +408,7 @@ class ReporteController extends Controller
         foreach ($usuarios as $usuario) {
             $permisosUsuario = $permisos->filter(function ($permiso) use ($usuario) {
                 return $permiso->usuarios->contains('id', $usuario->id);
-            })->values(); 
+            })->values();
 
             $fila = [
                 'integrantes' => $usuario->last_name . ' ' . $usuario->name,
