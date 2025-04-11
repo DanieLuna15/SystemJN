@@ -22,6 +22,7 @@ use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Carbon\Carbon;
 
 class MultasSheet implements
     FromCollection,
@@ -68,7 +69,7 @@ class MultasSheet implements
         $cantActividades = count($date['actividades'] ?? []);
 
         // ✅ Primera fila → Fecha
-        $headerRow1[] = \Carbon\Carbon::parse($date['fecha'])->translatedFormat('d - M');
+        $headerRow1[] = Carbon::parse($date['fecha'])->translatedFormat('d - M');
         for ($i = 1; $i < $cantActividades; $i++) {
             $headerRow1[] = '';
         }
@@ -154,7 +155,38 @@ class MultasSheet implements
         $totalPagar = (int) ($row['Total_Pagar'] ?? 0);
         $puntualidad = $row['Puntualidad'] ?? '';
         $pagos = $row['Pagos'] ?? '';
-        $observaciones = $row['Observaciones'] ?? '';
+        // Concatenación de permisos en observaciones
+        $observaciones = '';
+
+        if (!empty($row['permisos'])) {
+            $observacionesArray = [];
+        
+            foreach ($row['permisos'] as $index => $permiso) {
+                $fechaFormateada = Carbon::parse($permiso['fecha'])->format('d M.');
+        
+                if ($permiso['dia_entero'] == 1) {
+                    // Si es un día entero (1), mostramos fecha y motivo
+                    $observacion = "Fecha: {$fechaFormateada} Motivo: {$permiso['motivo']}";
+                } elseif ($permiso['dia_entero'] == 2) {
+                    // Si es 2, mostramos fecha, hasta y motivo
+                    $hastaFormateado = $permiso['hasta'] ? Carbon::parse($permiso['hasta'])->format('d M.') : 'Sin fecha';
+                    $observacion = "Fechas: ({$fechaFormateada} hasta {$hastaFormateado}) Motivo: {$permiso['motivo']}";
+                } else {
+                    // Si es 0, mostramos fecha, hora_inicio, hora_fin y motivo
+                    $horaInicio = !empty($permiso['hora_inicio']) ? Carbon::parse($permiso['hora_inicio'])->format('H:i') : 'Sin hora';
+                    $horaFin = !empty($permiso['hora_fin']) ? Carbon::parse($permiso['hora_fin'])->format('H:i') : 'Sin hora';
+                    $observacion = "Fecha: {$fechaFormateada} Horas: ({$horaInicio} - {$horaFin}) Motivo: {$permiso['motivo']}";
+                }
+        
+                // Agregamos numeración al inicio
+                $observacionesArray[] = ($index + 1) . ". " . $observacion;
+            }
+        
+            // Concatenamos todas las observaciones en una sola cadena separada por comas
+            $observaciones = implode(', |', $observacionesArray);
+        }
+        
+        
 
         $rowData[] = $totalMultas === 0 ? "0" : $totalMultas;
         $rowData[] = $totalProductos === 0 ? "0" : $totalProductos;
