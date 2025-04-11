@@ -38,7 +38,7 @@
                                                         <th style="text-align: center">Hora Multa</th>
                                                         <th style="text-align: center">Tipo</th>
                                                         <th style="text-align: center">Estado</th>
-                                                        <th style="text-align: center">Acciones</th>
+                                                        <th class="no-export"style="text-align: center">Acciones</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
         $(table).DataTable({
             "pageLength": 10,
             "lengthChange": true,
+            "order": [[0, 'desc']], // Ordena por la primera columna de fecha en orden descendente
             "language": {
                 "emptyTable": "No hay información disponible en esta tabla",
                 "zeroRecords": "No se encontraron resultados",
